@@ -447,7 +447,7 @@ const App: React.FC = () => {
             </div>
             <div>
               <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
-              <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">Planner Evolution</span>
+              <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">MTT Milano Triathlon Team</span>
             </div>
           </div>
           <div className="flex gap-2">
@@ -776,7 +776,7 @@ const App: React.FC = () => {
       
       <footer className="max-w-7xl mx-auto px-4 py-12 text-center">
           <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.4em]">
-              FITRI 2026 Season Planner • Data: Manual Extraction
+              FITRI 2026 Season Planner • MTT Milano Triathlon Team
           </p>
       </footer>
     </div>
