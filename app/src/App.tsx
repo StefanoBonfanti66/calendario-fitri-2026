@@ -32,6 +32,7 @@ const App: React.FC = () => {
   const [filterDistance, setFilterDistance] = useState("Tutte");
   const [homeCity, setHomeCity] = useState(localStorage.getItem("home_city") || "");
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
 
   const getRaceCoords = (location: string): [number, number] | null => {
     // Prova prima con il nome completo della città (es: "Cesate")
@@ -52,19 +53,20 @@ const App: React.FC = () => {
     return [latJitter, lonJitter];
   };
 
-  const createCustomIcon = (type: string, isSelected: boolean) => {
+  const createCustomIcon = (type: string, isSelected: boolean, priority?: string) => {
     let color = '#3b82f6'; // Blue (Triathlon)
     if (type === 'Duathlon') color = '#f97316'; // Orange
     if (type.includes('Winter')) color = '#06b6d4'; // Cyan
     if (type === 'Cross') color = '#10b981'; // Emerald
     
     if (isSelected) color = '#ef4444'; // Red if selected
+    if (priority === 'A') color = '#eab308'; // Gold if priority A
 
     return L.divIcon({
       className: 'custom-div-icon',
-      html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
-      iconSize: [12, 12],
-      iconAnchor: [6, 6]
+      html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 8px; font-weight: 900;">${priority === 'A' ? 'A' : ''}</div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
     });
   };
 
@@ -112,15 +114,29 @@ const App: React.FC = () => {
             setSelectedRaces(JSON.parse(saved));
         } catch (e) { console.error(e); }
     }
+    const savedPriorities = localStorage.getItem("race_priorities");
+    if (savedPriorities) {
+        try {
+            setRacePriorities(JSON.parse(savedPriorities));
+        } catch (e) { console.error(e); }
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("selected_races", JSON.stringify(selectedRaces));
-  }, [selectedRaces]);
+    localStorage.setItem("race_priorities", JSON.stringify(racePriorities));
+  }, [selectedRaces, racePriorities]);
+
+  const setPriority = (id: string, p: string) => {
+    setRacePriorities(prev => ({ ...prev, [id]: p }));
+  };
 
   const toggleRace = (id: string) => {
     if (selectedRaces.includes(id)) {
       setSelectedRaces((prev) => prev.filter((r) => r !== id));
+      const newPriorities = { ...racePriorities };
+      delete newPriorities[id];
+      setRacePriorities(newPriorities);
       return;
     }
 
@@ -147,6 +163,7 @@ const App: React.FC = () => {
     }
 
     setSelectedRaces((prev) => [...prev, id]);
+    setRacePriorities(prev => ({ ...prev, [id]: 'C' })); // Default priority C
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -209,7 +226,8 @@ const App: React.FC = () => {
       icsContent.push(`DTEND;VALUE=DATE:${endDate}`);
       icsContent.push(`SUMMARY:${race.title.replace(/,/g, "\\,")}`);
       icsContent.push(`LOCATION:${(race.location + " " + race.region).replace(/,/g, "\\,")}`);
-      icsContent.push(`DESCRIPTION:Tipo: ${race.type}\\nSettore: ${race.category || 'N/A'}\\nRank: ${race.rank || 'N/A'}`);
+      const priorityLabel = racePriorities[race.id] === 'A' ? 'OBIETTIVO' : racePriorities[race.id] === 'B' ? 'Preparazione' : 'Allenamento';
+      icsContent.push(`DESCRIPTION:Priorità: ${priorityLabel}\\nTipo: ${race.type}\\nSettore: ${race.category || 'N/A'}\\nRank: ${race.rank || 'N/A'}`);
       icsContent.push("END:VEVENT");
     });
 
@@ -398,10 +416,21 @@ const App: React.FC = () => {
                 ) : (
                 <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {myPlan.map((race, index) => (
-                    <div key={race.id} className="group bg-white p-4 rounded-2xl border border-slate-100 hover:border-blue-200 transition-all hover:shadow-sm">
+                    <div key={race.id} className={`group bg-white p-4 rounded-2xl border transition-all hover:shadow-sm ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 hover:border-blue-200'}`}>
                         <div className="flex justify-between items-start">
                         <div className="space-y-1">
-                            <span className="text-[10px] font-black text-blue-500 uppercase">{race.date}</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black text-blue-500 uppercase">{race.date}</span>
+                                {racePriorities[race.id] && (
+                                    <span className={`text-[8px] font-black px-1.5 py-0.5 rounded ${
+                                        racePriorities[race.id] === 'A' ? 'bg-yellow-400 text-white' :
+                                        racePriorities[race.id] === 'B' ? 'bg-blue-400 text-white' :
+                                        'bg-slate-400 text-white'
+                                    }`}>
+                                        {racePriorities[race.id]}
+                                    </span>
+                                )}
+                            </div>
                             {race.event && (
                                 <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">
                                     {race.event}
@@ -540,13 +569,33 @@ const App: React.FC = () => {
                                 </div>
                             </div>
                             
-                            <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
-                                {race.category ? (
-                                    <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider">
-                                        {race.category}
-                                    </span>
-                                ) : <div></div>}
-                                
+                                                    <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
+                                                        <div className="flex flex-col gap-2">
+                                                            {race.category ? (
+                                                                <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">
+                                                                    {race.category}
+                                                                </span>
+                                                            ) : <div></div>}
+                                                            
+                                                            {selectedRaces.includes(race.id) && (
+                                                                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
+                                                                    {['A', 'B', 'C'].map(p => (
+                                                                        <button
+                                                                            key={p}
+                                                                            onClick={() => setPriority(race.id, p)}
+                                                                            className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
+                                                                                racePriorities[race.id] === p
+                                                                                ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
+                                                                                : 'text-slate-400 hover:bg-white'
+                                                                            }`}
+                                                                            title={p === 'A' ? 'Obiettivo Stagionale' : p === 'B' ? 'Preparazione' : 'Allenamento'}
+                                                                        >
+                                                                            {p}
+                                                                        </button>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>                                
                                 <button
                                     onClick={() => toggleRace(race.id)}
                                     className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
@@ -582,7 +631,7 @@ const App: React.FC = () => {
                                 <Marker 
                                     key={race.id} 
                                     position={[coords[0] + jitterLat, coords[1] + jitterLon]}
-                                    icon={createCustomIcon(race.type, selectedRaces.includes(race.id))}
+                                    icon={createCustomIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}
                                 >
                                     <Popup>
                                         <div className="p-1 min-w-[150px]">
