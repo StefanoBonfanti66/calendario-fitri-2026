@@ -1,4 +1,5 @@
 export const provinceCoordinates: Record<string, [number, number]> = {
+  // Province Centers
   "Agrigento": [37.3111, 13.5765],
   "Alessandria": [44.9129, 8.6154],
   "Ancona": [43.6158, 13.5189],
@@ -105,5 +106,27 @@ export const provinceCoordinates: Record<string, [number, number]> = {
   "Verona": [45.4384, 10.9916],
   "Vibo Valentia": [38.6756, 16.1017],
   "Vicenza": [45.5455, 11.5353],
-  "Viterbo": [42.4177, 12.1047]
+  "Viterbo": [42.4177, 12.1047],
+
+  // Specific common race cities for better precision
+  "Cesate": [45.5950, 9.0810],
+  "Cesenatico": [44.2011, 12.4006],
+  "Predazzo": [46.3128, 11.6041],
+  "Cogne": [45.6081, 7.3400],
+  "Peschiera del Garda": [45.4388, 10.6925],
+  "Bardolino": [45.5506, 10.7181],
+  "Caorle": [45.5994, 12.8872],
+  "Jesolo": [45.5328, 12.6450],
+  "Lignano Sabbiadoro": [45.6722, 13.1111],
+  "Sanremo": [43.8159, 7.7761],
+  "Capoliveri": [42.7456, 10.3775],
+  "Pisticci": [40.3911, 16.5544],
+  "Andora": [43.9531, 8.1744],
+  "Cupra Marittima": [43.0211, 13.8583],
+  "Porto Sant'Elpidio": [43.2581, 13.7583],
+  "Alghero": [40.5580, 8.3193],
+  "Mazara del Vallo": [37.6522, 12.5883],
+  "Molveno": [46.1425, 10.9644],
+  "Vernasca": [44.8061, 9.8300],
+  "Lovere": [45.8139, 10.0711]
 };

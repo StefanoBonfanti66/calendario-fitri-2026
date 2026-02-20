@@ -34,9 +34,22 @@ const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   const getRaceCoords = (location: string): [number, number] | null => {
+    // Prova prima con il nome completo della città (es: "Cesate")
+    const cityName = location.split('(')[0].trim();
+    if (provinceCoordinates[cityName]) return provinceCoordinates[cityName];
+
+    // Se non trova la città, prova con la provincia tra parentesi
     const provinceMatch = location.match(/\((.*?)\)/);
     const province = provinceMatch ? provinceMatch[1] : location;
     return provinceCoordinates[province] || null;
+  };
+
+  const getDeterministicJitter = (id: string) => {
+    // Crea un piccolo offset basato sull'ID per non sovrapporre i marker in modo fisso
+    const num = parseInt(id) || 0;
+    const latJitter = ((num % 10) - 5) * 0.005;
+    const lonJitter = (((num * 7) % 10) - 5) * 0.005;
+    return [latJitter, lonJitter];
   };
 
   const createCustomIcon = (type: string, isSelected: boolean) => {
@@ -563,9 +576,7 @@ const App: React.FC = () => {
                             const coords = getRaceCoords(race.location);
                             if (!coords) return null;
                             
-                            // Aggiungiamo un piccolo jitter casuale per non sovrapporre gare nella stessa provincia
-                            const jitterLat = (Math.random() - 0.5) * 0.1;
-                            const jitterLon = (Math.random() - 0.5) * 0.1;
+                            const [jitterLat, jitterLon] = getDeterministicJitter(race.id);
                             
                             return (
                                 <Marker 
