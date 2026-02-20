@@ -413,7 +413,7 @@ const App: React.FC = () => {
     const headers = ["Data", "Evento", "Specialità", "Località", "Regione", "Sport", "Distanza", "Priorità", "Costo Iscrizione (€)", "Km da Casa"];
     
     const rows = selectedData.map(race => {
-        const dist = calculateDistance(race.location);
+        const dist = getDistance(race.location, homeCity);
         return [
             race.date,
             `"${(race.event || '').replace(/"/g, '""')}"`,
