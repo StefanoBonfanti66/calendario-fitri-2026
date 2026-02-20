@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useTransition } from "react";
+import React, { useState, useEffect, useMemo, useTransition, useCallback } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
   Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List
@@ -24,9 +24,162 @@ interface Race {
   mapCoords?: [number, number];
 }
 
+// Componente Card separato e memoizzato per evitare re-render inutili (Fix INP)
+const RaceCard = React.memo(({ 
+    race, 
+    isSelected, 
+    priority, 
+    cost, 
+    onToggle, 
+    onPriority, 
+    onCost,
+    distanceFromHome,
+    getRankColor 
+}: { 
+    race: Race, 
+    isSelected: boolean, 
+    priority: string, 
+    cost: number | string, 
+    onToggle: (id: string) => void,
+    onPriority: (id: string, p: string) => void,
+    onCost: (id: string, c: number) => void,
+    distanceFromHome: number | null,
+    getRankColor: (r: string) => string
+}) => {
+    return (
+        <div 
+            className={`group bg-white p-6 rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 flex flex-col ${
+                isSelected 
+                ? 'border-blue-500 ring-4 ring-blue-50 shadow-lg shadow-blue-100/50' 
+                : 'border-white hover:border-blue-100 shadow-sm'
+            } ${priority === 'A' ? 'bg-yellow-50/20 border-yellow-100' : ''}`}
+        >
+            <div className="flex justify-between items-start mb-5">
+                <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full w-fit">
+                        <Calendar className="w-3.5 h-3.5 text-blue-500" />
+                        <span className="text-[11px] font-black text-slate-700">{race.date}</span>
+                    </div>
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${
+                        race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' :
+                        race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' :
+                        race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' :
+                        'bg-emerald-100 text-emerald-700'
+                    }`}>
+                        {race.type}
+                    </span>
+                    {race.rank && (
+                        <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`}>
+                            <Star className="w-2.5 h-2.5 fill-current" />
+                            {race.rank}
+                        </div>
+                    )}
+                </div>
+            </div>
+            
+            {race.event && (
+                <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">
+                    {race.event}
+                </div>
+            )}
+            <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">
+                {race.title}
+            </h3>
+            
+            <div className="space-y-2 mb-6">
+                <div className="flex items-start gap-2.5">
+                    <MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
+                    <div className="flex flex-col">
+                        <p className="text-xs font-bold text-slate-500 leading-snug">
+                            {race.location}
+                        </p>
+                        <span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4">
+                    {race.distance && (
+                        <div className="flex items-center gap-2">
+                            <Bike className="w-4 h-4 text-slate-300 shrink-0" />
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span>
+                        </div>
+                    )}
+                    {distanceFromHome !== null && (
+                        <div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50">
+                            <Navigation className="w-3 h-3 text-blue-400" />
+                            <span className="text-[10px] font-black text-blue-600 uppercase">~{distanceFromHome} KM</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+            
+            <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
+                <div className="flex flex-col gap-2">
+                    {race.category ? (
+                        <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">
+                            {race.category}
+                        </span>
+                    ) : <div></div>}
+                    
+                    {isSelected && (
+                        <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit relative group/legend">
+                                {['A', 'B', 'C'].map(p => (
+                                    <button
+                                        key={p}
+                                        onClick={(e) => { e.stopPropagation(); onPriority(race.id, p); }}
+                                        className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
+                                            priority === p
+                                            ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
+                                            : 'text-slate-400 hover:bg-white'
+                                        }`}
+                                    >
+                                        {p}
+                                    </button>
+                                ))}
+                                <div className="absolute bottom-full left-0 mb-2 w-48 p-3 bg-slate-900 text-white text-[9px] rounded-xl opacity-0 invisible group-hover/legend:opacity-100 group-hover/legend:visible transition-all z-50 shadow-xl border border-white/10">
+                                    <p className="mb-1.5"><b className="text-yellow-400">A: OBIETTIVO</b> - Gara principale, scarico totale.</p>
+                                    <p className="mb-1.5"><b className="text-blue-400">B: PREPARAZIONE</b> - Test di forma, scarico parziale.</p>
+                                    <p><b>C: ALLENAMENTO</b> - Gara test senza scarico.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit h-9">
+                                <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
+                                <input 
+                                    type="number" 
+                                    placeholder="0"
+                                    className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center"
+                                    value={cost || ''}
+                                    onChange={(e) => onCost(race.id, parseFloat(e.target.value) || 0)}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+                
+                <button
+                    onClick={() => onToggle(race.id)}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+                        isSelected
+                        ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0'
+                    }`}
+                >
+                    {isSelected ? (
+                        <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</>
+                    ) : (
+                        <><Plus className="w-3.5 h-3.5" /> Aggiungi</>
+                    )}
+                </button>
+            </div>
+        </div>
+    );
+});
+
 const App: React.FC = () => {
   const [isPending, startTransition] = useTransition();
-  const [races, setRaces] = useState<Race[]>([]);
+  const [racesState, setRacesState] = useState<Race[]>([]);
   const [selectedRaces, setSelectedRaces] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("Tutti");
@@ -37,21 +190,16 @@ const App: React.FC = () => {
   const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
   const [raceCosts, setRaceCosts] = useState<Record<string, number>>({});
 
-  // Pre-processamento delle gare per performance mappa
-  const processedRaces = useMemo(() => {
-    // Usa races se popolato (da import), altrimenti racesData
-    const source = races.length > 0 ? races : (racesData as Race[]);
-    
+  const races = useMemo(() => {
+    const source = racesState.length > 0 ? racesState : (racesData as Race[]);
     return source.map(race => {
       const cityName = race.location.split('(')[0].trim();
       let coords = provinceCoordinates[cityName];
-      
       if (!coords) {
         const provinceMatch = race.location.match(/\((.*?)\)/);
         const province = provinceMatch ? provinceMatch[1] : race.location;
         coords = provinceCoordinates[province];
       }
-
       if (coords) {
         const num = parseInt(race.id) || 0;
         const latJitter = ((num % 10) - 5) * 0.005;
@@ -60,15 +208,13 @@ const App: React.FC = () => {
       }
       return race;
     });
-  }, [races]);
+  }, [racesState]);
 
-  // Cache per le icone per evitare di ricrearle a ogni render (causa INP lag)
   const iconCache = useMemo(() => {
     const cache: Record<string, L.DivIcon> = {};
     const types = ['Triathlon', 'Duathlon', 'Winter', 'Cross'];
     const priorities = [undefined, 'A'];
     const selectedStates = [true, false];
-
     types.forEach(t => {
       priorities.forEach(p => {
         selectedStates.forEach(s => {
@@ -78,7 +224,6 @@ const App: React.FC = () => {
           if (t === 'Cross') color = '#10b981';
           if (s) color = '#ef4444';
           if (p === 'A') color = '#eab308';
-
           const key = `${t}-${p}-${s}`;
           cache[key] = L.divIcon({
             className: 'custom-div-icon',
@@ -97,13 +242,7 @@ const App: React.FC = () => {
     return iconCache[key] || iconCache['Triathlon-undefined-false'];
   };
 
-  const handleViewChange = (mode: 'list' | 'map') => {
-    startTransition(() => {
-      setViewMode(mode);
-    });
-  };
-
-  const calculateDistance = (targetLocation: string) => {
+  const calculateDistance = useCallback((targetLocation: string) => {
     if (!homeCity) return null;
     const provinceMatch = targetLocation.match(/\((.*?)\)/);
     const targetProvince = provinceMatch ? provinceMatch[1] : targetLocation;
@@ -116,31 +255,29 @@ const App: React.FC = () => {
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(startCoords[0] * Math.PI / 180) * Math.cos(endCoords[0] * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return Math.round(R * c * 1.2);
+  }, [homeCity]);
+
+  const handleViewChange = (mode: 'list' | 'map') => {
+    startTransition(() => setViewMode(mode));
   };
 
   const regions = useMemo(() => {
-    const r = new Set(processedRaces.map(race => race.region).filter(Boolean));
+    const r = new Set(races.map(race => race.region).filter(Boolean));
     return ["Tutte", ...Array.from(r).sort()];
-  }, [processedRaces]);
+  }, [races]);
 
   const distances = useMemo(() => {
-    const d = new Set(processedRaces.map(race => race.distance).filter(Boolean));
+    const d = new Set(races.map(race => race.distance).filter(Boolean));
     return ["Tutte", ...Array.from(d).sort()];
-  }, [processedRaces]);
+  }, [races]);
 
   useEffect(() => {
     const saved = localStorage.getItem("selected_races");
-    if (saved) {
-        try { setSelectedRaces(JSON.parse(saved)); } catch (e) { console.error(e); }
-    }
+    if (saved) try { setSelectedRaces(JSON.parse(saved)); } catch (e) {}
     const savedPriorities = localStorage.getItem("race_priorities");
-    if (savedPriorities) {
-        try { setRacePriorities(JSON.parse(savedPriorities)); } catch (e) { console.error(e); }
-    }
+    if (savedPriorities) try { setRacePriorities(JSON.parse(savedPriorities)); } catch (e) {}
     const savedCosts = localStorage.getItem("race_costs");
-    if (savedCosts) {
-        try { setRaceCosts(JSON.parse(savedCosts)); } catch (e) { console.error(e); }
-    }
+    if (savedCosts) try { setRaceCosts(JSON.parse(savedCosts)); } catch (e) {}
   }, []);
 
   useEffect(() => {
@@ -149,16 +286,16 @@ const App: React.FC = () => {
     localStorage.setItem("race_costs", JSON.stringify(raceCosts));
   }, [selectedRaces, racePriorities, raceCosts]);
 
-  const setPriority = (id: string, p: string) => {
+  const setPriority = useCallback((id: string, p: string) => {
     setRacePriorities(prev => ({ ...prev, [id]: p }));
-  };
+  }, []);
 
-  const updateCost = (id: string, cost: number) => {
+  const updateCost = useCallback((id: string, cost: number) => {
     setRaceCosts(prev => ({ ...prev, [id]: cost }));
-  };
+  }, []);
 
   const budgetTotals = useMemo(() => {
-    const selectedData = processedRaces.filter(r => selectedRaces.includes(r.id));
+    const selectedData = races.filter(r => selectedRaces.includes(r.id));
     const registration = selectedData.reduce((acc, r) => acc + (raceCosts[r.id] || 0), 0);
     let travel = 0;
     selectedData.forEach(r => {
@@ -166,21 +303,23 @@ const App: React.FC = () => {
         if (dist) travel += (dist * 2) * 0.25;
     });
     return { registration, travel, total: registration + travel };
-  }, [selectedRaces, raceCosts, homeCity, processedRaces]);
+  }, [selectedRaces, raceCosts, calculateDistance, races]);
 
-  const toggleRace = (id: string) => {
+  const toggleRace = useCallback((id: string) => {
     if (selectedRaces.includes(id)) {
       setSelectedRaces((prev) => prev.filter((r) => r !== id));
-      const newPriorities = { ...racePriorities };
-      delete newPriorities[id];
-      setRacePriorities(newPriorities);
+      setRacePriorities(prev => {
+          const next = {...prev};
+          delete next[id];
+          return next;
+      });
       return;
     }
-    const newRace = processedRaces.find(r => r.id === id);
+    const newRace = races.find(r => r.id === id);
     if (newRace) {
       const [nd, nm, ny] = newRace.date.split("-");
       const newDate = new Date(parseInt(ny), parseInt(nm) - 1, parseInt(nd));
-      const tooClose = processedRaces
+      const tooClose = races
         .filter(r => selectedRaces.includes(r.id))
         .some(r => {
           const [rd, rm, ry] = r.date.split("-");
@@ -189,12 +328,14 @@ const App: React.FC = () => {
           return diffDays < 3;
         });
       if (tooClose) {
-        if (!window.confirm("Attenzione: gara vicina ad un'altra già nel piano. Aggiungere comunque?")) return;
+        if (!window.confirm("Attenzione: gara vicina ad un'altra. Aggiungere comunque?")) return;
       }
     }
-    setSelectedRaces((prev) => [...prev, id]);
-    setRacePriorities(prev => ({ ...prev, [id]: 'C' }));
-  };
+    startTransition(() => {
+        setSelectedRaces((prev) => [...prev, id]);
+        setRacePriorities(prev => ({ ...prev, [id]: 'C' }));
+    });
+  }, [selectedRaces, races]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -204,7 +345,7 @@ const App: React.FC = () => {
         try {
           const imported = JSON.parse(event.target?.result as string);
           if (Array.isArray(imported)) {
-            setRaces(imported); // Use imported races
+            setRacesState(imported);
             alert("Gare caricate con successo!");
           }
         } catch (err) { alert("Errore formato JSON."); }
@@ -214,7 +355,7 @@ const App: React.FC = () => {
   };
 
   const exportPlan = () => {
-    const plan = processedRaces.filter(r => selectedRaces.includes(r.id));
+    const plan = races.filter(r => selectedRaces.includes(r.id));
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(plan, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
@@ -225,7 +366,7 @@ const App: React.FC = () => {
   };
 
   const exportToICS = () => {
-    const selectedData = processedRaces.filter(r => selectedRaces.includes(r.id));
+    const selectedData = races.filter(r => selectedRaces.includes(r.id));
     if (selectedData.length === 0) return;
     let icsContent = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Fitri Planner//IT", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
     selectedData.forEach(race => {
@@ -255,7 +396,7 @@ const App: React.FC = () => {
   };
 
   const filteredRaces = useMemo(() => {
-    return processedRaces.filter((race) => {
+    return races.filter((race) => {
         const matchesSearch = (race.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || (race.location?.toLowerCase() || "").includes(searchTerm.toLowerCase());
         const matchesType = filterType === "Tutti" || race.type === filterType || (race.type === "Winter" && filterType === "Winter");
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
@@ -266,25 +407,25 @@ const App: React.FC = () => {
         const dateB = b.date.split("-").reverse().join("-");
         return dateA.localeCompare(dateB);
     });
-  }, [processedRaces, searchTerm, filterType, filterRegion, filterDistance]);
+  }, [races, searchTerm, filterType, filterRegion, filterDistance]);
 
   const myPlan = useMemo(() => {
-    return processedRaces.filter((r) => selectedRaces.includes(r.id))
+    return races.filter((r) => selectedRaces.includes(r.id))
         .sort((a,b) => {
             const dateA = a.date.split("-").reverse().join("-");
             const dateB = b.date.split("-").reverse().join("-");
             return dateA.localeCompare(dateB);
         });
-  }, [processedRaces, selectedRaces]);
+  }, [races, selectedRaces]);
 
-  const getRankColor = (rank: string) => {
+  const getRankColor = useCallback((rank: string) => {
     switch(rank) {
         case 'Gold': return 'text-yellow-500 bg-yellow-50 border-yellow-100';
         case 'Silver': return 'text-slate-400 bg-slate-50 border-slate-100';
         case 'Bronze': return 'text-orange-400 bg-orange-50 border-orange-100';
         default: return 'text-blue-400 bg-blue-50 border-blue-100';
     }
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-100">
@@ -499,14 +640,14 @@ const App: React.FC = () => {
                                 <span>TOTALE</span>
                                 <span>€ {budgetTotals.total.toFixed(2)}</span>
                             </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                  </div>
-                                </div>
-                        
-                                <div className="lg:col-span-8 space-y-4">            <div className="flex items-center justify-between mb-4 px-2">
+                        </div>
+                    </div>
+                )}
+          </div>
+        </div>
+
+        <div className="lg:col-span-8 space-y-4">
+            <div className="flex items-center justify-between mb-4 px-2">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     Risultati: <b>{filteredRaces.length}</b> gare trovate
                 </span>
@@ -531,139 +672,18 @@ const App: React.FC = () => {
             {viewMode === 'list' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredRaces.map((race) => (
-                        <div 
-                            key={race.id} 
-                            className={`group bg-white p-6 rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 flex flex-col ${
-                                selectedRaces.includes(race.id) 
-                                ? 'border-blue-500 ring-4 ring-blue-50 shadow-lg shadow-blue-100/50' 
-                                : 'border-white hover:border-blue-100 shadow-sm'
-                            } ${racePriorities[race.id] === 'A' ? 'bg-yellow-50/20 border-yellow-100' : ''}`}
-                        >
-                            <div className="flex justify-between items-start mb-5">
-                                <div className="flex flex-col gap-1">
-                                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full w-fit">
-                                        <Calendar className="w-3.5 h-3.5 text-blue-500" />
-                                        <span className="text-[11px] font-black text-slate-700">{race.date}</span>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col items-end gap-2">
-                                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${
-                                        race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' :
-                                        race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' :
-                                        race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' :
-                                        'bg-emerald-100 text-emerald-700'
-                                    }`}>
-                                        {race.type}
-                                    </span>
-                                    {race.rank && (
-                                        <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`}>
-                                            <Star className="w-2.5 h-2.5 fill-current" />
-                                            {race.rank}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            
-                            {race.event && (
-                                <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">
-                                    {race.event}
-                                </div>
-                            )}
-                            <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">
-                                {race.title}
-                            </h3>
-                            
-                            <div className="space-y-2 mb-6">
-                                <div className="flex items-start gap-2.5">
-                                    <MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
-                                    <div className="flex flex-col">
-                                        <p className="text-xs font-bold text-slate-500 leading-snug">
-                                            {race.location}
-                                        </p>
-                                        <span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    {race.distance && (
-                                        <div className="flex items-center gap-2">
-                                            <Bike className="w-4 h-4 text-slate-300 shrink-0" />
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span>
-                                        </div>
-                                    )}
-                                    {(() => {
-                                        const dist = calculateDistance(race.location);
-                                        return dist !== null && (
-                                            <div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50">
-                                                <Navigation className="w-3 h-3 text-blue-400" />
-                                                <span className="text-[10px] font-black text-blue-600 uppercase">~{dist} KM</span>
-                                            </div>
-                                        );
-                                    })()}
-                                </div>
-                            </div>
-                            
-                            <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
-                                <div className="flex flex-col gap-2">
-                                    {race.category ? (
-                                        <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">
-                                            {race.category}
-                                        </span>
-                                    ) : <div></div>}
-                                    
-                                    {selectedRaces.includes(race.id) && (
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit relative group/legend">
-                                                {['A', 'B', 'C'].map(p => (
-                                                    <button
-                                                        key={p}
-                                                        onClick={(e) => { e.stopPropagation(); setPriority(race.id, p); }}
-                                                        className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
-                                                            racePriorities[race.id] === p
-                                                            ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
-                                                            : 'text-slate-400 hover:bg-white'
-                                                        }`}
-                                                    >
-                                                        {p}
-                                                    </button>
-                                                ))}
-                                                {/* Legenda a comparsa */}
-                                                <div className="absolute bottom-full left-0 mb-2 w-48 p-3 bg-slate-900 text-white text-[9px] rounded-xl opacity-0 invisible group-hover/legend:opacity-100 group-hover/legend:visible transition-all z-50 shadow-xl border border-white/10">
-                                                    <p className="mb-1.5"><b className="text-yellow-400">A: OBIETTIVO</b> - Gara principale, scarico totale.</p>
-                                                    <p className="mb-1.5"><b className="text-blue-400">B: PREPARAZIONE</b> - Test di forma, scarico parziale.</p>
-                                                    <p><b>C: ALLENAMENTO</b> - Gara test senza scarico.</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit h-9">
-                                                <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
-                                                <input 
-                                                    type="number" 
-                                                    placeholder="0"
-                                                    className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center"
-                                                    value={raceCosts[race.id] || ''}
-                                                    onChange={(e) => updateCost(race.id, parseFloat(e.target.value) || 0)}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                                
-                                <button
-                                    onClick={() => toggleRace(race.id)}
-                                    className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
-                                        selectedRaces.includes(race.id)
-                                        ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0'
-                                    }`}
-                                >
-                                    {selectedRaces.includes(race.id) ? (
-                                        <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</>
-                                    ) : (
-                                        <><Plus className="w-3.5 h-3.5" /> Aggiungi</>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
+                        <RaceCard 
+                            key={race.id}
+                            race={race}
+                            isSelected={selectedRaces.includes(race.id)}
+                            priority={racePriorities[race.id]}
+                            cost={raceCosts[race.id]}
+                            onToggle={toggleRace}
+                            onPriority={setPriority}
+                            onCost={updateCost}
+                            distanceFromHome={calculateDistance(race.location)}
+                            getRankColor={getRankColor}
+                        />
                     ))}
                 </div>
             ) : (
