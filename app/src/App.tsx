@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
-  Info, Download, Upload, Bike, Map, ChevronRight, Star, ExternalLink, Activity, Navigation
+  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List
 } from "lucide-react";
 import racesData from "./races_full.json";
 import { provinceCoordinates } from "./coords";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import './map.css';
 
 interface Race {
   id: string;
@@ -27,6 +31,29 @@ const App: React.FC = () => {
   const [filterRegion, setFilterRegion] = useState("Tutte");
   const [filterDistance, setFilterDistance] = useState("Tutte");
   const [homeCity, setHomeCity] = useState(localStorage.getItem("home_city") || "");
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+
+  const getRaceCoords = (location: string): [number, number] | null => {
+    const provinceMatch = location.match(/\((.*?)\)/);
+    const province = provinceMatch ? provinceMatch[1] : location;
+    return provinceCoordinates[province] || null;
+  };
+
+  const createCustomIcon = (type: string, isSelected: boolean) => {
+    let color = '#3b82f6'; // Blue (Triathlon)
+    if (type === 'Duathlon') color = '#f97316'; // Orange
+    if (type.includes('Winter')) color = '#06b6d4'; // Cyan
+    if (type === 'Cross') color = '#10b981'; // Emerald
+    
+    if (isSelected) color = '#ef4444'; // Red if selected
+
+    return L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+  };
 
   const calculateDistance = (targetLocation: string) => {
     if (!homeCity) return null;
@@ -409,106 +436,166 @@ const App: React.FC = () => {
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     Risultati: <b>{filteredRaces.length}</b> gare trovate
                 </span>
+                
+                <div className="flex bg-slate-100 p-1 rounded-xl">
+                    <button 
+                        onClick={() => setViewMode('list')}
+                        className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}
+                    >
+                        <List className="w-3 h-3" /> Lista
+                    </button>
+                    <button 
+                        onClick={() => setViewMode('map')}
+                        className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'map' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}
+                    >
+                        <MapIcon className="w-3 h-3" /> Mappa
+                    </button>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredRaces.map((race) => (
-                    <div 
-                        key={race.id} 
-                        className={`group bg-white p-6 rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 flex flex-col ${
-                            selectedRaces.includes(race.id) 
-                            ? 'border-blue-500 ring-4 ring-blue-50 shadow-lg shadow-blue-100/50' 
-                            : 'border-white hover:border-blue-100 shadow-sm'
-                        }`}
-                    >
-                        <div className="flex justify-between items-start mb-5">
-                            <div className="flex flex-col gap-1">
-                                <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full w-fit">
-                                    <Calendar className="w-3.5 h-3.5 text-blue-500" />
-                                    <span className="text-[11px] font-black text-slate-700">{race.date}</span>
-                                </div>
-                            </div>
-                            <div className="flex flex-col items-end gap-2">
-                                <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${
-                                    race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' :
-                                    race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' :
-                                    race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' :
-                                    'bg-emerald-100 text-emerald-700'
-                                }`}>
-                                    {race.type}
-                                </span>
-                                {race.rank && (
-                                    <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`}>
-                                        <Star className="w-2.5 h-2.5 fill-current" />
-                                        {race.rank}
+            {viewMode === 'list' ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredRaces.map((race) => (
+                        <div 
+                            key={race.id} 
+                            className={`group bg-white p-6 rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 flex flex-col ${
+                                selectedRaces.includes(race.id) 
+                                ? 'border-blue-500 ring-4 ring-blue-50 shadow-lg shadow-blue-100/50' 
+                                : 'border-white hover:border-blue-100 shadow-sm'
+                            }`}
+                        >
+                            <div className="flex justify-between items-start mb-5">
+                                <div className="flex flex-col gap-1">
+                                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full w-fit">
+                                        <Calendar className="w-3.5 h-3.5 text-blue-500" />
+                                        <span className="text-[11px] font-black text-slate-700">{race.date}</span>
                                     </div>
-                                )}
-                            </div>
-                        </div>
-                        
-                        {race.event && (
-                            <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">
-                                {race.event}
-                            </div>
-                        )}
-                        <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">
-                            {race.title}
-                        </h3>
-                        
-                        <div className="space-y-2 mb-6">
-                            <div className="flex items-start gap-2.5">
-                                <MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
-                                <div className="flex flex-col">
-                                    <p className="text-xs font-bold text-slate-500 leading-snug">
-                                        {race.location}
-                                    </p>
-                                    <span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
                                 </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                {race.distance && (
-                                    <div className="flex items-center gap-2">
-                                        <Bike className="w-4 h-4 text-slate-300 shrink-0" />
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span>
-                                    </div>
-                                )}
-                                {(() => {
-                                    const dist = calculateDistance(race.location);
-                                    return dist !== null && (
-                                        <div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50">
-                                            <Navigation className="w-3 h-3 text-blue-400" />
-                                            <span className="text-[10px] font-black text-blue-600 uppercase">~{dist} KM</span>
+                                <div className="flex flex-col items-end gap-2">
+                                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${
+                                        race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' :
+                                        race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' :
+                                        race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' :
+                                        'bg-emerald-100 text-emerald-700'
+                                    }`}>
+                                        {race.type}
+                                    </span>
+                                    {race.rank && (
+                                        <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`}>
+                                            <Star className="w-2.5 h-2.5 fill-current" />
+                                            {race.rank}
                                         </div>
-                                    );
-                                })()}
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {race.event && (
+                                <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">
+                                    {race.event}
+                                </div>
+                            )}
+                            <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">
+                                {race.title}
+                            </h3>
+                            
+                            <div className="space-y-2 mb-6">
+                                <div className="flex items-start gap-2.5">
+                                    <MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
+                                    <div className="flex flex-col">
+                                        <p className="text-xs font-bold text-slate-500 leading-snug">
+                                            {race.location}
+                                        </p>
+                                        <span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    {race.distance && (
+                                        <div className="flex items-center gap-2">
+                                            <Bike className="w-4 h-4 text-slate-300 shrink-0" />
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span>
+                                        </div>
+                                    )}
+                                    {(() => {
+                                        const dist = calculateDistance(race.location);
+                                        return dist !== null && (
+                                            <div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50">
+                                                <Navigation className="w-3 h-3 text-blue-400" />
+                                                <span className="text-[10px] font-black text-blue-600 uppercase">~{dist} KM</span>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
+                                {race.category ? (
+                                    <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider">
+                                        {race.category}
+                                    </span>
+                                ) : <div></div>}
+                                
+                                <button
+                                    onClick={() => toggleRace(race.id)}
+                                    className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+                                        selectedRaces.includes(race.id)
+                                        ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0'
+                                    }`}
+                                >
+                                    {selectedRaces.includes(race.id) ? (
+                                        <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</>
+                                    ) : (
+                                        <><Plus className="w-3.5 h-3.5" /> Aggiungi</>
+                                    )}
+                                </button>
                             </div>
                         </div>
-                        
-                        <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
-                            {race.category ? (
-                                <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider">
-                                    {race.category}
-                                </span>
-                            ) : <div></div>}
+                    ))}
+                </div>
+            ) : (
+                <div className="relative h-[600px] w-full">
+                    <MapContainer center={[41.8719, 12.5674]} zoom={6} scrollWheelZoom={false}>
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        />
+                        {filteredRaces.map(race => {
+                            const coords = getRaceCoords(race.location);
+                            if (!coords) return null;
                             
-                            <button
-                                onClick={() => toggleRace(race.id)}
-                                className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
-                                    selectedRaces.includes(race.id)
-                                    ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0'
-                                }`}
-                            >
-                                {selectedRaces.includes(race.id) ? (
-                                    <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</>
-                                ) : (
-                                    <><Plus className="w-3.5 h-3.5" /> Aggiungi</>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                            // Aggiungiamo un piccolo jitter casuale per non sovrapporre gare nella stessa provincia
+                            const jitterLat = (Math.random() - 0.5) * 0.1;
+                            const jitterLon = (Math.random() - 0.5) * 0.1;
+                            
+                            return (
+                                <Marker 
+                                    key={race.id} 
+                                    position={[coords[0] + jitterLat, coords[1] + jitterLon]}
+                                    icon={createCustomIcon(race.type, selectedRaces.includes(race.id))}
+                                >
+                                    <Popup>
+                                        <div className="p-1 min-w-[150px]">
+                                            <span className="text-[8px] font-black text-blue-500 uppercase">{race.date}</span>
+                                            <h4 className="text-xs font-bold text-slate-800 mb-1 leading-tight">{race.title}</h4>
+                                            <p className="text-[10px] text-slate-500 mb-3">{race.location}</p>
+                                            <button 
+                                                onClick={() => toggleRace(race.id)}
+                                                className={`w-full py-1.5 rounded-lg text-[9px] font-black uppercase transition-colors ${
+                                                    selectedRaces.includes(race.id) 
+                                                    ? 'bg-red-50 text-red-600' 
+                                                    : 'bg-blue-600 text-white'
+                                                }`}
+                                            >
+                                                {selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}
+                                            </button>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
+                    </MapContainer>
+                </div>
+            )}
             
             {filteredRaces.length === 0 && (
                 <div className="bg-white rounded-[3rem] p-24 text-center border-2 border-dashed border-slate-100">
