@@ -1,0 +1,7 @@
+playwright
+pytest-playwright
+beautifulsoup4
+requests
+lxml
+fastapi
+uvicorn

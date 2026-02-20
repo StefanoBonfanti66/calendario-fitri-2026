@@ -1,0 +1,40 @@
+name: Update Fitri Calendar 2026
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # Ogni notte alle 4:00 AM
+  workflow_dispatch: # Permette di lanciarlo manualmente da GitHub
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        playwright install chromium
+
+    - name: Run Scraper
+      run: python scraper_playwright.py
+
+    - name: Run Parser
+      run: python parse_gare_file.py
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add gare_2026.txt app/src/races_full.json
+        git commit -m "Update races database [skip ci]" || echo "No changes to commit"
+        git push
