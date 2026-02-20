@@ -1,41 +1,33 @@
-# FITRI 2026 Calendar Planner (Evolution)
+# 🏊‍♂️ FITRI 2026 Season Planner (Evolution)
 
-Questo progetto è pronto per essere pubblicato online su **Vercel** con aggiornamenti automatici tramite **GitHub Actions**.
+Una Web App professionale e ultra-veloce per la pianificazione della stagione agonistica di Triathlon, Duathlon e Multisport 2026.
 
-## 🚀 Come Pubblicare in 3 Semplici Passaggi
+## 🚀 Funzionalità Principali
 
-### 1. Carica su GitHub
-Dal tuo terminale (nella cartella del progetto):
-```powershell
-git init
-git add .
-git commit -m "Initial commit: Ready for Vercel"
-# Crea un nuovo repository su GitHub e collegalo:
-git remote add origin https://github.com/TUO_UTENTE/NOME_REPO.git
-git branch -M main
-git push -u origin main
-```
+- **🗺️ Mappa Interattiva**: Visualizza tutte le gare d'Italia su mappa. Marker colorati per sport e icone speciali per i tuoi obiettivi.
+- **🎯 Sistema di Priorità A-B-C**:
+  - **A (Gold)**: Obiettivi stagionali principali.
+  - **B (Blue)**: Gare di preparazione.
+  - **C (Grey)**: Allenamenti e test.
+- **💰 Budget Planner**: Inserisci i costi di iscrizione e ottieni una stima automatica dei costi di trasferta (carburante/pedaggi) basata sulla distanza da casa.
+- **📏 Calcolo Logistica**: Seleziona la tua provincia e scopri istantaneamente quanti KM dista ogni gara.
+- **🛡️ Sicurezza Atleta**: Avviso automatico se provi ad aggiungere gare con meno di 3 giorni di recupero tra loro.
+- **📅 Export Universale**: Esporta il tuo piano in formato `.ics` per sincronizzarlo con Google Calendar, Outlook o Apple Calendar.
+- **📱 PWA (Installabile)**: Aggiungi l'app alla home del tuo smartphone per usarla come un'app nativa, fluida e a tutto schermo.
 
-### 2. Collega a Vercel
-1. Vai su [vercel.com](https://vercel.com/) e fai il login con GitHub.
-2. Clicca su **"Add New Project"** e seleziona questo repository.
-3. **IMPORTANTE**: In "Root Directory", seleziona la cartella `app`.
-4. Clicca su **"Deploy"**.
+## ⚙️ Automazione Dati
 
-### 3. Attiva l'Automazione Notturna (GitHub)
-Il sistema è già configurato per aggiornarsi ogni notte alle 04:00. 
-Se vuoi testarlo subito su GitHub:
-1. Vai nella scheda **"Actions"** del tuo repository su GitHub.
-2. Seleziona **"Update Fitri Calendar 2026"**.
-3. Clicca su **"Run workflow"**.
+L'app è "viva". Ogni notte alle **04:00 AM**, una **GitHub Action** esegue automaticamente:
+1. Lo script `scraper_playwright.py` per cercare nuove gare sul sito ufficiale FITRI.
+2. Il parser per aggiornare il database `races_full.json`.
+3. Il deploy automatico su Vercel.
+
+## 🛠️ Note Tecniche
+
+- **Frontend**: React 19 + Vite + Tailwind CSS.
+- **Mappe**: Leaflet.js con ottimizzazione INP (Interaction to Next Paint) per fluidità massima.
+- **Backend/Scraping**: Python 3.10 + Playwright (Headless Chromium).
+- **Hosting**: Vercel.
 
 ---
-
-## 🛠️ Funzionalità Integrate
-- ✅ **Aggiornamento Automatico**: GitHub Actions lancia Playwright ogni notte per scaricare i nuovi dati dal sito FITRI.
-- ✅ **Calcolo Distanza**: Selezionando la tua provincia, l'app calcola i KM per ogni gara.
-- ✅ **Export Calendario**: Pulsante per generare il file `.ics` universale per Google/Outlook/Apple.
-- ✅ **Sicurezza Atleta**: Avviso automatico se scegli gare con meno di 3 giorni di recupero.
-- ✅ **Filtri Avanzati**: Filtra per regione, sport o distanza.
-
-**Nota:** Il sistema usa GitHub Actions (gratuito) per gestire lo scraping pesante, così Vercel rimane leggero e veloce sia su cellulare che su PC.
+*Sviluppato per Stefano Bonfanti - Stagione Agonistica 2026*
