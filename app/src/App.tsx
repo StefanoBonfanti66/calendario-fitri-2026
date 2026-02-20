@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useTransition, useCallback } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
-  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List
+  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X
 } from "lucide-react";
 import racesData from "./races_full.json";
 import { provinceCoordinates } from "./coords";
@@ -22,9 +22,9 @@ interface Race {
   rank: string;
   category: string;
   mapCoords?: [number, number];
+  distanceFromHome?: number | null;
 }
 
-// Componente Card separato e memoizzato per evitare re-render inutili (Fix INP)
 const RaceCard = React.memo(({ 
     race, 
     isSelected, 
@@ -33,7 +33,6 @@ const RaceCard = React.memo(({
     onToggle, 
     onPriority, 
     onCost,
-    distanceFromHome,
     getRankColor 
 }: { 
     race: Race, 
@@ -43,7 +42,6 @@ const RaceCard = React.memo(({
     onToggle: (id: string) => void,
     onPriority: (id: string, p: string) => void,
     onCost: (id: string, c: number) => void,
-    distanceFromHome: number | null,
     getRankColor: (r: string) => string
 }) => {
     return (
@@ -105,10 +103,10 @@ const RaceCard = React.memo(({
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span>
                         </div>
                     )}
-                    {distanceFromHome !== null && (
+                    {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (
                         <div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50">
                             <Navigation className="w-3 h-3 text-blue-400" />
-                            <span className="text-[10px] font-black text-blue-600 uppercase">~{distanceFromHome} KM</span>
+                            <span className="text-[10px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span>
                         </div>
                     )}
                 </div>
@@ -189,10 +187,28 @@ const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
   const [raceCosts, setRaceCosts] = useState<Record<string, number>>({});
+  const [pendingConfirmId, setPendingConfirmId] = useState<string | null>(null);
 
+  // Helper per calcolo distanza (memoizzato internamente)
+  const getDistance = useCallback((targetLocation: string, home: string) => {
+    if (!home) return null;
+    const provinceMatch = targetLocation.match(/\((.*?)\)/);
+    const targetProvince = provinceMatch ? provinceMatch[1] : targetLocation;
+    const startCoords = provinceCoordinates[home];
+    const endCoords = provinceCoordinates[targetProvince];
+    if (!startCoords || !endCoords) return null;
+    const R = 6371;
+    const dLat = (endCoords[0] - startCoords[0]) * Math.PI / 180;
+    const dLon = (endCoords[1] - startCoords[1]) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(startCoords[0] * Math.PI / 180) * Math.cos(endCoords[0] * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return Math.round(R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))) * 1.2);
+  }, []);
+
+  // Pre-processamento ultra-ottimizzato delle gare
   const races = useMemo(() => {
     const source = racesState.length > 0 ? racesState : (racesData as Race[]);
     return source.map(race => {
+      // 1. Coordinate e Jitter
       const cityName = race.location.split('(')[0].trim();
       let coords = provinceCoordinates[cityName];
       if (!coords) {
@@ -200,15 +216,19 @@ const App: React.FC = () => {
         const province = provinceMatch ? provinceMatch[1] : race.location;
         coords = provinceCoordinates[province];
       }
+      
+      let mapCoords: [number, number] | undefined = undefined;
       if (coords) {
         const num = parseInt(race.id) || 0;
-        const latJitter = ((num % 10) - 5) * 0.005;
-        const lonJitter = (((num * 7) % 10) - 5) * 0.005;
-        return { ...race, mapCoords: [coords[0] + latJitter, coords[1] + lonJitter] as [number, number] };
+        mapCoords = [coords[0] + (((num % 10) - 5) * 0.005), coords[1] + ((((num * 7) % 10) - 5) * 0.005)];
       }
-      return race;
+
+      // 2. Distanza da casa
+      const dist = getDistance(race.location, homeCity);
+
+      return { ...race, mapCoords, distanceFromHome: dist };
     });
-  }, [racesState]);
+  }, [racesState, homeCity, getDistance]);
 
   const iconCache = useMemo(() => {
     const cache: Record<string, L.DivIcon> = {};
@@ -241,21 +261,6 @@ const App: React.FC = () => {
     const key = `${type.includes('Winter') ? 'Winter' : type}-${priority === 'A' ? 'A' : 'undefined'}-${isSelected}`;
     return iconCache[key] || iconCache['Triathlon-undefined-false'];
   };
-
-  const calculateDistance = useCallback((targetLocation: string) => {
-    if (!homeCity) return null;
-    const provinceMatch = targetLocation.match(/\((.*?)\)/);
-    const targetProvince = provinceMatch ? provinceMatch[1] : targetLocation;
-    const startCoords = provinceCoordinates[homeCity];
-    const endCoords = provinceCoordinates[targetProvince];
-    if (!startCoords || !endCoords) return null;
-    const R = 6371;
-    const dLat = (endCoords[0] - startCoords[0]) * Math.PI / 180;
-    const dLon = (endCoords[1] - startCoords[1]) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(startCoords[0] * Math.PI / 180) * Math.cos(endCoords[0] * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return Math.round(R * c * 1.2);
-  }, [homeCity]);
 
   const handleViewChange = (mode: 'list' | 'map') => {
     startTransition(() => setViewMode(mode));
@@ -299,11 +304,16 @@ const App: React.FC = () => {
     const registration = selectedData.reduce((acc, r) => acc + (raceCosts[r.id] || 0), 0);
     let travel = 0;
     selectedData.forEach(r => {
-        const dist = calculateDistance(r.location);
-        if (dist) travel += (dist * 2) * 0.25;
+        if (r.distanceFromHome) travel += (r.distanceFromHome * 2) * 0.25;
     });
     return { registration, travel, total: registration + travel };
-  }, [selectedRaces, raceCosts, calculateDistance, races]);
+  }, [selectedRaces, raceCosts, races]);
+
+  const addRaceFinal = useCallback((id: string) => {
+    setSelectedRaces((prev) => [...prev, id]);
+    setRacePriorities(prev => ({ ...prev, [id]: 'C' }));
+    setPendingConfirmId(null);
+  }, []);
 
   const toggleRace = useCallback((id: string) => {
     if (selectedRaces.includes(id)) {
@@ -315,6 +325,7 @@ const App: React.FC = () => {
       });
       return;
     }
+    
     const newRace = races.find(r => r.id === id);
     if (newRace) {
       const [nd, nm, ny] = newRace.date.split("-");
@@ -327,15 +338,14 @@ const App: React.FC = () => {
           const diffDays = Math.ceil(Math.abs(newDate.getTime() - existingDate.getTime()) / (1000 * 3600 * 24));
           return diffDays < 3;
         });
+      
       if (tooClose) {
-        if (!window.confirm("Attenzione: gara vicina ad un'altra. Aggiungere comunque?")) return;
+        setPendingConfirmId(id); // Attiva il modale grafico non bloccante
+        return;
       }
     }
-    startTransition(() => {
-        setSelectedRaces((prev) => [...prev, id]);
-        setRacePriorities(prev => ({ ...prev, [id]: 'C' }));
-    });
-  }, [selectedRaces, races]);
+    addRaceFinal(id);
+  }, [selectedRaces, races, addRaceFinal]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -590,15 +600,12 @@ const App: React.FC = () => {
                                 </div>
                             )}
                             <h4 className="text-xs font-bold text-slate-700 leading-tight group-hover:text-blue-600 transition-colors">{race.title}</h4>
-                            {(() => {
-                                const dist = calculateDistance(race.location);
-                                return dist !== null && (
-                                    <div className="flex items-center gap-1.5 mt-1">
-                                        <Navigation className="w-2.5 h-2.5 text-blue-400" />
-                                        <span className="text-[9px] font-black text-blue-600 uppercase">~{dist} KM</span>
-                                    </div>
-                                );
-                            })()}
+                            {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (
+                                <div className="flex items-center gap-1.5 mt-1">
+                                    <Navigation className="w-2.5 h-2.5 text-blue-400" />
+                                    <span className="text-[9px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span>
+                                </div>
+                            )}
                         </div>
                         <button onClick={() => toggleRace(race.id)} className="text-slate-200 hover:text-red-500 transition-colors">
                             <Trash2 className="w-4 h-4" />
@@ -641,13 +648,13 @@ const App: React.FC = () => {
                                 <span>€ {budgetTotals.total.toFixed(2)}</span>
                             </div>
                         </div>
-                                        </div>
-                                    )}
-                                </div>
-                              </div>
-                            </div>
-                    
-                            <div className="lg:col-span-8 space-y-4">            <div className="flex items-center justify-between mb-4 px-2">
+                    </div>
+                )}
+          </div>
+        </div>
+
+        <div className="lg:col-span-8 space-y-4">
+            <div className="flex items-center justify-between mb-4 px-2">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     Risultati: <b>{filteredRaces.length}</b> gare trovate
                 </span>
@@ -681,7 +688,6 @@ const App: React.FC = () => {
                             onToggle={toggleRace}
                             onPriority={setPriority}
                             onCost={updateCost}
-                            distanceFromHome={calculateDistance(race.location)}
                             getRankColor={getRankColor}
                         />
                     ))}
@@ -736,6 +742,36 @@ const App: React.FC = () => {
             )}
         </div>
       </main>
+
+      {/* Modal di Conferma Non-Bloccante (Fix INP) */}
+      {pendingConfirmId && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl border border-slate-100 scale-in-center animate-in zoom-in-95 duration-200">
+                  <div className="bg-orange-50 w-16 h-16 rounded-3xl flex items-center justify-center mb-6">
+                      <AlertTriangle className="w-8 h-8 text-orange-500" />
+                  </div>
+                  <h3 className="text-xl font-black text-slate-800 mb-3 uppercase tracking-tight">Recupero Insufficiente</h3>
+                  <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">
+                      Questa gara dista <b>meno di 3 giorni</b> da un'altra già presente nel tuo piano. 
+                      Sei sicuro di volerla aggiungere comunque alla tua stagione?
+                  </p>
+                  <div className="flex gap-3">
+                      <button 
+                        onClick={() => setPendingConfirmId(null)}
+                        className="flex-1 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-400 bg-slate-50 hover:bg-slate-100 transition-colors"
+                      >
+                          Annulla
+                      </button>
+                      <button 
+                        onClick={() => addRaceFinal(pendingConfirmId)}
+                        className="flex-1 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+                      >
+                          Conferma
+                      </button>
+                  </div>
+              </div>
+          </div>
+      )}
       
       <footer className="max-w-7xl mx-auto px-4 py-12 text-center">
           <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.4em]">
