@@ -611,31 +611,31 @@ const App: React.FC = () => {
                                     ) : <div></div>}
                                     
                                     {selectedRaces.includes(race.id) && (
-                                        <div className="flex flex-col gap-2">
+                                        <div className="flex items-center gap-2">
                                             <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit">
                                                 {['A', 'B', 'C'].map(p => (
                                                     <button
                                                         key={p}
-                                                        onClick={() => setPriority(race.id, p)}
+                                                        onClick={(e) => { e.stopPropagation(); setPriority(race.id, p); }}
                                                         className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
                                                             racePriorities[race.id] === p
                                                             ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
                                                             : 'text-slate-400 hover:bg-white'
                                                         }`}
-                                                        title={p === 'A' ? 'Obiettivo Stagionale' : p === 'B' ? 'Preparazione' : 'Allenamento'}
                                                     >
                                                         {p}
                                                     </button>
                                                 ))}
                                             </div>
-                                            <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit">
-                                                <span className="text-[9px] font-black text-slate-400">€</span>
+                                            <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit h-9">
+                                                <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
                                                 <input 
                                                     type="number" 
-                                                    placeholder="Costo"
-                                                    className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-12"
+                                                    placeholder="0"
+                                                    className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center"
                                                     value={raceCosts[race.id] || ''}
                                                     onChange={(e) => updateCost(race.id, parseFloat(e.target.value) || 0)}
+                                                    onClick={(e) => e.stopPropagation()}
                                                 />
                                             </div>
                                         </div>
