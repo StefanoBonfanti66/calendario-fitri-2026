@@ -405,6 +405,40 @@ const App: React.FC = () => {
     document.body.removeChild(link);
   };
 
+  const exportToCSV = () => {
+    const selectedData = races.filter(r => selectedRaces.includes(r.id));
+    if (selectedData.length === 0) return;
+
+    // Intestazioni Excel
+    const headers = ["Data", "Evento", "Specialità", "Località", "Regione", "Sport", "Distanza", "Priorità", "Costo Iscrizione (€)", "Km da Casa"];
+    
+    const rows = selectedData.map(race => {
+        const dist = calculateDistance(race.location);
+        return [
+            race.date,
+            `"${(race.event || '').replace(/"/g, '""')}"`,
+            `"${race.title.replace(/"/g, '""')}"`,
+            `"${race.location.replace(/"/g, '""')}"`,
+            race.region,
+            race.type,
+            race.distance,
+            racePriorities[race.id] || 'C',
+            raceCosts[race.id] || 0,
+            dist ? `~${dist}` : 'N/A'
+        ];
+    });
+
+    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }); // \ufeff per supporto accenti in Excel
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "piano_gare_mtt_2026.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const filteredRaces = useMemo(() => {
     return races.filter((race) => {
         const matchesSearch = (race.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || (race.location?.toLowerCase() || "").includes(searchTerm.toLowerCase());
@@ -464,6 +498,13 @@ const App: React.FC = () => {
                 className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-blue-600 rounded-2xl hover:bg-blue-50 transition-all text-sm font-bold disabled:opacity-50"
             >
               <Calendar className="w-4 h-4" /> Calendario (.ics)
+            </button>
+            <button 
+                onClick={exportToCSV}
+                disabled={selectedRaces.length === 0}
+                className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-emerald-600 rounded-2xl hover:bg-emerald-50 transition-all text-sm font-bold disabled:opacity-50"
+            >
+              <Download className="w-4 h-4" /> Excel (.csv)
             </button>
             <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold cursor-pointer shadow-xl shadow-slate-200">
               <Upload className="w-4 h-4" /> Importa
