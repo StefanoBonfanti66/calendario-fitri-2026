@@ -612,7 +612,7 @@ const App: React.FC = () => {
                                     
                                     {selectedRaces.includes(race.id) && (
                                         <div className="flex items-center gap-2">
-                                            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit">
+                                            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit relative group/legend">
                                                 {['A', 'B', 'C'].map(p => (
                                                     <button
                                                         key={p}
@@ -626,6 +626,12 @@ const App: React.FC = () => {
                                                         {p}
                                                     </button>
                                                 ))}
+                                                {/* Legenda a comparsa */}
+                                                <div className="absolute bottom-full left-0 mb-2 w-48 p-3 bg-slate-900 text-white text-[9px] rounded-xl opacity-0 invisible group-hover/legend:opacity-100 group-hover/legend:visible transition-all z-50 shadow-xl border border-white/10">
+                                                    <p className="mb-1.5"><b className="text-yellow-400">A: OBIETTIVO</b> - Gara principale, scarico totale.</p>
+                                                    <p className="mb-1.5"><b className="text-blue-400">B: PREPARAZIONE</b> - Test di forma, scarico parziale.</p>
+                                                    <p><b>C: ALLENAMENTO</b> - Gara test senza scarico.</p>
+                                                </div>
                                             </div>
                                             <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit h-9">
                                                 <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
