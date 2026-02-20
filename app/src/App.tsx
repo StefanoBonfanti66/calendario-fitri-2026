@@ -495,16 +495,16 @@ const App: React.FC = () => {
             <button 
                 onClick={exportToICS}
                 disabled={selectedRaces.length === 0}
-                className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-blue-600 rounded-2xl hover:bg-blue-50 transition-all text-sm font-bold disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl hover:bg-blue-100 transition-all text-sm font-bold disabled:opacity-50 disabled:bg-white disabled:border-slate-200 disabled:text-slate-400"
             >
-              <Calendar className="w-4 h-4" /> Calendario (.ics)
+              <Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario (.ics)</span>
             </button>
             <button 
                 onClick={exportToCSV}
                 disabled={selectedRaces.length === 0}
-                className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-emerald-600 rounded-2xl hover:bg-emerald-50 transition-all text-sm font-bold disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl hover:bg-emerald-100 transition-all text-sm font-bold disabled:opacity-50 disabled:bg-white disabled:border-slate-200 disabled:text-slate-400"
             >
-              <Download className="w-4 h-4" /> Excel (.csv)
+              <Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel (.csv)</span>
             </button>
             <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold cursor-pointer shadow-xl shadow-slate-200">
               <Upload className="w-4 h-4" /> Importa
