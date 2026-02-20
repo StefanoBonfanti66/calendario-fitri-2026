@@ -628,6 +628,7 @@ const App: React.FC = () => {
                     ))}
                 </div>
                 )}
+            </div>
 
                 {selectedRaces.length > 0 && (
                     <div className="mt-6 pt-6 border-t border-slate-100 space-y-3">
