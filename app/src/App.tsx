@@ -107,6 +107,9 @@ const App: React.FC = () => {
     return ["Tutte", ...Array.from(d).sort()];
   }, [races]);
 
+  const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
+  const [raceCosts, setRaceCosts] = useState<Record<string, number>>({});
+
   useEffect(() => {
     const saved = localStorage.getItem("selected_races");
     if (saved) {
@@ -120,16 +123,38 @@ const App: React.FC = () => {
             setRacePriorities(JSON.parse(savedPriorities));
         } catch (e) { console.error(e); }
     }
+    const savedCosts = localStorage.getItem("race_costs");
+    if (savedCosts) {
+        try {
+            setRaceCosts(JSON.parse(savedCosts));
+        } catch (e) { console.error(e); }
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("selected_races", JSON.stringify(selectedRaces));
     localStorage.setItem("race_priorities", JSON.stringify(racePriorities));
-  }, [selectedRaces, racePriorities]);
+    localStorage.setItem("race_costs", JSON.stringify(raceCosts));
+  }, [selectedRaces, racePriorities, raceCosts]);
 
   const setPriority = (id: string, p: string) => {
     setRacePriorities(prev => ({ ...prev, [id]: p }));
   };
+
+  const updateCost = (id: string, cost: number) => {
+    setRaceCosts(prev => ({ ...prev, [id]: cost }));
+  };
+
+  const budgetTotals = useMemo(() => {
+    const selectedData = races.filter(r => selectedRaces.includes(r.id));
+    const registration = Object.values(raceCosts).reduce((a, b) => a + b, 0);
+    let travel = 0;
+    selectedData.forEach(r => {
+        const dist = calculateDistance(r.location);
+        if (dist) travel += (dist * 2) * 0.25; // 0.25€ al km (andata e ritorno)
+    });
+    return { registration, travel, total: registration + travel };
+  }, [selectedRaces, raceCosts, homeCity]);
 
   const toggleRace = (id: string) => {
     if (selectedRaces.includes(id)) {
@@ -469,6 +494,29 @@ const App: React.FC = () => {
                 </div>
                 )}
             </div>
+
+            {/* Budget Summary */}
+            {selectedRaces.length > 0 && (
+                <div className="mt-6 pt-6 border-t border-slate-100 space-y-3">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <Trophy className="w-3 h-3 text-emerald-500" /> Budget Stimato
+                    </h3>
+                    <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50 space-y-2">
+                        <div className="flex justify-between text-xs font-bold text-slate-600">
+                            <span>Iscrizioni</span>
+                            <span>€ {budgetTotals.registration.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-xs font-bold text-slate-600">
+                            <span>Viaggio (stima)</span>
+                            <span>€ {budgetTotals.travel.toFixed(2)}</span>
+                        </div>
+                        <div className="pt-2 border-t border-emerald-100 flex justify-between text-sm font-black text-emerald-700">
+                            <span>TOTALE</span>
+                            <span>€ {budgetTotals.total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
           </div>
         </div>
 
@@ -577,25 +625,36 @@ const App: React.FC = () => {
                                                                 </span>
                                                             ) : <div></div>}
                                                             
-                                                            {selectedRaces.includes(race.id) && (
-                                                                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
-                                                                    {['A', 'B', 'C'].map(p => (
-                                                                        <button
-                                                                            key={p}
-                                                                            onClick={() => setPriority(race.id, p)}
-                                                                            className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
-                                                                                racePriorities[race.id] === p
-                                                                                ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
-                                                                                : 'text-slate-400 hover:bg-white'
-                                                                            }`}
-                                                                            title={p === 'A' ? 'Obiettivo Stagionale' : p === 'B' ? 'Preparazione' : 'Allenamento'}
-                                                                        >
-                                                                            {p}
-                                                                        </button>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-                                                        </div>                                
+                                                                                            {selectedRaces.includes(race.id) && (
+                                                                                                <div className="flex flex-col gap-2">
+                                                                                                    <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit">
+                                                                                                        {['A', 'B', 'C'].map(p => (
+                                                                                                            <button
+                                                                                                                key={p}
+                                                                                                                onClick={() => setPriority(race.id, p)}
+                                                                                                                className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
+                                                                                                                    racePriorities[race.id] === p
+                                                                                                                    ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
+                                                                                                                    : 'text-slate-400 hover:bg-white'
+                                                                                                                }`}
+                                                                                                                title={p === 'A' ? 'Obiettivo Stagionale' : p === 'B' ? 'Preparazione' : 'Allenamento'}
+                                                                                                            >
+                                                                                                                {p}
+                                                                                                            </button>
+                                                                                                        ))}
+                                                                                                    </div>
+                                                                                                    <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit">
+                                                                                                        <span className="text-[9px] font-black text-slate-400">€</span>
+                                                                                                        <input 
+                                                                                                            type="number" 
+                                                                                                            placeholder="Costo"
+                                                                                                            className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-12"
+                                                                                                            value={raceCosts[race.id] || ''}
+                                                                                                            onChange={(e) => updateCost(race.id, parseFloat(e.target.value) || 0)}
+                                                                                                        />
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            )}                                                        </div>                                
                                 <button
                                     onClick={() => toggleRace(race.id)}
                                     className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
