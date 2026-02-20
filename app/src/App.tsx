@@ -499,14 +499,14 @@ const App: React.FC = () => {
                                 <span>TOTALE</span>
                                 <span>€ {budgetTotals.total.toFixed(2)}</span>
                             </div>
-                        </div>
-                    </div>
-                )}
-          </div>
-        </div>
-
-        <div className="lg:col-span-8 space-y-4">
-            <div className="flex items-center justify-between mb-4 px-2">
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                  </div>
+                                </div>
+                        
+                                <div className="lg:col-span-8 space-y-4">            <div className="flex items-center justify-between mb-4 px-2">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     Risultati: <b>{filteredRaces.length}</b> gare trovate
                 </span>
