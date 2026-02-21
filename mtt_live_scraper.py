@@ -21,8 +21,7 @@ def run():
             output = []
             for item in data:
                 if "2026" in item:
-                    lines = [l.strip() for l in item.split("
-") if l.strip()]
+                    lines = [l.strip() for l in item.split("\n") if l.strip()]
                     if len(lines) >= 3:
                         output.append(f"{lines[0]} | {lines[1]} | {lines[-1]}")
             
