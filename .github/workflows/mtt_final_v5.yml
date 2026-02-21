@@ -1,4 +1,4 @@
-name: MTT LIVE UPDATE
+name: MTT SEASON UPDATE V5
 
 on:
   schedule:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  update:
+  update-races:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -22,22 +22,27 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install Playwright
+    - name: Install
       run: |
         pip install playwright
         npx playwright install --with-deps chromium
 
-    - name: Run Scraper
+    - name: Scrape
       run: python mtt_live_scraper.py
 
-    - name: Commit and Push
+    - name: Push Data
       run: |
-        git config --local user.name "GitHub Action"
-        git config --local user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+        # Scarichiamo eventuali cambiamenti remoti per essere allineati al 100%
+        git fetch origin main
+        git checkout main
+        git pull origin main --rebase
+        
         git add gare_fitri_2026.txt
         if ! git diff --cached --quiet gare_fitri_2026.txt; then
-          git commit -m "MTT Data Update [skip ci]"
-          git push origin HEAD:main --force
+          git commit -m "Update races data [skip ci]"
+          git push origin main
         else
-          echo "Nessuna modifica rilevata."
+          echo "Nessun nuovo dato."
         fi
