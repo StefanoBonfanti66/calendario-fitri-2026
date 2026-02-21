@@ -1,78 +1,73 @@
-import requests
-import json
+import time
+import sys
+from playwright.sync_api import sync_playwright
 
 def run():
-    print("MTT_API_SCRAPER_STARTING_V7")
-    year = "2026"
-    
-    # URL dell'API interna di MyFITri che restituisce tutti i dati Nuxt
-    # MyFITri usa spesso un sistema di payload JSON. Proviamo l'endpoint diretto.
-    url = "https://www.myfitri.it/calendario"
-    
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
-    }
-
-    try:
-        print("Scaricamento dati sorgente...")
-        r = requests.get(url, headers=headers, timeout=30)
-        
-        # Cerchiamo i dati Nuxt nel codice HTML (sono più completi dei 6 visibili)
-        # Il pattern è: "data":[...] o simile
-        content = r.text
-        
-        # Estraiamo tutte le date del 2026 per trovare i blocchi
-        dates = re.findall(r'\d{2}-\d{2}-2026', content)
-        print(f"Date 2026 trovate nel codice: {len(dates)}")
-
-        # Strategia: usiamo la tecnica di estrazione stringhe dal payload Nuxt
-        # Cerchiamo la lista piatta di stringhe nel tag __NUXT_DATA__
-        import re
-        script_match = re.search(r'<script id="__NUXT_DATA__".*?>(.*?)</script>', content, re.DOTALL)
-        
-        output = []
-        if script_match:
-            data = json.loads(script_match.group(1))
-            print(f"Payload Nuxt trovato: {len(data)} elementi.")
+    print("🚀 MTT_LIVE_SCRAPER_V8_UNLOCKING_FULL_YEAR")
+    with sync_playwright() as p:
+        try:
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+            page = context.new_page()
             
-            current_event = ""
-            current_loc = ""
-            
-            for item in data:
-                if not isinstance(item, str): continue
-                
-                # Riconoscimento Titolo (Tutto maiuscolo, lungo)
-                if item.isupper() and len(item) > 12 and not any(x in item for x in ["GEN", "FEB", "MAR", "APR", "MAG", "GIU", "LUG", "AGO", "SET", "OTT", "NOV", "DIC"]):
-                    current_event = item
-                    continue
-                
-                # Riconoscimento Data/Località
-                if "2026" in item and len(item) > 15 and "|" in item:
-                    current_loc = item
-                    continue
-                
-                # Riconoscimento Specialità
-                if any(x in item.upper() for x in ["TRIATHLON", "DUATHLON", "AQUATHLON", "CROSS"]):
-                    if current_event and current_loc:
-                        output.append(f"{current_event} | {current_loc} | {item}")
+            print("🔗 Connessione a MyFITri...")
+            page.goto("https://www.myfitri.it/calendario", wait_until="networkidle", timeout=90000)
+            time.sleep(10)
 
-        output = list(dict.fromkeys(output))
-        
-        if output:
-            with open("gare_fitri_2026.txt", "w", encoding="utf-8") as f:
-                for line in output:
-                    f.write(line + "\n")
-            print(f"DONE_API_FOUND_{len(output)}")
-        else:
-            print("FALLBACK_ESTRAZIONE_TESTUALE")
-            # Ultima spiaggia: regex sul testo totale
-            lines = re.findall(r'([A-Z\s]{10,}.*?\d{2}-\d{2}-2026.*?\|.*?\|.*?[A-Za-z\s]{5,})', content)
-            with open("gare_fitri_2026.txt", "w", encoding="utf-8") as f:
-                f.write("\n".join(lines))
+            # RIMOZIONE FILTRO MESE (La tua intuizione!)
+            print("🧹 Rimozione filtri attivi (chiusura 'X' del mese)...")
+            page.evaluate("""() => {
+                // Cerca tutti i chip dei filtri attivi (spesso hanno una classe 'v-chip' o simili)
+                // e clicca sulla 'X' (v-chip__close o icona di chiusura)
+                const closeButtons = document.querySelectorAll('.v-chip__close, .v-icon--link, button[aria-label*="close"]');
+                closeButtons.forEach(btn => btn.click());
+                
+                // Se non bastasse, cerchiamo il tab TUTTI
+                const tabs = Array.from(document.querySelectorAll('div, span, a'));
+                const tutti = tabs.find(el => el.innerText && el.innerText.trim().toUpperCase() === 'TUTTI');
+                if (tutti) tutti.click();
+            }""")
+            time.sleep(5)
 
-    except Exception as e:
-        print(f"ERROR: {str(e)}")
+            # SCROLLING per caricare la lista ora sbloccata
+            print("🖱️ Scorrimento per caricare tutta la stagione...")
+            page.evaluate("""async () => {
+                for (let i = 0; i < 20; i++) {
+                    window.scrollBy(0, 3000);
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }""")
+            time.sleep(2)
+
+            # ESTRAZIONE DATI
+            print("📊 Estrazione gare in corso...")
+            results = page.evaluate("""() => {
+                const data = [];
+                const cards = document.querySelectorAll('.v-card, .event-card');
+                cards.forEach(card => {
+                    const text = card.innerText || "";
+                    if (text.includes('2026') && text.length > 60) {
+                        const parts = text.split('\\n').map(l => l.trim()).filter(l => l.length > 1);
+                        if (parts.length >= 3) {
+                            data.push(`${parts[0]} | ${parts[1]} | ${parts[parts.length-1]}`);
+                        }
+                    }
+                });
+                return [...new Set(data)];
+            }""")
+
+            if results:
+                with open("gare_fitri_2026.txt", "w", encoding="utf-8") as f:
+                    for line in results:
+                        f.write(line + "\\n")
+                print(f"✅ SUCCESSO: Trovate {len(results)} gare per l'intera stagione!")
+            else:
+                print("❌ Nessuna gara trovata. Verificare selettori.")
+
+            browser.close()
+        except Exception as e:
+            print(f"⚠️ Errore critico: {e}")
+            sys.exit(0)
 
 if __name__ == "__main__":
     run()
