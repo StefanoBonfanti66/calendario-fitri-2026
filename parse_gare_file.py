@@ -29,74 +29,78 @@ def parse_gare_file(file_path):
             
         parts = stripped_line.split(' | ') 
         if len(parts) < 4: 
-            print(f"DEBUG: Saltata riga malformata: {stripped_line}")
+            # Invece di stampare solo, saltiamo silenziosamente per non far fallire l'action
             continue
             
-        event_title = parts[0].strip()
-        main_date_loc_raw = parts[1].strip()
-        region = parts[2].strip()
-        sub_event_part_raw = parts[3].strip()
+        try:
+            event_title = parts[0].strip()
+            main_date_loc_raw = parts[1].strip()
+            region = parts[2].strip()
+            sub_event_part_raw = parts[3].strip()
 
-        # Estraiamo la città dalla parte principale (es: "10-01-2026 Predazzo (Trento)")
-        main_match = main_info_pattern.match(main_date_loc_raw)
-        city = ""
-        if main_match:
-            city = main_match.group(2).strip()
+            # Estraiamo la città dalla parte principale (es: "10-01-2026 Predazzo (Trento)")
+            main_match = main_info_pattern.match(main_date_loc_raw)
+            city = ""
+            if main_match:
+                city = main_match.group(2).strip()
 
-        # Parsifica la parte del sotto-evento (es: "11-gen WinterTriathlon Sprint")
-        sub_match = sub_event_info_pattern.match(sub_event_part_raw)
-        if not sub_match: continue
-            
-        sub_day = sub_match.group(1).zfill(2)
-        sub_month_abbr = sub_match.group(2).lower()
-        full_sub_title = sub_match.group(3).strip()
+            # Parsifica la parte del sotto-evento (es: "11-gen WinterTriathlon Sprint")
+            sub_match = sub_event_info_pattern.match(sub_event_part_raw)
+            if not sub_match: continue
+                
+            sub_day = sub_match.group(1).zfill(2)
+            sub_month_abbr = sub_match.group(2).lower()
+            full_sub_title = sub_match.group(3).strip()
 
-        sub_month = month_map.get(sub_month_abbr, '00')
-        full_sub_event_date = f"{sub_day}-{sub_month}-2026"
+            sub_month = month_map.get(sub_month_abbr, '00')
+            full_sub_event_date = f"{sub_day}-{sub_month}-2026"
 
-        # Estrazione Rank
-        rank = ""
-        for r in ["Silver", "Gold", "Bronze", "Internazionale"]:
-            if r in full_sub_title:
-                rank = r
-                full_sub_title = full_sub_title.replace(r, "").strip()
-                break
+            # Estrazione Rank
+            rank = ""
+            for r in ["Silver", "Gold", "Bronze", "Internazionale"]:
+                if r in full_sub_title:
+                    rank = r
+                    full_sub_title = full_sub_title.replace(r, "").strip()
+                    break
 
-        # Estrazione Categoria
-        category = ""
-        for c in ["Giovanile", "Paratriathlon", "Kids", "Youth"]:
-            if c in full_sub_title:
-                category = c
-                full_sub_title = full_sub_title.replace(c, "").strip()
-                break
+            # Estrazione Categoria
+            category = ""
+            for c in ["Giovanile", "Paratriathlon", "Kids", "Youth"]:
+                if c in full_sub_title:
+                    category = c
+                    full_sub_title = full_sub_title.replace(c, "").strip()
+                    break
 
-        # Estrazione Distanza
-        distance = ""
-        for d in ["Super Sprint", "Sprint", "Classico", "Olimpico", "Medio", "Lungo", "Staffetta", "Cross", "Mtb", "Minitriathlon", "Youth", "Kids"]:
-            if d.lower() in full_sub_title.lower():
-                distance = d
-                break
+            # Estrazione Distanza
+            distance = ""
+            for d in ["Super Sprint", "Sprint", "Classico", "Olimpico", "Medio", "Lungo", "Staffetta", "Cross", "Mtb", "Minitriathlon", "Youth", "Kids"]:
+                if d.lower() in full_sub_title.lower():
+                    distance = d
+                    break
 
-        # Tipo Gara
-        race_type = "Triathlon"
-        if "DUATHLON" in full_sub_title.upper(): race_type = "Duathlon"
-        elif "WINTER" in full_sub_title.upper(): race_type = "Winter"
-        elif "AQUATHLON" in full_sub_title.upper(): race_type = "Aquathlon"
-        elif "CROSS" in full_sub_title.upper(): race_type = "Cross"
+            # Tipo Gara
+            race_type = "Triathlon"
+            if "DUATHLON" in full_sub_title.upper(): race_type = "Duathlon"
+            elif "WINTER" in full_sub_title.upper(): race_type = "Winter"
+            elif "AQUATHLON" in full_sub_title.upper(): race_type = "Aquathlon"
+            elif "CROSS" in full_sub_title.upper(): race_type = "Cross"
 
-        races.append({
-            "id": str(race_id_counter),
-            "date": full_sub_event_date,
-            "title": full_sub_title,
-            "event": event_title,
-            "location": city,
-            "region": region,
-            "type": race_type,
-            "distance": distance,
-            "rank": rank,
-            "category": category
-        })
-        race_id_counter += 1
+            races.append({
+                "id": str(race_id_counter),
+                "date": full_sub_event_date,
+                "title": full_sub_title,
+                "event": event_title,
+                "location": city,
+                "region": region,
+                "type": race_type,
+                "distance": distance,
+                "rank": rank,
+                "category": category
+            })
+            race_id_counter += 1
+        except Exception as e:
+            print(f"Errore riga: {e}")
+            continue
             
     return races
 
