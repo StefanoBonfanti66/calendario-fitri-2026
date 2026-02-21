@@ -15,7 +15,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Recupera la storia per evitare conflitti di push
+        persist-credentials: true
 
     - name: Setup Python
       uses: actions/setup-python@v5
@@ -28,15 +28,10 @@ jobs:
     - name: Run Scraper
       run: python mtt_live_scraper.py
 
-    - name: Save Data Only
+    - name: Commit and Push Data Only
       run: |
-        git config --global user.name "GitHub Action"
-        git config --global user.email "action@github.com"
-        # Sincronizza con il server prima di aggiungere i dati
-        git fetch origin main
-        git rebase origin/main
-        # Aggiunge SOLO il file dei dati, ignorando i file di sistema/workflow
+        git config --local user.name "GitHub Action"
+        git config --local user.email "action@github.com"
         git add gare_fitri_2026.txt
-        git commit -m "MTT Data Update [skip ci]" || exit 0
-        # Push normale (senza --force) che GitHub accetterà
-        git push origin main
+        # Se non ci sono cambi nel file .txt, esce senza fare nulla
+        git diff --quiet && git diff --staged --quiet || (git commit -m "MTT Data Update [skip ci]" && git push origin HEAD:main)
