@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  workflows: write
 
 jobs:
   update:
@@ -36,10 +35,10 @@ jobs:
         git config --local user.name "GitHub Action"
         git config --local user.email "action@github.com"
         git add gare_fitri_2026.txt
-        # Solo se ci sono modifiche reali
-        if ! git diff --cached --quiet; then
+        # Solo se ci sono modifiche reali nel file .txt
+        if ! git diff --cached --quiet gare_fitri_2026.txt; then
           git commit -m "MTT Data Update [skip ci]"
           git push origin HEAD:main
         else
-          echo "Nessuna modifica rilevata."
+          echo "Nessuna modifica rilevata nel file dati."
         fi
