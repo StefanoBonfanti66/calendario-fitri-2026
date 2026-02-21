@@ -1,93 +1,86 @@
 import time
 import sys
-import traceback
 from playwright.sync_api import sync_playwright
 
 def scrape_fitri_calendar():
     year = "2026"
-    print("--- INIZIO DIAGNOSTICA SCRAPER ---")
+    print("🚀 Avvio scraper NINJA (JS Injection Mode)...")
     
-    try:
-        with sync_playwright() as p:
-            print("1. Avvio Chromium...")
+    with sync_playwright() as p:
+        try:
             browser = p.chromium.launch(headless=True)
-            
-            print("2. Creazione contesto e pagina...")
             context = browser.new_context(
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
             )
             page = context.new_page()
             
             url = "https://www.myfitri.it/calendario"
-            print(f"3. Navigazione verso {url}...")
+            print(f"🔗 Connessione a {url}...")
             
-            # Usiamo un'attesa più permissiva
-            page.goto(url, wait_until="load", timeout=90000)
-            print("4. Pagina caricata. Attendo rendering Vuetify...")
-            time.sleep(10) # Diamo tempo al sito di "montarsi"
-            
-            # Catturiamo uno screenshot del log testuale (virtuale)
-            print(f"5. Titolo pagina trovato: {page.title()}")
+            # Navigazione
+            page.goto(url, wait_until="domcontentloaded", timeout=90000)
+            print("⏳ Attesa caricamento iniziale (10s)...")
+            time.sleep(10)
 
-            print("6. Cerco il pulsante TUTTI...")
-            # Proviamo a trovare il pulsante con un selettore di testo universale
-            try:
-                tutti_btn = page.get_by_role("tab").get_by_text("TUTTI", exact=False)
-                if tutti_btn.count() > 0:
-                    tutti_btn.first.click()
-                    print("✅ Pulsante TUTTI cliccato con successo.")
-                    time.sleep(5)
-                else:
-                    print("⚠️ Pulsante TUTTI non trovato via Role, provo via selettore generico...")
-                    page.locator("div.v-tab").filter(has_text="TUTTI").click()
-                    print("✅ Pulsante TUTTI cliccato via locator generico.")
-                    time.sleep(5)
-            except Exception as e:
-                print(f"❌ Impossibile cliccare TUTTI: {e}")
+            # ESECUZIONE JS: Questa parte forza il sito a mostrare tutto
+            print("⚡ Iniezione JavaScript per forzare il tab TUTTI...")
+            page.evaluate("""() => {
+                // Trova tutti i div che sembrano tab
+                const elements = Array.from(document.querySelectorAll('div, span, a'));
+                const tutti = elements.find(el => el.innerText && el.innerText.trim().toUpperCase() === 'TUTTI');
+                if (tutti) {
+                    tutti.click();
+                    console.log('TUTTI cliccato via JS');
+                }
+            }""")
+            time.sleep(5)
 
-            print("7. Scrolling per caricare tutta la stagione...")
-            for i in range(5):
-                page.mouse.wheel(0, 4000)
-                time.sleep(2)
+            # SCROLLING JS: Forza il caricamento di tutta la lista lunga
+            print("🖱️ Scrolling automatico via JS...")
+            page.evaluate("""async () => {
+                for (let i = 0; i < 15; i++) {
+                    window.scrollBy(0, 3000);
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }""")
+            time.sleep(2)
 
-            print("8. Estrazione dati dai nodi card...")
-            # MyFITri usa spesso .v-card o strutture simili
-            cards = page.locator(".v-card, .event-card, div[class*='card']").all()
-            print(f"Found {len(cards)} potential card elements.")
-            
-            output_lines = []
-            for card in cards:
-                try:
-                    text = card.inner_text()
-                    if "2026" in text:
-                        lines = [l.strip() for l in text.split("\n") if l.strip()]
-                        if len(lines) >= 3:
-                            output_lines.append(f"{lines[0]} | {lines[1]} | {lines[-1]}")
-                except:
-                    continue
+            # ESTRAZIONE DATI: Legge direttamente i nodi card
+            print("📊 Cattura dati in corso...")
+            results = page.evaluate("""() => {
+                const data = [];
+                // Cerchiamo le card Vue/Vuetify
+                const cards = document.querySelectorAll('.v-card, .event-card, [class*="card"]');
+                cards.forEach(card => {
+                    const text = card.innerText;
+                    if (text && text.includes('2026') && text.length > 60) {
+                        const lines = text.split('\\n').map(l => l.trim()).filter(l => l.length > 1);
+                        if (lines.length >= 3) {
+                            // Formato: EVENTO | DATA LOC | ULTIMA RIGA (SPECIALITÀ)
+                            data.push(`${lines[0]} | ${lines[1]} | ${lines[lines.length-1]}`);
+                        }
+                    }
+                });
+                return [...new Set(data)];
+            }""")
 
-            output_lines = list(dict.fromkeys(output_lines))
-            
-            if output_lines:
+            if results:
                 filename = f"gare_fitri_{year}.txt"
                 with open(filename, "w", encoding="utf-8") as f:
-                    f.write("\n".join(output_lines))
-                print(f"--- FINISH: Generato {filename} con {len(output_lines)} gare ---")
+                    f.write("\n".join(results))
+                print(f"✨ COMPLETATO: Trovate {len(results)} gare uniche.")
             else:
-                print("--- FINISH: Nessuna gara estratta, ma lo script è terminato correttamente ---")
+                print("❌ Nessuna gara trovata con JS. Verifico testo grezzo...")
+                # Metodo di emergenza: prendi tutto il testo che contiene 2026
+                text_fallback = page.evaluate("document.body.innerText")
                 with open(f"gare_fitri_{year}.txt", "w", encoding="utf-8") as f:
-                    f.write("Diagnostica: Dati non trovati nel DOM.")
+                    f.write("FALLBACK: " + text_fallback[:5000])
 
             browser.close()
 
-    except Exception as e:
-        print("!!! ERRORE CRITICO RILEVATO !!!")
-        print(f"Tipo errore: {type(e).__name__}")
-        print(f"Messaggio: {str(e)}")
-        print("--- TRACEBACK COMPLETO ---")
-        traceback.print_exc()
-        # Esco con 0 per vedere il log su GitHub senza bloccare il workflow
-        sys.exit(0)
+        except Exception as e:
+            print(f"⚠️ Errore critico: {e}")
+            sys.exit(0)
 
 if __name__ == "__main__":
     scrape_fitri_calendar()
