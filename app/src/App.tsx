@@ -892,6 +892,11 @@ const App: React.FC = () => {
                                           <span className="text-xl font-black uppercase tracking-widest">Main Objective</span>
                                       </div>
                                   )}
+                                  {race.event && (
+                                      <div className="text-xl font-black text-white/40 uppercase tracking-[0.2em] mb-1">
+                                          {race.event}
+                                      </div>
+                                  )}
                                   <h2 className="text-4xl font-black leading-tight max-w-2xl">{race.title}</h2>
                                   <div className="flex items-center gap-4 text-white/40 text-xl font-bold">
                                       <MapPin className="w-6 h-6" />
