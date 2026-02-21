@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo, useTransition, useCallback } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
-  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X
+  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera
 } from "lucide-react";
+import { toPng } from 'html-to-image';
 import racesData from "./races_full.json";
 import { provinceCoordinates } from "./coords";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -177,6 +178,7 @@ const RaceCard = React.memo(({
 
 const App: React.FC = () => {
   const [isPending, startTransition] = useTransition();
+  const cardRef = React.useRef<HTMLDivElement>(null);
   const [racesState, setRacesState] = useState<Race[]>([]);
   const [selectedRaces, setSelectedRaces] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -298,6 +300,19 @@ const App: React.FC = () => {
   const updateCost = useCallback((id: string, cost: number) => {
     setRaceCosts(prev => ({ ...prev, [id]: cost }));
   }, []);
+
+  const generateRaceCard = async () => {
+    if (!cardRef.current || selectedRaces.length === 0) return;
+    try {
+      const dataUrl = await toPng(cardRef.current, { cacheBust: true, backgroundColor: '#0f172a' });
+      const link = document.createElement('a');
+      link.download = `stagione-mtt-2026-${new Date().getTime()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Errore generazione immagine', err);
+    }
+  };
 
   const budgetTotals = useMemo(() => {
     const selectedData = races.filter(r => selectedRaces.includes(r.id));
@@ -608,7 +623,18 @@ const App: React.FC = () => {
                     <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">
                         Il Tuo Anno <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-lg text-xs">{myPlan.length}</span>
                     </h2>
-                    <Download className="w-4 h-4 text-slate-400 cursor-pointer" onClick={exportPlan} />
+                    <div className="flex gap-2">
+                        <Camera 
+                            className="w-4 h-4 text-slate-400 cursor-pointer hover:text-blue-600 transition-colors" 
+                            title="Genera Race Card per Social"
+                            onClick={generateRaceCard} 
+                        />
+                        <Download 
+                            className="w-4 h-4 text-slate-400 cursor-pointer hover:text-blue-600 transition-colors" 
+                            title="Esporta Piano"
+                            onClick={exportPlan} 
+                        />
+                    </div>
                 </div>
                 
                 {myPlan.length === 0 ? (
@@ -820,6 +846,89 @@ const App: React.FC = () => {
               FITRI 2026 Season Planner • MTT Milano Triathlon Team
           </p>
       </footer>
+
+      {/* Template Nascosto per Generazione Immagine (Race Card) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+          <div 
+            ref={cardRef}
+            className="w-[1080px] min-h-[1920px] bg-slate-900 p-20 flex flex-col text-white font-sans"
+          >
+              <div className="flex items-center justify-between mb-20 border-b-4 border-red-600 pb-10">
+                  <div className="flex items-center gap-8">
+                      <div className="bg-red-600 p-6 rounded-[2.5rem] rotate-3 shadow-2xl">
+                          <Trophy className="w-20 h-20 text-white" />
+                      </div>
+                      <div>
+                          <h1 className="text-7xl font-black tracking-tighter uppercase leading-none mb-2">My 2026 Season</h1>
+                          <p className="text-2xl font-bold text-red-500 uppercase tracking-[0.5em]">MTT Milano Triathlon Team</p>
+                      </div>
+                  </div>
+                  <div className="text-right">
+                      <div className="text-9xl font-black text-white/10 leading-none">2026</div>
+                  </div>
+              </div>
+
+              <div className="flex-1 space-y-10">
+                  {myPlan.map((race) => (
+                      <div 
+                        key={race.id}
+                        className={`p-10 rounded-[3rem] flex items-center justify-between border-4 transition-all ${
+                            racePriorities[race.id] === 'A' 
+                            ? 'bg-yellow-500/10 border-yellow-500' 
+                            : 'bg-white/5 border-white/5'
+                        }`}
+                      >
+                          <div className="flex items-center gap-10">
+                              <div className="flex flex-col items-center justify-center bg-white/10 w-28 h-28 rounded-[2rem] border-2 border-white/10">
+                                  <span className="text-sm font-black uppercase text-blue-400">{race.date.split('-')[1] === '01' ? 'GEN' : race.date.split('-')[1] === '02' ? 'FEB' : race.date.split('-')[1] === '03' ? 'MAR' : race.date.split('-')[1] === '04' ? 'APR' : race.date.split('-')[1] === '05' ? 'MAG' : race.date.split('-')[1] === '06' ? 'GIU' : race.date.split('-')[1] === '07' ? 'LUG' : race.date.split('-')[1] === '08' ? 'AGO' : race.date.split('-')[1] === '09' ? 'SET' : race.date.split('-')[1] === '10' ? 'OTT' : race.date.split('-')[1] === '11' ? 'NOV' : 'DIC'}</span>
+                                  <span className="text-4xl font-black">{race.date.split('-')[0]}</span>
+                              </div>
+                              <div className="space-y-2">
+                                  {racePriorities[race.id] === 'A' && (
+                                      <div className="flex items-center gap-2 text-yellow-500 mb-2">
+                                          <Star className="w-6 h-6 fill-current" />
+                                          <span className="text-xl font-black uppercase tracking-widest">Main Objective</span>
+                                      </div>
+                                  )}
+                                  <h2 className="text-4xl font-black leading-tight max-w-2xl">{race.title}</h2>
+                                  <div className="flex items-center gap-4 text-white/40 text-xl font-bold">
+                                      <MapPin className="w-6 h-6" />
+                                      <span>{race.location} • {race.region}</span>
+                                  </div>
+                              </div>
+                          </div>
+                          <div className="flex flex-col items-end gap-4">
+                              <span className={`px-6 py-3 rounded-2xl text-xl font-black uppercase tracking-wider ${
+                                  race.type === 'Triathlon' ? 'bg-blue-600' :
+                                  race.type === 'Duathlon' ? 'bg-orange-600' :
+                                  race.type.includes('Winter') ? 'bg-cyan-600' :
+                                  'bg-emerald-600'
+                              }`}>
+                                  {race.type}
+                              </span>
+                              {race.distance && (
+                                  <div className="flex items-center gap-3 text-white/60">
+                                      <Bike className="w-6 h-6" />
+                                      <span className="text-xl font-black uppercase tracking-widest">{race.distance}</span>
+                                  </div>
+                              )}
+                          </div>
+                      </div>
+                  ))}
+              </div>
+
+              <div className="mt-20 pt-10 border-t-2 border-white/10 flex justify-between items-end opacity-40">
+                  <div className="text-xl font-bold">
+                      <p>Generato da MTT Season Planner</p>
+                      <p className="text-sm">www.myfitri.it • fitri-planner.vercel.app</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                      <Trophy className="w-10 h-10" />
+                      <span className="text-4xl font-black uppercase italic">Finish Line Ready</span>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
   );
 };
