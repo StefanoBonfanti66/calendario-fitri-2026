@@ -1,46 +1,36 @@
-name: Update Fitri Calendar 2026
+name: Update FITri Calendar
 
 on:
   schedule:
-    - cron: '0 4 * * *' # Ogni notte alle 4:00 AM
-  workflow_dispatch: # Permette di lanciarlo manualmente da GitHub
-
-permissions:
-  contents: write
+    - cron: '0 0 * * 1' # Gira ogni lunedì a mezzanotte
+  workflow_dispatch: # Ti permette di farlo girare a mano quando vuoi
 
 jobs:
-  update:
+  build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install playwright
         playwright install chromium
 
-    - name: Run Scraper
-      run: python scraper_playwright.py
-
-    - name: Run Parser
-      run: python parse_gare_file.py
+    - name: Run scraper
+      run: python scrape_fitri.py
 
     - name: Commit and push changes
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add gare_2026.txt app/src/races_full.json
-        git commit -m "Update races database [skip ci]" || echo "No changes to commit"
-        git push "https://${GH_TOKEN}@github.com/${{ github.repository }}.git" main
-
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+        git add gare_fitri_2026.txt
+        git commit -m "Aggiornamento automatico calendario gare" || echo "Nessuna modifica trovata"
+        git push
