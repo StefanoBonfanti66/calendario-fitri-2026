@@ -1,89 +1,80 @@
-import asyncio
-import sys
 import time
-from playwright.async_api import async_playwright
+import sys
+from playwright.sync_api import sync_playwright
 
-async def scrape_fitri_calendar():
+def scrape_fitri_calendar():
     year = "2026"
-    print("🚀 Avvio scraper professionale...")
+    print("🚀 Avvio scraper stabile (Sync Mode)...")
     
-    async with async_playwright() as p:
-        # Lancio browser con parametri per evitare rilevamenti bot
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-            viewport={'width': 1920, 'height': 1080}
-        )
-        page = await context.new_page()
-        
-        url = "https://www.myfitri.it/calendario"
-        print(f"🔗 Connessione a {url}...")
-        
+    with sync_playwright() as p:
         try:
-            # Navigazione con attesa generosa
-            response = await page.goto(url, wait_until="networkidle", timeout=90000)
-            print(f"📥 Status Code: {response.status if response else 'N/A'}")
+            # Lancio browser con User Agent umano
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+            )
+            page = context.new_page()
             
-            # Aspetta che la pagina carichi il contenuto dinamico
-            await page.wait_for_timeout(5000)
+            url = "https://www.myfitri.it/calendario"
+            print(f"🔗 Connessione a {url}...")
             
-            # Clicca sul tab TUTTI
+            page.goto(url, wait_until="domcontentloaded", timeout=90000)
+            time.sleep(5)
+            
+            # Clicca su TUTTI per caricare tutto
             print("🔍 Ricerca pulsante TUTTI...")
-            tabs = await page.query_selector_all(".v-tab")
+            tabs = page.query_selector_all(".v-tab")
             for tab in tabs:
-                text = await tab.inner_text()
-                if "TUTTI" in text.upper():
-                    await tab.click()
+                if "TUTTI" in tab.inner_text().upper():
+                    tab.click()
                     print("✅ Pulsante TUTTI cliccato.")
-                    await page.wait_for_timeout(5000)
+                    time.sleep(5)
                     break
 
-            # Scrolling per caricare tutta la lista
-            print("🖱️ Scrolling della pagina...")
+            # Scrolling profondo
+            print("🖱️ Scorrimento pagina in corso...")
             for i in range(10):
-                await page.mouse.wheel(0, 2000)
-                await page.wait_for_timeout(1000)
+                page.mouse.wheel(0, 3000)
+                time.sleep(1)
 
-            # Estrazione di tutti i blocchi di testo che sembrano gare
-            print("📊 Estrazione dati...")
-            content = await page.evaluate("""() => {
-                const data = [];
-                // Cerchiamo tutti i blocchi che contengono '2026'
-                document.querySelectorAll('div').forEach(div => {
-                    const text = div.innerText;
-                    if (text && text.includes('2026') && text.length > 100 && text.length < 1000) {
-                        data.push(text);
-                    }
-                });
-                return [...new Set(data)];
-            }""")
-
+            # Estrazione dati basata sui blocchi di testo
+            print("📊 Analisi contenuti...")
+            elements = page.query_selector_all("div")
+            
             output_lines = []
-            for item in content:
-                # Pulizia base del testo per il formato EVENTO | DATA | SPEC
-                parts = [p.strip() for p in item.split('\n') if p.strip()]
-                if len(parts) >= 3:
-                    # Semplifichiamo il formato per il tuo parser
-                    line = f"{parts[0]} | {parts[1]} | {parts[-1]}"
-                    output_lines.append(line)
+            for el in elements:
+                try:
+                    text = el.inner_text()
+                    # Cerchiamo blocchi che contengono date 2026 e dettagli sportivi
+                    if "2026" in text and any(x in text.upper() for x in ["TRIATHLON", "DUATHLON", "AQUATHLON"]):
+                        lines = [l.strip() for l in text.split("\n") if l.strip()]
+                        if len(lines) >= 3:
+                            # Formato: EVENTO | DATA LOC | DETTAGLIO
+                            # Prendiamo solo i blocchi unici e significativi
+                            clean_line = f"{lines[0]} | {lines[1]} | {lines[-1]}"
+                            output_lines.append(clean_line)
+                except:
+                    continue
 
+            # Pulizia e salvataggio
+            output_lines = list(dict.fromkeys(output_lines))
+            
             if output_lines:
                 filename = f"gare_fitri_{year}.txt"
                 with open(filename, "w", encoding="utf-8") as f:
                     f.write("\n".join(output_lines))
-                print(f"✨ SUCCESSO: Salvate {len(output_lines)} gare in {filename}")
+                print(f"✨ COMPLETATO: Trovate {len(output_lines)} gare.")
             else:
-                print("❌ Nessuna gara trovata nel contenuto della pagina.")
-                # Creiamo un file minimo per non far fallire il push successivo
+                print("❌ Nessuna gara estratta. Verificare struttura sito.")
                 with open(f"gare_fitri_{year}.txt", "w", encoding="utf-8") as f:
-                    f.write("Nessun dato trovato nell'ultima scansione.")
+                    f.write("Scansione completata - Dati non trovati")
+
+            browser.close()
 
         except Exception as e:
-            print(f"⚠️ Errore durante l'esecuzione: {e}")
-            # Non usciamo con errore per permettere alla GitHub Action di finire
-        
-        finally:
-            await browser.close()
+            print(f"⚠️ Errore script: {e}")
+            # Non usciamo con 1 per non rompere il workflow
+            sys.exit(0)
 
 if __name__ == "__main__":
-    asyncio.run(scrape_fitri_calendar())
+    scrape_fitri_calendar()
