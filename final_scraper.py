@@ -35,10 +35,8 @@ def scrape_fitri_calendar():
                 cards.forEach(card => {
                     const text = card.innerText || "";
                     if (text.includes('2026') && text.length > 60) {
-                        // Usiamo un separatore testuale invece di 
- per evitare errori di escape
-                        const parts = text.split(/[
-]+/).map(l => l.trim()).filter(l => l.length > 1);
+                        // Usiamo un separatore testuale invece di \n per evitare errori di escape
+                        const parts = text.split(/[\r\n]+/).map(l => l.trim()).filter(l => l.length > 1);
                         if (parts.length >= 3) {
                             data.push(parts[0] + " | " + parts[1] + " | " + parts[parts.length-1]);
                         }
@@ -49,8 +47,7 @@ def scrape_fitri_calendar():
 
             if results:
                 with open(f"gare_fitri_{year}.txt", "w", encoding="utf-8") as f:
-                    f.write("
-".join(results))
+                    f.write("\n".join(results))
                 print(f"✅ SUCCESSO: Trovate {len(results)} gare.")
             else:
                 print("❌ Nessuna gara trovata.")
