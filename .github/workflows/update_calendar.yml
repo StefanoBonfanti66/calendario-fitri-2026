@@ -30,7 +30,7 @@ jobs:
         npx playwright install --with-deps chromium
 
     - name: Run scraper
-      run: python scrape_fitri.py
+      run: python ninja_scraper.py
 
     - name: Upload and Overwrite Data
       run: |
