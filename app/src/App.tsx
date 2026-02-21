@@ -624,16 +624,18 @@ const App: React.FC = () => {
                         Il Tuo Anno <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-lg text-xs">{myPlan.length}</span>
                     </h2>
                     <div className="flex gap-2">
-                        <Camera 
-                            className="w-4 h-4 text-slate-400 cursor-pointer hover:text-blue-600 transition-colors" 
-                            title="Genera Race Card per Social"
-                            onClick={generateRaceCard} 
-                        />
-                        <Download 
-                            className="w-4 h-4 text-slate-400 cursor-pointer hover:text-blue-600 transition-colors" 
-                            title="Esporta Piano"
-                            onClick={exportPlan} 
-                        />
+                        <span title="Genera Race Card per Social" className="cursor-pointer">
+                            <Camera 
+                                className="w-4 h-4 text-slate-400 hover:text-blue-600 transition-colors" 
+                                onClick={generateRaceCard} 
+                            />
+                        </span>
+                        <span title="Esporta Piano" className="cursor-pointer">
+                            <Download 
+                                className="w-4 h-4 text-slate-400 hover:text-blue-600 transition-colors" 
+                                onClick={exportPlan} 
+                            />
+                        </span>
                     </div>
                 </div>
                 
