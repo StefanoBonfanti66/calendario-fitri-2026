@@ -34,6 +34,8 @@ jobs:
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
+        git fetch origin main
+        git reset --mix origin/main
         git add gare_fitri_2026.txt
         git commit -m "Aggiornamento automatico calendario gare" || exit 0
         git pull origin main --rebase
