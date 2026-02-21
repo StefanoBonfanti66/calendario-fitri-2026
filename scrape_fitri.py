@@ -6,69 +6,95 @@ def scrape_fitri_calendar():
     year = "2026"
     print("Avvio browser Playwright...")
     with sync_playwright() as p:
-        # Lancio browser con User Agent realistico
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            viewport={'width': 1280, 'height': 1000}
         )
         page = context.new_page()
         
         print("Connessione a MyFITri...")
         try:
-            page.goto("https://www.myfitri.it/calendario", wait_until="networkidle", timeout=60000)
+            page.goto("https://www.myfitri.it/calendario", wait_until="networkidle", timeout=90000)
+            time.sleep(5)
+
+            # 1. Tentativo forzato di cliccare su "TUTTI"
+            print("Cerco il pulsante TUTTI per sbloccare l'intera stagione...")
+            # Proviamo diversi selettori comuni in Vuetify per il tab TUTTI
+            selectors = [
+                "div.v-tab:has-text('TUTTI')",
+                "//div[contains(@class, 'v-tab') and contains(text(), 'TUTTI')]",
+                "text=TUTTI"
+            ]
             
-            # Aspettiamo che la pagina sia effettivamente pronta
-            page.wait_for_selector("body", timeout=10000)
-            time.sleep(5) # Pausa per rendering JS
+            clicked = False
+            for selector in selectors:
+                try:
+                    if page.is_visible(selector):
+                        page.click(selector)
+                        print(f"Pulsante cliccato con selettore: {selector}")
+                        clicked = True
+                        time.sleep(5)
+                        break
+                except:
+                    continue
+            
+            if not clicked:
+                print("Avviso: Pulsante TUTTI non trovato, proverò a scorrere comunque.")
 
-            # Tentativo di cliccare su "TUTTI" con selettore più elastico
-            print("Cerco il pulsante TUTTI...")
-            tabs = page.query_selector_all(".v-tab")
-            for tab in tabs:
-                if "TUTTI" in tab.inner_text().upper():
-                    tab.click()
-                    print("Pulsante TUTTI cliccato.")
-                    time.sleep(5)
+            # 2. INFINITE SCROLLING: Scorriamo verso il basso per forzare il caricamento lazy-load
+            print("Inizio scrolling della pagina per caricare tutti gli eventi...")
+            last_height = page.evaluate("document.body.scrollHeight")
+            for i in range(15): # Proviamo a scorrere 15 volte
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                time.sleep(2)
+                new_height = page.evaluate("document.body.scrollHeight")
+                if new_height == last_height:
                     break
+                last_height = new_height
+                print(f"Scorrimento {i+1} completato...")
 
-            # Estrazione dati: MyFITri usa spesso strutture annidate. 
-            # Cerchiamo di prendere tutto ciò che sembra una card di evento.
-            print("Estrazione eventi...")
-            events = page.query_selector_all(".v-card, .event-card, [class*='card']") 
+            # 3. Estrazione dati
+            print("Estrazione eventi finali...")
+            # Cerchiamo tutti i blocchi che contengono info di gara
+            # Spesso MyFITri usa classi come .v-card o .card-evento
+            events = page.query_selector_all(".v-card, .event-card, div[class*='card']") 
             
             output_lines = []
             for event in events:
                 try:
                     text = event.inner_text()
-                    if "2026" in text and len(text) > 50:
-                        # Pulizia testo: trasformiamo i ritorni a capo in separatori
-                        lines = [l.strip() for l in text.split("\n") if l.strip()]
-                        if len(lines) >= 2:
-                            # Tentiamo di mappare Titolo | Info | Dettaglio
-                            title = lines[0]
-                            info = lines[1]
-                            detail = " ".join(lines[2:]) if len(lines) > 2 else "N/A"
-                            output_lines.append(f"{title} | {info} | {detail}")
+                    # Filtriamo solo i blocchi che contengono effettivamente date 2026 e hanno una lunghezza minima
+                    if "2026" in text and len(text) > 100:
+                        # Pulizia e formattazione riga
+                        parts = [p.strip() for p in text.split("\n") if p.strip()]
+                        if len(parts) >= 3:
+                            # Cerchiamo di identificare Titolo | Località | Dettagli
+                            title = parts[0]
+                            # Spesso la seconda riga è la data/località
+                            info = parts[1]
+                            # Le righe successive sono le specialità
+                            for sub in parts[2:]:
+                                if any(x in sub.upper() for x in ["TRIATHLON", "DUATHLON", "AQUATHLON", "CROSS"]):
+                                    output_lines.append(f"{title} | {info} | {sub}")
                 except:
                     continue
 
-            # Rimuoviamo duplicati mantenendo l'ordine
+            # Rimuoviamo duplicati
             output_lines = list(dict.fromkeys(output_lines))
 
             if output_lines:
                 filename = f"gare_fitri_{year}.txt"
                 with open(filename, "w", encoding="utf-8") as f:
                     f.write("\n".join(output_lines))
-                print(f"Successo! Generato {filename} con {len(output_lines)} righe.")
+                print(f"GRANDE SUCCESSO! Generato {filename} con {len(output_lines)} gare trovate.")
             else:
-                print("Attenzione: Nessun evento trovato con i selettori attuali.")
-                # Creiamo un file vuoto per evitare l'exit code 1 se vogliamo che l'action passi comunque
+                print("Nessun evento trovato. Proverò a catturare l'intera pagina come debug.")
                 with open(f"gare_fitri_{year}.txt", "w", encoding="utf-8") as f:
-                    f.write("Nessun dato trovato - Verificare sito MyFITri")
+                    f.write(page.inner_text())
 
         except Exception as e:
-            print(f"Errore critico durante lo scraping: {e}")
-            # Non facciamo crashare l'action, scriviamo l'errore nel log
+            print(f"Errore critico: {e}")
         
         browser.close()
 
