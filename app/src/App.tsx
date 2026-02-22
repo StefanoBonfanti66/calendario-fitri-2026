@@ -504,11 +504,13 @@ const App: React.FC = () => {
         
         // Logica filtri speciali (Paratriathlon, Kids, Youth)
         // Se non è selezionato nulla, mostra tutto.
-        // Se è selezionato qualcosa, la gara deve contenere ALMENO uno dei termini selezionati nella categoria o nel titolo.
-        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => 
-            (race.category && race.category.toLowerCase().includes(s.toLowerCase())) || 
-            (race.title && race.title.toLowerCase().includes(s.toLowerCase()))
-        );
+        // Se è selezionato qualcosa, la gara deve contenere ALMENO uno dei termini selezionati.
+        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => {
+            const searchStr = s.toLowerCase();
+            return (race.category?.toLowerCase() || "").includes(searchStr) || 
+                   (race.title?.toLowerCase() || "").includes(searchStr) ||
+                   (race.event?.toLowerCase() || "").includes(searchStr);
+        });
 
         return matchesSearch && matchesType && matchesRegion && matchesDistance && matchesSpecial;
     }).sort((a,b) => {
