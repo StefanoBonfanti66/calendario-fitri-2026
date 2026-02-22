@@ -22,6 +22,7 @@ interface Race {
   distance: string;
   rank: string;
   category: string;
+  link?: string;
   mapCoords?: [number, number];
   distanceFromHome?: number | null;
 }
@@ -157,20 +158,34 @@ const RaceCard = React.memo(({
                     )}
                 </div>
                 
-                <button
-                    onClick={() => onToggle(race.id)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
-                        isSelected
-                        ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0'
-                    }`}
-                >
-                    {isSelected ? (
-                        <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</>
-                    ) : (
-                        <><Plus className="w-3.5 h-3.5" /> Aggiungi</>
+                <div className="flex items-center gap-2">
+                    {race.link && (
+                        <a 
+                            href={race.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="p-3 rounded-[1.25rem] text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors shadow-sm"
+                            title="Scheda Ufficiale MyFITri"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <ExternalLink className="w-4 h-4" />
+                        </a>
                     )}
-                </button>
+                    <button
+                        onClick={() => onToggle(race.id)}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+                            isSelected
+                            ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0'
+                        }`}
+                    >
+                        {isSelected ? (
+                            <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</>
+                        ) : (
+                            <><Plus className="w-3.5 h-3.5" /> Aggiungi</>
+                        )}
+                    </button>
+                </div>
             </div>
         </div>
     );

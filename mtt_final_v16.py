@@ -3,14 +3,12 @@ import sys
 import re
 from playwright.sync_api import sync_playwright
 
-# Carattere 'a capo' sicuro
 NL = chr(10)
 
 def run():
-    print("🚀 MTT_SCRAPER_V19_VERIFIED_UNLOCK")
+    print("🚀 MTT_SCRAPER_V20_DEEP_LINKING")
     with sync_playwright() as p:
         try:
-            # Headless=True per l'ambiente GitHub Actions
             browser = p.chromium.launch(headless=True)
             context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
             page = context.new_page()
@@ -19,71 +17,56 @@ def run():
             page.goto("https://www.myfitri.it/calendario", wait_until="networkidle", timeout=90000)
             time.sleep(10)
 
-            # LOGICA DI SBLOCCO VERIFICATA
-            print("🧹 Removing Active Month Filters...")
-            try:
-                # Regex universale per i mesi italiani
-                months_regex = re.compile(r"Gennaio|Febbraio|Marzo|Aprile|Maggio|Giugno|Luglio|Agosto|Settembre|Ottobre|Novembre|Dicembre", re.IGNORECASE)
-                
-                # Trova i chip dei mesi e clicca sull'icona 'i' (la X di chiusura)
-                month_filters = page.locator("span").filter(has_text=months_regex)
-                count = month_filters.count()
-                
-                if count > 0:
-                    for i in range(count):
-                        try:
-                            month_filters.nth(i).locator("i").click(timeout=5000)
-                            print(f"✅ Filter {i+1} removed.")
-                        except:
-                            month_filters.nth(i).click(timeout=2000)
-                
-                # Forza il tab TUTTI
-                tutti_tab = page.locator("div.v-tab").filter(has_text=re.compile(r"TUTTI", re.IGNORECASE))
-                if tutti_tab.count() > 0:
-                    tutti_tab.first.click()
-                    print("✅ Tab TUTTI selected.")
-
-            except Exception as e:
-                print(f"⚠️ Unlock warning: {e}")
-
-            print("⏳ Waiting for season refresh...")
+            print("🧹 Removing Filters...")
+            page.evaluate("""() => {
+                const months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+                document.querySelectorAll('.v-chip__close, .v-icon--link, button[aria-label*="close"]').forEach(el => el.click());
+                const tabs = Array.from(document.querySelectorAll('.v-tab'));
+                const tutti = tabs.find(t => t.innerText && t.innerText.toUpperCase().includes('TUTTI'));
+                if (tutti) tutti.click();
+            }""")
             time.sleep(15)
 
-            # SCROLLING
-            print("🖱️ Deep scrolling for full data extraction...")
+            print("🖱️ Deep scrolling...")
             for i in range(25):
                 page.mouse.wheel(0, 4000)
                 time.sleep(1)
 
-            # ESTRAZIONE DATI
-            print("📊 Extracting races...")
-            res = page.evaluate("() => Array.from(document.querySelectorAll('.v-card')).map(c => c.innerText)")
-            output = []
-            for item in res:
-                if "2026" in item:
-                    # splitlines() evita problemi di caratteri speciali \n
-                    lines = [l.strip() for l in item.splitlines() if l.strip()]
-                    if len(lines) >= 3:
-                        output.append(lines[0] + " | " + lines[1] + " | " + lines[-1])
-            
-            output = list(dict.fromkeys(output))
+            # ESTRAZIONE AVANZATA (Testo + Link)
+            print("📊 Extracting races with deep links...")
+            results = page.evaluate("""() => {
+                const out = [];
+                document.querySelectorAll('.v-card').forEach(card => {
+                    const txt = card.innerText || "";
+                    if (txt.includes('2026') && txt.length > 60) {
+                        const lines = txt.split('\\n').map(l => l.trim()).filter(l => l.length > 1);
+                        
+                        // Cerchiamo il link alla scheda gara (solitamente è un pulsante o l'ID è nel DOM)
+                        // MyFITri usa link tipo /calendario/evento/ID
+                        const linkEl = card.querySelector('a[href*="/evento/"]');
+                        const link = linkEl ? linkEl.href : "";
+                        
+                        if (lines.length >= 3) {
+                            // Nuovo formato: EVENTO | DATA LOC | SPECIALITÀ | LINK
+                            out.push(`${lines[0]} | ${lines[1]} | ${lines[lines.length-1]} | ${link}`);
+                        }
+                    }
+                });
+                return [...new Set(out)];
+            }""")
 
-            if len(output) > 10:
+            if len(results) > 10:
                 filename = "gare_2026.txt"
                 with open(filename, "w", encoding="utf-8") as f:
-                    for line in output:
+                    for line in results:
                         f.write(line + NL)
-                print("✨ SUCCESS: " + str(len(output)) + " races saved!")
+                print(f"✨ SUCCESS: {len(results)} races with links saved!")
             else:
-                print("❌ ERROR: Only " + str(len(output)) + " races found. Still filtered?")
-                filename = "gare_2026.txt"
-                with open(filename, "w", encoding="utf-8") as f:
-                    for line in output:
-                        f.write(line + NL)
+                print("❌ ERROR: Only " + str(len(results)) + " found.")
 
             browser.close()
         except Exception as e:
-            print("FATAL ERROR: " + str(e))
+            print(f"FATAL ERROR: {e}")
             sys.exit(0)
 
 if __name__ == "__main__":
