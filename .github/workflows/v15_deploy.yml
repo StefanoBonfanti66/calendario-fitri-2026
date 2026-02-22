@@ -1,4 +1,4 @@
-name: MTT FINAL V14
+name: MTT FINAL V15
 
 on:
   schedule:
@@ -21,11 +21,11 @@ jobs:
         pip install playwright
         npx playwright install --with-deps chromium
     - name: Run
-      run: python mtt_final_v14.py
+      run: python mtt_final_v15.py
     - name: Push
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
         git add gare_fitri_2026.txt
-        git commit -m "Data update [skip ci]" || exit 0
+        git commit -m "Data update V15 [skip ci]" || exit 0
         git push origin HEAD:main --force
