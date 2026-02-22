@@ -14,40 +14,32 @@ def run():
             page.goto("https://www.myfitri.it/calendario", wait_until="networkidle", timeout=90000)
             time.sleep(10)
 
-            # FORZO SBLOCCO MESE (Tua scoperta!)
+            # SBLOCCO MESE (Tua scoperta!)
             print("⚡ UNLOCKING: Forcing 'meseCorrente: 13' logic...")
             page.evaluate("""() => {
-                // Cerchiamo tutti i componenti che potrebbero filtrare il mese e rimuoviamoli
-                // 1. Clicca su tutte le X (chiusura filtri)
                 document.querySelectorAll('.v-chip__close, .v-icon--link, button[aria-label*="close"]').forEach(el => el.click());
-                
-                // 2. Forza il tab TUTTI per essere sicuri che il sistema sblocchi l'intero anno (mese 13)
                 const tabs = Array.from(document.querySelectorAll('.v-tab'));
                 const tutti = tabs.find(t => t.innerText && t.innerText.toUpperCase().includes('TUTTI'));
-                if (tutti) {
-                    tutti.click();
-                    console.log('TUTTI clicked');
-                }
+                if (tutti) tutti.click();
             }""")
             time.sleep(10)
 
-            # SCROLLING per caricare la lista ora sbloccata
-            print("🖱️ Deep scrolling for full season...")
+            # SCROLLING
+            print("🖱️ Deep scrolling...")
             for i in range(25):
                 page.mouse.wheel(0, 4000)
                 time.sleep(1)
 
-            # ESTRAZIONE DATI
+            # ESTRAZIONE
             print("📊 Extracting races...")
             results = page.evaluate("""() => {
                 const out = [];
                 document.querySelectorAll('.v-card').forEach(card => {
                     const txt = card.innerText || "";
                     if (txt.includes('2026') && txt.length > 60) {
-                        const lines = txt.split('
-').map(l => l.trim()).filter(l => l.length > 1);
+                        const lines = txt.split('\\n').map(l => l.trim()).filter(l => l.length > 1);
                         if (lines.length >= 3) {
-                            out.push(`${lines[0]} | ${lines[1]} | ${lines[lines.length-1]}`);
+                            out.push(lines[0] + ' | ' + lines[1] + ' | ' + lines[lines.length-1]);
                         }
                     }
                 });
@@ -55,10 +47,12 @@ def run():
             }""")
 
             if results:
-                with open("gare_fitri_2026.txt", "w", encoding="utf-8") as f:
+                filename = "gare_fitri_2026.txt"
+                with open(filename, "w", encoding="utf-8") as f:
                     for line in results:
-                        f.write(line + "
-")
+                        # Scrittura sicura senza \n letterale nel codice
+                        f.write(line)
+                        f.write(chr(10))
                 print(f"✅ SUCCESS: {len(results)} races saved!")
             else:
                 print("❌ ERROR: No data extracted.")
