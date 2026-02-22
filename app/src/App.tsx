@@ -503,8 +503,6 @@ const App: React.FC = () => {
         const matchesDistance = filterDistance === "Tutte" || race.distance === filterDistance;
         
         // Logica filtri speciali (Paratriathlon, Kids, Youth)
-        // Se non è selezionato nulla, mostra tutto.
-        // Se è selezionato qualcosa, la gara deve contenere ALMENO uno dei termini selezionati.
         const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => {
             const searchStr = s.toLowerCase();
             return (race.category?.toLowerCase() || "").includes(searchStr) || 
@@ -518,7 +516,7 @@ const App: React.FC = () => {
         const dateB = b.date.split("-").reverse().join("-");
         return dateA.localeCompare(dateB);
     });
-  }, [races, searchTerm, filterType, filterRegion, filterDistance]);
+  }, [races, searchTerm, filterType, filterRegion, filterDistance, filterSpecial]);
 
   const myPlan = useMemo(() => {
     return races.filter((r) => selectedRaces.includes(r.id))
