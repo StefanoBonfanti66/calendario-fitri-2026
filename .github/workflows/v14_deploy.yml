@@ -1,4 +1,4 @@
-name: MTT ULTIMATE FIX V13
+name: MTT FINAL V14
 
 on:
   schedule:
@@ -21,7 +21,7 @@ jobs:
         pip install playwright
         npx playwright install --with-deps chromium
     - name: Run
-      run: python mtt_ultimate_v13.py
+      run: python mtt_final_v14.py
     - name: Push
       run: |
         git config --global user.name "GitHub Action"
