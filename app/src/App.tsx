@@ -200,6 +200,7 @@ const App: React.FC = () => {
   const [filterType, setFilterType] = useState("Tutti");
   const [filterRegion, setFilterRegion] = useState("Tutte");
   const [filterDistance, setFilterDistance] = useState("Tutte");
+  const [filterSpecial, setFilterSpecial] = useState<string[]>([]);
   const [homeCity, setHomeCity] = useState(localStorage.getItem("home_city") || "");
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
@@ -500,7 +501,16 @@ const App: React.FC = () => {
         const matchesType = filterType === "Tutti" || race.type === filterType || (race.type === "Winter" && filterType === "Winter");
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
         const matchesDistance = filterDistance === "Tutte" || race.distance === filterDistance;
-        return matchesSearch && matchesType && matchesRegion && matchesDistance;
+        
+        // Logica filtri speciali (Paratriathlon, Kids, Youth)
+        // Se non è selezionato nulla, mostra tutto.
+        // Se è selezionato qualcosa, la gara deve contenere ALMENO uno dei termini selezionati nella categoria o nel titolo.
+        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => 
+            (race.category && race.category.toLowerCase().includes(s.toLowerCase())) || 
+            (race.title && race.title.toLowerCase().includes(s.toLowerCase()))
+        );
+
+        return matchesSearch && matchesType && matchesRegion && matchesDistance && matchesSpecial;
     }).sort((a,b) => {
         const dateA = a.date.split("-").reverse().join("-");
         const dateB = b.date.split("-").reverse().join("-");
@@ -516,6 +526,57 @@ const App: React.FC = () => {
             return dateA.localeCompare(dateB);
         });
   }, [races, selectedRaces]);
+
+  // Countdown Hero Logic
+  const nextObjective = useMemo(() => {
+    const now = new Date();
+    return myPlan.find(r => {
+        const p = racePriorities[r.id] || 'C';
+        if (p !== 'A') return false;
+        const [d, m, y] = r.date.split("-");
+        const raceDate = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+        return raceDate > now;
+    });
+  }, [myPlan, racePriorities]);
+
+  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, mins: number} | null>(null);
+
+  useEffect(() => {
+    if (!nextObjective) {
+        setTimeLeft(null);
+        return;
+    }
+
+    const timer = setInterval(() => {
+        const [d, m, y] = nextObjective.date.split("-");
+        const raceDate = new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime();
+        const now = new Date().getTime();
+        const diff = raceDate - now;
+
+        if (diff > 0) {
+            setTimeLeft({
+                days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                mins: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+            });
+        }
+    }, 60000);
+
+    // Eseguiamo il primo calcolo immediato
+    const [d, m, y] = nextObjective.date.split("-");
+    const raceDate = new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime();
+    const now = new Date().getTime();
+    const diff = raceDate - now;
+    if (diff > 0) {
+        setTimeLeft({
+            days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+            mins: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+        });
+    }
+
+    return () => clearInterval(timer);
+  }, [nextObjective]);
 
   const getRankColor = useCallback((rank: string) => {
     switch(rank) {
@@ -576,9 +637,15 @@ const App: React.FC = () => {
                 <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <Filter className="w-4 h-4 text-blue-500" /> Filtri Avanzati
                 </h2>
-                { (searchTerm || filterType !== 'Tutti' || filterRegion !== 'Tutte') && (
+                { (searchTerm || filterType !== 'Tutti' || filterRegion !== 'Tutte' || filterSpecial.length > 0) && (
                     <button 
-                        onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterRegion("Tutte"); setFilterDistance("Tutte"); }}
+                        onClick={() => { 
+                            setSearchTerm(""); 
+                            setFilterType("Tutti"); 
+                            setFilterRegion("Tutte"); 
+                            setFilterDistance("Tutte"); 
+                            setFilterSpecial([]);
+                        }}
                         className="text-[10px] font-bold text-blue-600 hover:underline"
                     >
                         Reset
@@ -612,6 +679,29 @@ const App: React.FC = () => {
                         }`}
                     >
                         {type}
+                    </button>
+                    ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Settori Speciali</label>
+                <div className="flex flex-wrap gap-2">
+                    {["Paratriathlon", "Kids", "Youth"].map((s) => (
+                    <button
+                        key={s}
+                        onClick={() => {
+                            setFilterSpecial(prev => 
+                                prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]
+                            );
+                        }}
+                        className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${
+                        (filterSpecial.includes(s))
+                            ? "bg-blue-600 text-white shadow-md shadow-blue-100" 
+                            : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                        }`}
+                    >
+                        {s}
                     </button>
                     ))}
                 </div>
@@ -764,6 +854,41 @@ const App: React.FC = () => {
         </div>
 
         <div className="lg:col-span-8 space-y-6">
+            {/* Countdown Hero */}
+            {nextObjective && timeLeft && (
+                <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[2.5rem] p-8 text-white shadow-xl shadow-red-100 overflow-hidden relative">
+                    <div className="absolute -right-10 -bottom-10 opacity-10">
+                        <Trophy className="w-64 h-64" />
+                    </div>
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="space-y-2 text-center md:text-left">
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] bg-white/20 px-3 py-1 rounded-full">Next Major Goal</span>
+                            <h2 className="text-3xl font-black leading-none">{nextObjective.event || nextObjective.title}</h2>
+                            <p className="text-red-100 font-bold flex items-center justify-center md:justify-start gap-2">
+                                <MapPin className="w-4 h-4" /> {nextObjective.location}
+                            </p>
+                        </div>
+                        
+                        <div className="flex gap-4 items-center">
+                            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md rounded-3xl p-4 min-w-[80px] border border-white/10">
+                                <span className="text-3xl font-black">{timeLeft.days}</span>
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-red-200">Giorni</span>
+                            </div>
+                            <div className="text-2xl font-black opacity-30">:</div>
+                            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md rounded-3xl p-4 min-w-[80px] border border-white/10">
+                                <span className="text-3xl font-black">{timeLeft.hours}</span>
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-red-200">Ore</span>
+                            </div>
+                            <div className="text-2xl font-black opacity-30">:</div>
+                            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md rounded-3xl p-4 min-w-[80px] border border-white/10">
+                                <span className="text-3xl font-black">{timeLeft.mins}</span>
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-red-200">Minuti</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Season Dashboard */}
             {selectedRaces.length > 0 && (
                 <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-slate-200 overflow-hidden relative group">
