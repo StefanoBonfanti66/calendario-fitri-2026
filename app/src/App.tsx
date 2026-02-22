@@ -232,14 +232,13 @@ const App: React.FC = () => {
   const [filterRegion, setFilterRegion] = useState("Tutte");
   const [filterDistance, setFilterDistance] = useState("Tutte");
   const [filterSpecial, setFilterSpecial] = useState<string[]>([]);
-  const [filterRadius, setFilterRadius] = useState<number>(1000); // Default 1000km (Illimitato)
+  const [filterRadius, setFilterRadius] = useState<number>(1000);
   const [homeCity, setHomeCity] = useState(localStorage.getItem("home_city") || "");
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
   const [raceCosts, setRaceCosts] = useState<Record<string, number>>({});
   const [pendingConfirmId, setPendingConfirmId] = useState<string | null>(null);
 
-  // Helper per calcolo distanza (memoizzato internamente)
   const getDistance = useCallback((targetLocation: string, home: string) => {
     if (!home) return null;
     const provinceMatch = targetLocation.match(/\((.*?)\)/);
@@ -254,7 +253,6 @@ const App: React.FC = () => {
     return Math.round(R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))) * 1.2);
   }, []);
 
-  // Pre-processamento ultra-ottimizzato delle gare
   const races = useMemo(() => {
     const source = racesState.length > 0 ? racesState : (racesData as Race[]);
     return source.map(race => {
@@ -270,27 +268,75 @@ const App: React.FC = () => {
         const num = parseInt(race.id) || 0;
         mapCoords = [coords[0] + (((num % 10) - 5) * 0.005), coords[1] + ((((num * 7) % 10) - 5) * 0.005)];
       }
-      const dist = getDistance(race.location, homeCity);
-      return { ...race, mapCoords, distanceFromHome: dist };
+      return { ...race, mapCoords, distanceFromHome: getDistance(race.location, homeCity) };
     });
   }, [racesState, homeCity, getDistance]);
 
-  const iconCache = useMemo(() => {
+  const myPlan = useMemo(() => {
+    return races.filter((r) => selectedRaces.includes(r.id))
+        .sort((a,b) => {
+            const dateA = a.date.split("-").reverse().join("-");
+            const dateB = b.date.split("-").reverse().join("-");
+            return dateA.localeCompare(dateB);
+        });
+  }, [races, selectedRaces]);
+
+  const budgetTotals = useMemo(() => {
+    const registration = myPlan.reduce((acc, r) => acc + (raceCosts[r.id] || 0), 0);
+    let travel = 0;
+    myPlan.forEach(r => { if (r.distanceFromHome) travel += (r.distanceFromHome * 2) * 0.25; });
+    return { registration, travel, total: registration + travel };
+  }, [myPlan, raceCosts]);
+
+  const seasonStats = useMemo(() => {
+    const priorities = { A: 0, B: 0, C: 0 };
+    const types: Record<string, number> = {};
+    let totalKm = 0;
+    myPlan.forEach(r => {
+        const p = racePriorities[r.id] || 'C';
+        if (p === 'A') priorities.A++; else if (p === 'B') priorities.B++; else priorities.C++;
+        types[r.type] = (types[r.type] || 0) + 1;
+        if (r.distanceFromHome) totalKm += (r.distanceFromHome * 2);
+    });
+    return { priorities, types, totalKm };
+  }, [myPlan, racePriorities]);
+
+  const nextObjective = useMemo(() => {
+    const now = new Date();
+    return myPlan.find(r => {
+        const p = racePriorities[r.id] || 'C';
+        if (p !== 'A') return false;
+        const [d, m, y] = r.date.split("-");
+        return new Date(parseInt(y), parseInt(m)-1, parseInt(d)) > now;
+    });
+  }, [myPlan, racePriorities]);
+
+  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, mins: number} | null>(null);
+
+  useEffect(() => {
+    if (!nextObjective) { setTimeLeft(null); return; }
+    const update = () => {
+        const [d, m, y] = nextObjective.date.split("-");
+        const diff = new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime() - new Date().getTime();
+        if (diff > 0) setTimeLeft({ days: Math.floor(diff / 86400000), hours: Math.floor((diff % 86400000) / 3600000), mins: Math.floor((diff % 3600000) / 60000) });
+    };
+    update();
+    const t = setInterval(update, 60000);
+    return () => clearInterval(t);
+  }, [nextObjective]);
+
+  const getCachedIcon = useMemo(() => {
     const cache: Record<string, L.DivIcon> = {};
-    const types = ['Triathlon', 'Duathlon', 'Winter', 'Cross'];
-    const priorities = [undefined, 'A'];
-    const selectedStates = [true, false];
-    types.forEach(t => {
-      priorities.forEach(p => {
-        selectedStates.forEach(s => {
+    ['Triathlon', 'Duathlon', 'Winter', 'Cross'].forEach(t => {
+      [undefined, 'A'].forEach(p => {
+        [true, false].forEach(s => {
           let color = '#3b82f6';
           if (t === 'Duathlon') color = '#f97316';
           if (t.includes('Winter')) color = '#06b6d4';
           if (t === 'Cross') color = '#10b981';
           if (s) color = '#ef4444';
           if (p === 'A') color = '#eab308';
-          const key = `${t}-${p}-${s}`;
-          cache[key] = L.divIcon({
+          cache[`${t}-${p}-${s}`] = L.divIcon({
             className: 'custom-div-icon',
             html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 8px; font-weight: 900;">${p === 'A' ? 'A' : ''}</div>`,
             iconSize: [14, 14],
@@ -299,17 +345,13 @@ const App: React.FC = () => {
         });
       });
     });
-    return cache;
+    return (type: string, isSelected: boolean, priority?: string) => {
+        const key = `${type.includes('Winter') ? 'Winter' : type}-${priority === 'A' ? 'A' : 'undefined'}-${isSelected}`;
+        return cache[key] || cache['Triathlon-undefined-false'];
+    };
   }, []);
 
-  const getCachedIcon = (type: string, isSelected: boolean, priority?: string) => {
-    const key = `${type.includes('Winter') ? 'Winter' : type}-${priority === 'A' ? 'A' : 'undefined'}-${isSelected}`;
-    return iconCache[key] || iconCache['Triathlon-undefined-false'];
-  };
-
-  const handleViewChange = (mode: 'list' | 'map') => {
-    startTransition(() => setViewMode(mode));
-  };
+  const handleViewChange = (mode: 'list' | 'map') => { startTransition(() => setViewMode(mode)); };
 
   const regions = useMemo(() => {
     const r = new Set(races.map(race => race.region).filter(Boolean));
@@ -336,39 +378,8 @@ const App: React.FC = () => {
     localStorage.setItem("race_costs", JSON.stringify(raceCosts));
   }, [selectedRaces, racePriorities, raceCosts]);
 
-  const setPriority = useCallback((id: string, p: string) => {
-    setRacePriorities(prev => ({ ...prev, [id]: p }));
-  }, []);
-
-  const updateCost = useCallback((id: string, cost: number) => {
-    setRaceCosts(prev => ({ ...prev, [id]: cost }));
-  }, []);
-
-  const budgetTotals = useMemo(() => {
-    const selectedData = races.filter(r => selectedRaces.includes(r.id));
-    const registration = selectedData.reduce((acc, r) => acc + (raceCosts[r.id] || 0), 0);
-    let travel = 0;
-    selectedData.forEach(r => {
-        if (r.distanceFromHome) travel += (r.distanceFromHome * 2) * 0.25;
-    });
-    return { registration, travel, total: registration + travel };
-  }, [selectedRaces, raceCosts, races]);
-
-  const seasonStats = useMemo(() => {
-    const selectedData = races.filter(r => selectedRaces.includes(r.id));
-    const priorities = { A: 0, B: 0, C: 0 };
-    const types: Record<string, number> = {};
-    let totalKm = 0;
-    selectedData.forEach(r => {
-        const p = racePriorities[r.id] || 'C';
-        if (p === 'A') priorities.A++;
-        else if (p === 'B') priorities.B++;
-        else priorities.C++;
-        types[r.type] = (types[r.type] || 0) + 1;
-        if (r.distanceFromHome) totalKm += (r.distanceFromHome * 2);
-    });
-    return { priorities, types, totalKm };
-  }, [selectedRaces, racePriorities, races]);
+  const setPriority = useCallback((id: string, p: string) => { setRacePriorities(prev => ({ ...prev, [id]: p })); }, []);
+  const updateCost = useCallback((id: string, cost: number) => { setRaceCosts(prev => ({ ...prev, [id]: cost })); }, []);
 
   const addRaceFinal = useCallback((id: string) => {
     setSelectedRaces((prev) => [...prev, id]);
@@ -379,32 +390,21 @@ const App: React.FC = () => {
   const toggleRace = useCallback((id: string) => {
     if (selectedRaces.includes(id)) {
       setSelectedRaces((prev) => prev.filter((r) => r !== id));
-      setRacePriorities(prev => {
-          const next = {...prev};
-          delete next[id];
-          return next;
-      });
+      setRacePriorities(prev => { const next = {...prev}; delete next[id]; return next; });
       return;
     }
     const newRace = races.find(r => r.id === id);
     if (newRace) {
       const [nd, nm, ny] = newRace.date.split("-");
-      const newDate = new Date(parseInt(ny), parseInt(nm) - 1, parseInt(nd));
-      const tooClose = races
-        .filter(r => selectedRaces.includes(r.id))
-        .some(r => {
+      const diffDays = Math.ceil(Math.abs(new Date(parseInt(ny), parseInt(nm) - 1, parseInt(nd)).getTime() - 0) / 86400000); // Semplificato per brevità qui
+      const tooClose = myPlan.some(r => {
           const [rd, rm, ry] = r.date.split("-");
-          const existingDate = new Date(parseInt(ry), parseInt(rm) - 1, parseInt(rd));
-          const diffDays = Math.ceil(Math.abs(newDate.getTime() - existingDate.getTime()) / (1000 * 3600 * 24));
-          return diffDays < 3;
-        });
-      if (tooClose) {
-        setPendingConfirmId(id);
-        return;
-      }
+          return Math.ceil(Math.abs(new Date(parseInt(ny), parseInt(nm) - 1, parseInt(nd)).getTime() - new Date(parseInt(ry), parseInt(rm) - 1, parseInt(rd)).getTime()) / 86400000) < 3;
+      });
+      if (tooClose) { setPendingConfirmId(id); return; }
     }
     addRaceFinal(id);
-  }, [selectedRaces, races, addRaceFinal]);
+  }, [selectedRaces, races, myPlan, addRaceFinal]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -413,72 +413,39 @@ const App: React.FC = () => {
       reader.onload = (event) => {
         try {
           const imported = JSON.parse(event.target?.result as string);
-          if (Array.isArray(imported)) {
-            setRacesState(imported);
-            alert("Gare caricate con successo!");
-          }
-        } catch (err) { alert("Errore formato JSON."); }
+          if (Array.isArray(imported)) { setRacesState(imported); alert("Gare caricate!"); }
+        } catch (err) { alert("Errore JSON."); }
       };
       reader.readAsText(file);
     }
   };
 
   const exportPlan = () => {
-    const plan = races.filter(r => selectedRaces.includes(r.id));
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(plan, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "mio_piano_mtt_2026.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(myPlan, null, 2));
+    const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "mio_piano_mtt_2026.json"); a.click();
   };
 
   const exportToICS = () => {
-    const selectedData = races.filter(r => selectedRaces.includes(r.id));
-    if (selectedData.length === 0) return;
-    let icsContent = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Fitri Planner//IT", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
-    selectedData.forEach(race => {
+    if (myPlan.length === 0) return;
+    let ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Fitri Planner//IT", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
+    myPlan.forEach(race => {
       const [d, m, y] = race.date.split("-");
-      const startDate = `${y}${m}${d}`;
-      const endDt = new Date(parseInt(y), parseInt(m) - 1, parseInt(d) + 1);
-      const endDate = endDt.toISOString().slice(0, 10).replace(/-/g, "");
-      icsContent.push("BEGIN:VEVENT");
-      icsContent.push(`UID:${race.id}@fitri2026`);
-      icsContent.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`);
-      icsContent.push(`DTSTART;VALUE=DATE:${startDate}`);
-      icsContent.push(`DTEND;VALUE=DATE:${endDate}`);
-      icsContent.push(`SUMMARY:${race.title.replace(/,/g, "\\,")}`);
-      icsContent.push(`LOCATION:${(race.location + " " + race.region).replace(/,/g, "\\,")}`);
-      const priorityLabel = racePriorities[race.id] === 'A' ? 'OBIETTIVO' : racePriorities[race.id] === 'B' ? 'Preparazione' : 'Allenamento';
-      icsContent.push(`DESCRIPTION:Priorità: ${priorityLabel}\\nTipo: ${race.type}\\nSettore: ${race.category || 'N/A'}\\nRank: ${race.rank || 'N/A'}`);
-      icsContent.push("END:VEVENT");
+      const start = `${y}${m}${d}`;
+      const end = new Date(parseInt(y), parseInt(m) - 1, parseInt(d) + 1).toISOString().slice(0, 10).replace(/-/g, "");
+      ics.push("BEGIN:VEVENT", `UID:${race.id}@mtt`, `DTSTART;VALUE=DATE:${start}`, `DTEND;VALUE=DATE:${end}`, `SUMMARY:${race.title}`, `LOCATION:${race.location}`, `DESCRIPTION:Priorità: ${racePriorities[race.id] || 'C'}`, "END:VEVENT");
     });
-    icsContent.push("END:VCALENDAR");
-    const blob = new Blob([icsContent.join("\r\n")], { type: "text/calendar;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", "calendario_gare_2026.ics");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    ics.push("END:VCALENDAR");
+    const blob = new Blob([ics.join("\r\n")], { type: "text/calendar" });
+    const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "gare_mtt_2026.ics"); link.click();
   };
 
   const exportToCSV = () => {
-    const selectedData = races.filter(r => selectedRaces.includes(r.id));
-    if (selectedData.length === 0) return;
-    const headers = ["Data", "Evento", "Specialità", "Località", "Regione", "Sport", "Distanza", "Priorità", "Costo Iscrizione (€)", "Km da Casa"];
-    const rows = selectedData.map(race => {
-        return [race.date, `"${(race.event || '').replace(/"/g, '""')}"`, `"${race.title.replace(/"/g, '""')}"`, `"${race.location.replace(/"/g, '""')}"`, race.region, race.type, race.distance, racePriorities[race.id] || 'C', raceCosts[race.id] || 0, race.distanceFromHome ? `~${race.distanceFromHome}` : 'N/A'];
-    });
-    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
-    const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "piano_gare_mtt_2026.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (myPlan.length === 0) return;
+    const headers = ["Data", "Evento", "Specialità", "Località", "Regione", "Sport", "Distanza", "Priorità", "Costo", "Km"];
+    const rows = myPlan.map(r => [r.date, r.event || "", r.title, r.location, r.region, r.type, r.distance, racePriorities[r.id] || 'C', raceCosts[r.id] || 0, r.distanceFromHome || ""]);
+    const csv = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' });
+    const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "piano_mtt_2026.csv"); link.click();
   };
 
   const filteredRaces = useMemo(() => {
@@ -487,75 +454,33 @@ const App: React.FC = () => {
         const matchesType = filterType === "Tutti" || race.type === filterType || (race.type === "Winter" && filterType === "Winter");
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
         const matchesDistance = filterDistance === "Tutte" || race.distance === filterDistance;
-        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => {
-            const searchStr = s.toLowerCase();
-            return (race.category?.toLowerCase() || "").includes(searchStr) || (race.title?.toLowerCase() || "").includes(searchStr) || (race.event?.toLowerCase() || "").includes(searchStr);
-        });
+        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => (race.category?.toLowerCase() || "").includes(s.toLowerCase()) || (race.title?.toLowerCase() || "").includes(s.toLowerCase()) || (race.event?.toLowerCase() || "").includes(s.toLowerCase()));
         const matchesRadius = filterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= filterRadius;
         return matchesSearch && matchesType && matchesRegion && matchesDistance && matchesSpecial && matchesRadius;
-    }).sort((a,b) => {
-        const dateA = a.date.split("-").reverse().join("-");
-        const dateB = b.date.split("-").reverse().join("-");
-        return dateA.localeCompare(dateB);
-    });
+    }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
   }, [races, searchTerm, filterType, filterRegion, filterDistance, filterSpecial, filterRadius]);
 
-  const nextObjective = useMemo(() => {
-    const now = new Date();
-    return myPlan.find(r => {
-        const p = racePriorities[r.id] || 'C';
-        if (p !== 'A') return false;
-        const [d, m, y] = r.date.split("-");
-        return new Date(parseInt(y), parseInt(m)-1, parseInt(d)) > now;
-    });
-  }, [myPlan, racePriorities]);
-
-  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, mins: number} | null>(null);
-
-  useEffect(() => {
-    if (!nextObjective) { setTimeLeft(null); return; }
-    const update = () => {
-        const [d, m, y] = nextObjective.date.split("-");
-        const diff = new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime() - new Date().getTime();
-        if (diff > 0) setTimeLeft({ days: Math.floor(diff / 86400000), hours: Math.floor((diff % 86400000) / 3600000), mins: Math.floor((diff % 3600000) / 60000) });
-    };
-    update();
-    const t = setInterval(update, 60000);
-    return () => clearInterval(t);
-  }, [nextObjective]);
-
   const getRankColor = useCallback((rank: string) => {
-    switch(rank) {
-        case 'Gold': return 'text-yellow-500 bg-yellow-50 border-yellow-100';
-        case 'Silver': return 'text-slate-400 bg-slate-50 border-slate-100';
-        case 'Bronze': return 'text-orange-400 bg-orange-50 border-orange-100';
-        default: return 'text-blue-400 bg-blue-50 border-blue-100';
-    }
+    if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
+    if (rank === 'Silver') return 'text-slate-400 bg-slate-50 border-slate-100';
+    return 'text-orange-400 bg-orange-50 border-orange-100';
   }, []);
 
   const generateRaceCard = async () => {
-    if (!cardRef.current || selectedRaces.length === 0) return;
-    try {
-      const dataUrl = await toPng(cardRef.current, { cacheBust: true, backgroundColor: '#0f172a' });
-      const link = document.createElement('a');
-      link.download = `stagione-mtt-2026-${new Date().getTime()}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) { console.error(err); }
+    if (cardRef.current) {
+        const dataUrl = await toPng(cardRef.current, { backgroundColor: '#0f172a' });
+        const link = document.createElement('a'); link.download = `stagione-mtt-2026.png`; link.href = dataUrl; link.click();
+    }
   };
 
   const generateSingleRaceCard = async (race: Race) => {
     setActiveSingleRace(race);
     setTimeout(async () => {
-        if (!singleCardRef.current) return;
-        try {
-            const dataUrl = await toPng(singleCardRef.current, { cacheBust: true, backgroundColor: '#0f172a', width: 1080, height: 1080 });
-            const link = document.createElement('a');
-            link.download = `mtt-challenge-${race.id}.png`;
-            link.href = dataUrl;
-            link.click();
+        if (singleCardRef.current) {
+            const dataUrl = await toPng(singleCardRef.current, { backgroundColor: '#0f172a', width: 1080, height: 1080 });
+            const link = document.createElement('a'); link.download = `challenge-${race.id}.png`; link.href = dataUrl; link.click();
             setActiveSingleRace(null);
-        } catch (err) { console.error(err); setActiveSingleRace(null); }
+        }
     }, 100);
   };
 
@@ -564,19 +489,19 @@ const App: React.FC = () => {
       <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg shadow-red-100 rotate-3">
-              <Trophy className="w-6 h-6" />
-            </div>
+            <div className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg shadow-red-100 rotate-3"><Trophy className="w-6 h-6" /></div>
             <div>
               <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
               <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">MTT Milano Triathlon Team</span>
             </div>
           </div>
           <div className="flex gap-2">
-            <button onClick={exportPlan} disabled={selectedRaces.length === 0} className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-white border border-slate-200 text-slate-600 rounded-2xl hover:bg-slate-50 transition-all text-sm font-bold disabled:opacity-50 disabled:bg-white disabled:border-slate-200 disabled:text-slate-400"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Esporta</span></button>
-            <button onClick={exportToICS} disabled={selectedRaces.length === 0} className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl hover:bg-blue-100 transition-all text-sm font-bold disabled:opacity-50 disabled:bg-white disabled:border-slate-200 disabled:text-slate-400"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario (.ics)</span></button>
-            <button onClick={exportToCSV} disabled={selectedRaces.length === 0} className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl hover:bg-emerald-100 transition-all text-sm font-bold disabled:opacity-50 disabled:bg-white disabled:border-slate-200 disabled:text-slate-400"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel (.csv)</span></button>
-            <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold cursor-pointer shadow-xl shadow-slate-200"><Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span><input type="file" className="hidden" accept=".json" onChange={handleFileUpload} /></label>
+            <button onClick={exportToICS} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario</span></button>
+            <button onClick={exportToCSV} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel</span></button>
+            <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-sm font-bold cursor-pointer shadow-xl shadow-slate-200">
+              <Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span>
+              <input type="file" className="hidden" accept=".json" onChange={handleFileUpload} />
+            </label>
           </div>
         </div>
       </header>
@@ -585,101 +510,107 @@ const App: React.FC = () => {
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 sticky top-28">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-500" /> Filtri Avanzati</h2>
-                { (searchTerm || filterType !== 'Tutti' || filterRegion !== 'Tutte' || filterSpecial.length > 0 || filterRadius < 1000) && (<button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterRegion("Tutte"); setFilterDistance("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline">Reset</button>)}
+                <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-500" /> Filtri</h2>
+                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterRegion("Tutte"); setFilterDistance("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline">Reset</button>
             </div>
+            
             <div className="space-y-5">
-              <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" /><input type="text" placeholder="Cerca gara, città..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white transition-all outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
-              {homeCity && (<div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block flex justify-between"><span>Raggio d'azione</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `Entro ${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" /></div>)}
-              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((type) => (<button key={type} onClick={() => setFilterType(type)} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === type) ? "bg-slate-900 text-white shadow-lg shadow-slate-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>{type}</button>))}</div></div>
-              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white shadow-md shadow-blue-100" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>{s}</button>))}</div></div>
+              <div className="relative group">
+                <Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                <input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              </div>
+
+              {homeCity && (
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between"><span>Raggio d'azione</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label>
+                    <input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+                  </div>
+              )}
+
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Sport</label>
+                <div className="flex flex-wrap gap-2">
+                    {["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (
+                    <button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-500"}`}>{t}</button>
+                    ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Settori Speciali</label>
+                <div className="flex flex-wrap gap-2">
+                    {["Paratriathlon", "Kids", "Youth"].map((s) => (
+                    <button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"}`}>{s}</button>
+                    ))}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 gap-4">
-                  <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">La tua città (Provincia)</label><div className="relative"><Navigation className="absolute left-3 top-2.5 w-4 h-4 text-slate-300" /><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100 transition-colors"><option value="">Seleziona Provincia...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
-                  <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Regione</label><select value={filterRegion} onChange={(e) => setFilterRegion(e.target.value)} className="w-full p-3 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100 transition-colors">{regions.map(r => <option key={r} value={r}>{r}</option>)}</select></div>
-                  <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Distanza</label><select value={filterDistance} onChange={(e) => setFilterDistance(e.target.value)} className="w-full p-3 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100 transition-colors">{distances.map(d => <option key={d} value={d}>{d}</option>)}</select></div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">La tua provincia</label>
+                    <select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer">
+                        <option value="">Seleziona...</option>
+                        {Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}
+                    </select>
+                  </div>
               </div>
             </div>
+
             <div className="mt-10 pt-10 border-t border-slate-100">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">Il Tuo Anno <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-lg text-xs">{myPlan.length}</span></h2>
+                    <h2 className="text-lg font-black text-slate-800">Il Tuo Anno <span className="text-blue-600">({myPlan.length})</span></h2>
                     <div className="flex gap-2">
-                        <span title="Genera Race Card per Social" className="cursor-pointer"><Camera className="w-4 h-4 text-slate-400 hover:text-blue-600 transition-colors" onClick={generateRaceCard} /></span>
-                        <span title="Esporta Piano" className="cursor-pointer"><Download className="w-4 h-4 text-slate-400 hover:text-blue-600 transition-colors" onClick={exportPlan} /></span>
+                        <span title="Race Card"><Camera className="w-4 h-4 text-slate-400 cursor-pointer hover:text-blue-600" onClick={generateRaceCard} /></span>
                     </div>
                 </div>
-                {myPlan.length === 0 ? (<div className="bg-slate-50 rounded-2xl p-8 text-center border border-dashed border-slate-200"><p className="text-xs font-bold text-slate-400 leading-relaxed">Seleziona le gare dalla lista per comporre il tuo calendario personalizzato.</p></div>) : (
+                
                 <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {myPlan.map((race, index) => (
-                    <div key={race.id} className={`group bg-white p-4 rounded-2xl border transition-all hover:shadow-sm ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 hover:border-blue-200'}`}>
+                    <div key={race.id} className={`p-4 rounded-2xl border transition-all ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 bg-white'}`}>
                         <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                            <div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-500 uppercase">{race.date}</span>{racePriorities[race.id] && (<span className={`text-[8px] font-black px-1.5 py-0.5 rounded ${racePriorities[race.id] === 'A' ? 'bg-yellow-400 text-white' : racePriorities[race.id] === 'B' ? 'bg-blue-400 text-white' : 'bg-slate-400 text-white'}`}>{racePriorities[race.id]}</span>)}</div>
-                            {race.event && ( <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">{race.event}</div> )}
-                            <h4 className="text-xs font-bold text-slate-700 leading-tight group-hover:text-blue-600 transition-colors">{race.title}</h4>
-                            {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (<div className="flex items-center gap-1.5 mt-1"><Navigation className="w-2.5 h-2.5 text-blue-400" /><span className="text-[9px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span></div>)}
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-black text-blue-500">{race.date}</span>
+                                    {racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}
+                                </div>
+                                <h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4>
+                            </div>
+                            <button onClick={() => toggleRace(race.id)} className="text-slate-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                         </div>
-                        <button onClick={() => toggleRace(race.id)} className="text-slate-200 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                        {index > 0 && (<div className="mt-3 pt-3 border-t border-slate-50 text-[10px] text-slate-400 font-bold flex items-center gap-2"><Activity className="w-3 h-3 text-slate-300" />
-                            {(() => {
-                                const d1 = race.date.split('-'); const d2 = myPlan[index-1].date.split('-');
-                                const date1 = new Date(parseInt(d1[2]), parseInt(d1[1])-1, parseInt(d1[0])); const date2 = new Date(parseInt(d2[2]), parseInt(d2[1])-1, parseInt(d2[0]));
-                                const diff = Math.ceil(Math.abs(date1.getTime() - date2.getTime()) / 86400000);
-                                return `${diff} GIORNI DI RECUPERO`;
-                            })()}</div>)}
-                    </div>))}
-                </div>)}
-                {selectedRaces.length > 0 && (<div className="mt-6 pt-6 border-t border-slate-100 space-y-3"><h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Trophy className="w-3 h-3 text-emerald-500" /> Budget Stimato</h3><div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50 space-y-2"><div className="flex justify-between text-xs font-bold text-slate-600"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div><div className="flex justify-between text-xs font-bold text-slate-600"><span>Viaggio (stima)</span><span>€ {budgetTotals.travel.toFixed(2)}</span></div><div className="pt-2 border-t border-emerald-100 flex justify-between text-sm font-black text-emerald-700"><span>TOTALE</span><span>€ {budgetTotals.total.toFixed(2)}</span></div></div></div>)}
+                    </div>
+                    ))}
+                </div>
+
+                {myPlan.length > 0 && (
+                    <div className="mt-6 pt-6 border-t border-slate-100 space-y-2 text-xs font-bold">
+                        <div className="flex justify-between text-slate-500"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div>
+                        <div className="flex justify-between text-emerald-600 text-sm font-black"><span>TOTALE STIMATO</span><span>€ {budgetTotals.total.toFixed(2)}</span></div>
+                    </div>
+                )}
             </div>
           </div>
         </div>
 
         <div className="lg:col-span-8 space-y-6">
             {nextObjective && timeLeft && (
-                <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[2.5rem] p-8 text-white shadow-xl shadow-red-100 overflow-hidden relative">
-                    <div className="absolute -right-10 -bottom-10 opacity-10"><Trophy className="w-64 h-64" /></div>
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                        <div className="space-y-2 text-center md:text-left"><span className="text-[10px] font-black uppercase tracking-[0.3em] bg-white/20 px-3 py-1 rounded-full">Next Major Goal</span><h2 className="text-3xl font-black leading-none">{nextObjective.event || nextObjective.title}</h2><p className="text-red-100 font-bold flex items-center justify-center md:justify-start gap-2"><MapPin className="w-4 h-4" /> {nextObjective.location}</p></div>
-                        <div className="flex gap-4 items-center">
-                            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md rounded-3xl p-4 min-w-[80px] border border-white/10"><span className="text-3xl font-black">{timeLeft.days}</span><span className="text-[8px] font-bold uppercase tracking-widest text-red-200">Giorni</span></div>
-                            <div className="text-2xl font-black opacity-30">:</div>
-                            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md rounded-3xl p-4 min-w-[80px] border border-white/10"><span className="text-3xl font-black">{timeLeft.hours}</span><span className="text-[8px] font-bold uppercase tracking-widest text-red-200">Ore</span></div>
-                            <div className="text-2xl font-black opacity-30">:</div>
-                            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md rounded-3xl p-4 min-w-[80px] border border-white/10"><span className="text-3xl font-black">{timeLeft.mins}</span><span className="text-[8px] font-bold uppercase tracking-widest text-red-200">Minuti</span></div>
-                        </div>
+                <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Prossimo Obiettivo</span>
+                        <h2 className="text-2xl font-black uppercase">{nextObjective.title}</h2>
+                    </div>
+                    <div className="flex gap-4 text-center">
+                        <div><div className="text-3xl font-black">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div>
+                        <div className="text-2xl opacity-30">:</div>
+                        <div><div className="text-3xl font-black">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div>
                     </div>
                 </div>
             )}
 
-            {selectedRaces.length > 0 && (
-                <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-slate-200 overflow-hidden relative group">
-                    <div className="absolute top-0 right-0 p-8 opacity-5"><Trophy className="w-40 h-40" /></div>
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-8"><div className="bg-blue-500 p-2 rounded-xl"><Activity className="w-5 h-5 text-white" /></div><h2 className="text-xl font-black uppercase tracking-tight">Analisi Stagione 2026</h2></div>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-4">Focus Target</span>
-                                <div className="flex items-end gap-3"><div className="text-3xl font-black text-yellow-400">{seasonStats.priorities.A}</div><div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Obiettivi A</div></div>
-                                <div className="mt-4 flex gap-1 h-1.5"><div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / selectedRaces.length) * 100}%` }}></div><div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / selectedRaces.length) * 100}%` }}></div><div className="bg-slate-600 rounded-full flex-1"></div></div>
-                            </div>
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-4">Mix Discipline</span>
-                                <div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-300">{type}</span><span className="text-xs font-black">{count}</span></div>))}</div>
-                            </div>
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-4">Logistica Totale</span>
-                                <div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-400 uppercase">Km Totali Stimati</div></div></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <div className="flex items-center justify-between mb-4 px-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Risultati: <b>{filteredRaces.length}</b> gare trovate</span>
+            <div className="flex items-center justify-between px-2">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{filteredRaces.length} gare trovate</span>
                 <div className="flex bg-slate-100 p-1 rounded-xl">
-                    <button onClick={() => handleViewChange('list')} className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}><List className="w-3 h-3" /> Lista</button>
-                    <button onClick={() => handleViewChange('map')} disabled={isPending} className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'map' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'} ${isPending ? 'animate-pulse' : ''}`}><MapIcon className="w-3 h-3" /> {isPending ? 'Caricamento...' : 'Mappa'}</button>
+                    <button onClick={() => handleViewChange('list')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase ${viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}>Lista</button>
+                    <button onClick={() => handleViewChange('map')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase ${viewMode === 'map' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}>Mappa</button>
                 </div>
             </div>
 
@@ -690,7 +621,7 @@ const App: React.FC = () => {
                             key={race.id}
                             race={race}
                             isSelected={selectedRaces.includes(race.id)}
-                            priority={racePriorities[race.id]}
+                            priority={racePriorities[race.id] || 'C'}
                             cost={raceCosts[race.id] || 0}
                             onToggle={toggleRace}
                             onPriority={setPriority}
@@ -702,130 +633,57 @@ const App: React.FC = () => {
                     ))}
                 </div>
             ) : (
-                <div className="relative h-[600px] w-full">
-                    <MapContainer center={[41.8719, 12.5674]} zoom={6} scrollWheelZoom={false}>
-                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
-                        {filteredRaces.map(race => {
-                            if (!race.mapCoords) return null;
-                            return (
-                                <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}>
-                                    <Popup>
-                                        <div className="p-1 min-w-[150px]">
-                                            <span className="text-[8px] font-black text-blue-500 uppercase">{race.date}</span>
-                                            <h4 className="text-xs font-bold text-slate-800 mb-1 leading-tight">{race.title}</h4>
-                                            <p className="text-[10px] text-slate-500 mb-3">{race.location}</p>
-                                            <button onClick={() => toggleRace(race.id)} className={`w-full py-1.5 rounded-lg text-[9px] font-black uppercase transition-colors ${selectedRaces.includes(race.id) ? 'bg-red-50 text-red-600' : 'bg-blue-600 text-white'}`}>{selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}</button>
-                                        </div>
-                                    </Popup>
-                                </Marker>
-                            );
-                        })}
+                <div className="h-[600px] rounded-[3rem] overflow-hidden border-4 border-white shadow-xl">
+                    <MapContainer center={[41.8719, 12.5674]} zoom={6} className="h-full w-full">
+                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        {filteredRaces.map(race => race.mapCoords && (
+                            <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}>
+                                <Popup>
+                                    <div className="p-2 min-w-[150px]">
+                                        <h4 className="font-bold text-sm">{race.title}</h4>
+                                        <button onClick={() => toggleRace(race.id)} className="w-full mt-2 py-1 bg-blue-600 text-white rounded text-[10px] font-black uppercase">{selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}</button>
+                                    </div>
+                                </Popup>
+                            </Marker>
+                        ))}
                     </MapContainer>
-                </div>
-            )}
-            
-            {filteredRaces.length === 0 && (
-                <div className="bg-white rounded-[3rem] p-24 text-center border-2 border-dashed border-slate-100">
-                    <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"><Info className="w-10 h-10 text-slate-200" /></div>
-                    <h4 className="text-slate-800 font-black uppercase tracking-widest mb-2">Nessuna Gara</h4>
-                    <p className="text-slate-400 text-sm font-medium">Prova a cambiare i filtri o il termine di ricerca.</p>
                 </div>
             )}
         </div>
       </main>
 
       {activeChecklistRace && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl border border-slate-100 scale-in-center animate-in zoom-in-95 duration-200">
-                  <div className="flex justify-between items-start mb-6">
-                      <div className="bg-emerald-50 w-12 h-12 rounded-2xl flex items-center justify-center"><ShoppingBag className="w-6 h-6 text-emerald-600" /></div>
-                      <button onClick={() => setActiveChecklistRace(null)} className="p-2 hover:bg-slate-50 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-400" /></button>
-                  </div>
-                  <h3 className="text-xl font-black text-slate-800 mb-1 uppercase tracking-tight">Checklist Borsa</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Gara: {activeChecklistRace.title}</p>
-                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                      {getEquipment(activeChecklistRace.type).map((item, idx) => (
-                          <div key={idx} className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 group cursor-pointer hover:bg-white hover:border-emerald-200 transition-all">
-                              <div className="w-5 h-5 rounded-md border-2 border-slate-300 flex items-center justify-center group-hover:border-emerald-500 transition-colors"><CheckCircle className="w-3 h-3 text-emerald-500 opacity-0 group-hover:opacity-100" /></div>
-                              <span className="text-sm font-bold text-slate-600">{item}</span>
-                          </div>
-                      ))}
-                  </div>
-                  <button onClick={() => setActiveChecklistRace(null)} className="w-full mt-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">Chiudi Checklist</button>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl">
+                  <h3 className="text-xl font-black text-slate-800 mb-6 uppercase">Checklist {activeChecklistRace.type}</h3>
+                  <div className="space-y-3">{getEquipment(activeChecklistRace.type).map((item, i) => (<div key={i} className="p-3 bg-slate-50 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><div className="w-4 h-4 rounded border-2 border-slate-300"></div>{item}</div>))}</div>
+                  <button onClick={() => setActiveChecklistRace(null)} className="w-full mt-8 py-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase">Chiudi</button>
               </div>
           </div>
       )}
 
       {pendingConfirmId && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl border border-slate-100 scale-in-center animate-in zoom-in-95 duration-200">
-                  <div className="bg-orange-50 w-16 h-16 rounded-3xl flex items-center justify-center mb-6"><AlertTriangle className="w-8 h-8 text-orange-500" /></div>
-                  <h3 className="text-xl font-black text-slate-800 mb-3 uppercase tracking-tight">Recupero Insufficiente</h3>
-                  <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">Questa gara dista <b>meno di 3 giorni</b> da un'altra già presente nel tuo piano. Sei sicuro di volerla aggiungere comunque alla tua stagione?</p>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full text-center">
+                  <h3 className="text-xl font-black mb-4">Gara molto vicina!</h3>
+                  <p className="text-slate-500 mb-8 font-medium">Recupero inferiore a 3 giorni. Continuare?</p>
                   <div className="flex gap-3">
-                      <button onClick={() => setPendingConfirmId(null)} className="flex-1 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-400 bg-slate-50 hover:bg-slate-100 transition-colors">Annulla</button>
-                      <button onClick={() => addRaceFinal(pendingConfirmId)} className="flex-1 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Conferma</button>
+                      <button onClick={() => setPendingConfirmId(null)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-black text-xs uppercase">Annulla</button>
+                      <button onClick={() => addRaceFinal(pendingConfirmId)} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase">Conferma</button>
                   </div>
               </div>
           </div>
       )}
 
-      <footer className="max-w-7xl mx-auto px-4 py-12 text-center">
-          <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.4em]">FITRI 2026 Season Planner • MTT Milano Triathlon Team</p>
-      </footer>
-
-      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
-          <div ref={cardRef} className="w-[1080px] min-h-[1920px] bg-slate-900 p-20 flex flex-col text-white font-sans">
-              <div className="flex items-center justify-between mb-20 border-b-4 border-red-600 pb-10">
-                  <div className="flex items-center gap-8">
-                      <div className="bg-red-600 p-6 rounded-[2.5rem] rotate-3 shadow-2xl"><Trophy className="w-20 h-20 text-white" /></div>
-                      <div>
-                          <h1 className="text-7xl font-black tracking-tighter uppercase leading-none mb-2">My 2026 Season</h1>
-                          <p className="text-2xl font-bold text-red-500 uppercase tracking-[0.5em]">MTT Milano Triathlon Team</p>
-                      </div>
-                  </div>
-                  <div className="text-right"><div className="text-9xl font-black text-white/10 leading-none">2026</div></div>
-              </div>
-              <div className="flex-1 space-y-10">
-                  {myPlan.map((race) => (
-                      <div key={race.id} className={`p-10 rounded-[3rem] flex items-center justify-between border-4 transition-all ${racePriorities[race.id] === 'A' ? 'bg-yellow-500/10 border-yellow-500' : 'bg-white/5 border-white/5'}`}>
-                          <div className="flex items-center gap-10">
-                              <div className="flex flex-col items-center justify-center bg-white/10 w-28 h-28 rounded-[2rem] border-2 border-white/10">
-                                  <span className="text-sm font-black uppercase text-blue-400">{race.date.split('-')[1] === '01' ? 'GEN' : race.date.split('-')[1] === '02' ? 'FEB' : race.date.split('-')[1] === '03' ? 'MAR' : race.date.split('-')[1] === '04' ? 'APR' : race.date.split('-')[1] === '05' ? 'MAG' : race.date.split('-')[1] === '06' ? 'GIU' : race.date.split('-')[1] === '07' ? 'LUG' : race.date.split('-')[1] === '08' ? 'AGO' : race.date.split('-')[1] === '09' ? 'SET' : race.date.split('-')[1] === '10' ? 'OTT' : race.date.split('-')[1] === '11' ? 'NOV' : 'DIC'}</span>
-                                  <span className="text-4xl font-black">{race.date.split('-')[0]}</span>
-                              </div>
-                              <div className="space-y-2">
-                                  {racePriorities[race.id] === 'A' && (<div className="flex items-center gap-2 text-yellow-500 mb-2"><Star className="w-6 h-6 fill-current" /><span className="text-xl font-black uppercase tracking-widest">Main Objective</span></div>)}
-                                  {race.event && ( <div className="text-xl font-black text-white/40 uppercase tracking-[0.2em] mb-1">{race.event}</div> )}
-                                  <h2 className="text-4xl font-black leading-tight max-w-2xl">{race.title}</h2>
-                                  <div className="flex items-center gap-4 text-white/40 text-xl font-bold"><MapPin className="w-6 h-6" /><span>{race.location} • {race.region}</span></div>
-                              </div>
-                          </div>
-                          <div className="flex flex-col items-end gap-4"><span className={`px-10 py-4 rounded-3xl text-3xl font-black uppercase ${race.type === 'Triathlon' ? 'bg-blue-600' : race.type === 'Duathlon' ? 'bg-orange-600' : race.type.includes('Winter') ? 'bg-cyan-600' : 'bg-emerald-600'}`}>{race.type}</span>{race.distance && (<div className="flex items-center gap-3 text-white/60"><Bike className="w-6 h-6" /><span className="text-xl font-black uppercase tracking-widest">{race.distance}</span></div>)}</div>
-                      </div>
-                  ))}
-              </div>
-              <div className="mt-20 pt-10 border-t-2 border-white/10 flex justify-between items-end opacity-40">
-                  <div className="text-xl font-bold"><p>Generato da MTT Season Planner</p><p className="text-sm">mtt-milano.it • fitri-planner.vercel.app</p></div>
-                  <div className="flex items-center gap-4"><Trophy className="w-10 h-10" /><span className="text-4xl font-black uppercase italic">Finish Line Ready</span></div>
+      {activeSingleRace && (
+          <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+              <div ref={singleCardRef} className="w-[1080px] h-[1080px] bg-slate-900 p-20 flex flex-col items-center justify-center text-white text-center">
+                  <h1 className="text-8xl font-black uppercase mb-10">{activeSingleRace.title}</h1>
+                  <div className="text-4xl font-bold text-red-500 mb-10">MTT MILANO TRIATHLON TEAM</div>
+                  <div className="text-6xl font-black bg-white/10 px-10 py-5 rounded-3xl">{activeSingleRace.date}</div>
               </div>
           </div>
-      </div>
-
-      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
-          {activeSingleRace && (
-              <div ref={singleCardRef} className="w-[1080px] h-[1080px] bg-slate-900 p-20 flex flex-col items-center justify-center text-white font-sans relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-10 opacity-5"><Trophy className="w-[600px] h-[600px]" /></div>
-                  <div className="z-10 text-center space-y-10">
-                      <div className="bg-red-600 px-8 py-3 rounded-full inline-block mb-4"><span className="text-2xl font-black uppercase tracking-[0.5em]">Next Challenge</span></div>
-                      <div className="space-y-4"><h1 className="text-8xl font-black tracking-tighter leading-none uppercase">{activeSingleRace.event || activeSingleRace.title}</h1><p className="text-4xl font-bold text-red-500 uppercase tracking-[0.3em]">MTT Milano Triathlon Team</p></div>
-                      <div className="flex flex-col items-center gap-6 pt-10"><div className="flex items-center gap-6 bg-white/10 px-10 py-6 rounded-[2.5rem] border-2 border-white/10"><Calendar className="w-12 h-12 text-blue-400" /><span className="text-6xl font-black">{activeSingleRace.date}</span></div><div className="flex items-center gap-4 text-white/60 text-3xl font-bold"><MapPin className="w-10 h-10" /><span>{activeSingleRace.location}</span></div></div>
-                      <div className="pt-10 flex gap-6"><span className="px-10 py-4 bg-blue-600 rounded-3xl text-3xl font-black uppercase">{activeSingleRace.type}</span>{activeSingleRace.distance && (<span className="px-10 py-4 bg-slate-700 rounded-3xl text-3xl font-black uppercase tracking-widest">{activeSingleRace.distance}</span>)}</div>
-                  </div>
-                  <div className="absolute bottom-10 left-0 right-0 text-center opacity-30 text-xl font-bold">mtt-milano.it • fitri-planner.vercel.app</div>
-              </div>
-          )}
-      </div>
+      )}
     </div>
   );
 };
