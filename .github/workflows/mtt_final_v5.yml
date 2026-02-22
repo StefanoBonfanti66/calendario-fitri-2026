@@ -28,7 +28,7 @@ jobs:
         npx playwright install --with-deps chromium
 
     - name: Scrape
-      run: python mtt_live_scraper.py
+      run: python mtt_final_scraper.py
 
     - name: Push Data
       run: |
