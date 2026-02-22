@@ -315,11 +315,31 @@ const App: React.FC = () => {
   const filteredRaces = useMemo(() => {
     return races.filter((race) => {
         const matchesSearch = (race.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || (race.location?.toLowerCase() || "").includes(searchTerm.toLowerCase());
-        const matchesType = filterType === "Tutti" || race.type === filterType || (race.type === "Winter" && filterType === "Winter");
+        
+        // Filtro Sport Esatto
+        let matchesType = filterType === "Tutti";
+        if (filterType === "Triathlon") {
+            matchesType = race.type === "Triathlon";
+        } else if (filterType === "Duathlon") {
+            matchesType = race.type === "Duathlon";
+        } else if (filterType === "Winter") {
+            matchesType = race.type.includes("Winter");
+        } else if (filterType === "Cross") {
+            matchesType = race.type === "Cross";
+        }
+
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
         const matchesDistance = filterDistance === "Tutte" || race.distance === filterDistance;
-        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => (race.category?.toLowerCase() || "").includes(s.toLowerCase()) || (race.title?.toLowerCase() || "").includes(s.toLowerCase()) || (race.event?.toLowerCase() || "").includes(s.toLowerCase()));
+        
+        // Logica filtri speciali (Paratriathlon, Kids, Youth) - Corrispondenza Esatta o Parziale mirata
+        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => {
+            const searchStr = s.toLowerCase();
+            return (race.category?.toLowerCase() || "").includes(searchStr) || 
+                   (race.title?.toLowerCase() || "").includes(searchStr);
+        });
+
         const matchesRadius = filterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= filterRadius;
+        
         return matchesSearch && matchesType && matchesRegion && matchesDistance && matchesSpecial && matchesRadius;
     }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
   }, [races, searchTerm, filterType, filterRegion, filterDistance, filterSpecial, filterRadius]);
