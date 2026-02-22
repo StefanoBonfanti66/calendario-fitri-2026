@@ -1,4 +1,4 @@
-name: MTT FINAL V16
+name: MTT SEASON UPDATE V5
 
 on:
   schedule:
@@ -9,23 +9,39 @@ permissions:
   contents: write
 
 jobs:
-  update:
+  update-races:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
+
     - name: Install
       run: |
         pip install playwright
         npx playwright install --with-deps chromium
-    - name: Run
+
+    - name: Scrape (Web -> Text)
       run: python mtt_final_v16.py
-    - name: Push
+
+    - name: Parse (Text -> JSON Merge)
+      run: python parse_gare_file.py
+
+    - name: Push Changes
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
-        git add gare_fitri_2026.txt
-        git commit -m "Data update V16 [skip ci]" || exit 0
-        git push origin HEAD:main --force
+        git add gare_2026.txt app/src/races_full.json
+        if ! git diff --cached --quiet; then
+          git commit -m "Automated Data Update: Sync with FITRI [skip ci]"
+          git pull origin main --rebase --autostash
+          git push origin HEAD:main
+        else
+          echo "Nessun cambiamento rilevato."
+        fi

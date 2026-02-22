@@ -69,13 +69,17 @@ def run():
             output = list(dict.fromkeys(output))
 
             if len(output) > 10:
-                filename = "gare_fitri_2026.txt"
+                filename = "gare_2026.txt"
                 with open(filename, "w", encoding="utf-8") as f:
                     for line in output:
                         f.write(line + NL)
                 print("✨ SUCCESS: " + str(len(output)) + " races saved!")
             else:
                 print("❌ ERROR: Only " + str(len(output)) + " races found. Still filtered?")
+                filename = "gare_2026.txt"
+                with open(filename, "w", encoding="utf-8") as f:
+                    for line in output:
+                        f.write(line + NL)
 
             browser.close()
         except Exception as e:
