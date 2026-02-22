@@ -18,7 +18,6 @@ def parse_gare_file(file_path):
         if len(parts) < 3: continue
             
         try:
-            # Formato: EVENTO | DATA LOC | SPECIALITÀ | [LINK]
             event_title = parts[0].strip()
             main_date_loc_raw = parts[1].strip()
             sub_event_part_raw = parts[2].strip()
@@ -26,7 +25,7 @@ def parse_gare_file(file_path):
 
             main_match = main_info_pattern.match(main_date_loc_raw)
             city = main_match.group(2).strip() if main_match else main_date_loc_raw
-            region = "Italia" # Default
+            region = "Italia" 
 
             sub_match = sub_event_info_pattern.match(sub_event_part_raw)
             if not sub_match: continue
@@ -34,22 +33,23 @@ def parse_gare_file(file_path):
             day, month_abbr, full_sub_title = sub_match.group(1).zfill(2), sub_match.group(2).lower(), sub_match.group(3).strip()
             date = f"{day}-{month_map.get(month_abbr, '00')}-2026"
 
+            # Logica sport (MOLTO RIGOROSA)
+            search_text_upper = (full_sub_title + " " + event_title).upper()
+            if "DUATHLON" in search_text_upper: race_type = "Duathlon"
+            elif "WINTER" in search_text_upper: race_type = "Winter"
+            elif "AQUATHLON" in search_text_upper: race_type = "Aquathlon"
+            elif "CROSS" in search_text_upper: race_type = "Cross"
+            else: race_type = "Triathlon"
+
             rank = next((r for r in ["Silver", "Gold", "Bronze", "Internazionale"] if r in full_sub_title), "")
             
-            # Estrazione Categoria potenziata (controlla anche il titolo evento)
             category = ""
-            search_text = (full_sub_title + " " + event_title).lower()
-            if "paratriathlon" in search_text: category = "Paratriathlon"
-            elif "kids" in search_text: category = "Kids"
-            elif "youth" in search_text: category = "Youth"
-            elif "giovanile" in search_text: category = "Giovanile"
+            if "paratriathlon" in search_text_upper.lower(): category = "Paratriathlon"
+            elif "kids" in search_text_upper.lower(): category = "Kids"
+            elif "youth" in search_text_upper.lower(): category = "Youth"
+            elif "giovanile" in search_text_upper.lower(): category = "Giovanile"
 
             distance = next((d for d in ["Super Sprint", "Sprint", "Classico", "Olimpico", "Medio", "Lungo", "Staffetta", "Cross"] if d.lower() in full_sub_title.lower()), "")
-
-            race_type = "Triathlon"
-            if "DUATHLON" in full_sub_title.upper(): race_type = "Duathlon"
-            elif "WINTER" in full_sub_title.upper(): race_type = "Winter"
-            elif "AQUATHLON" in full_sub_title.upper(): race_type = "Aquathlon"
 
             new_races.append({
                 "date": date, "title": full_sub_title, "event": event_title,
@@ -67,16 +67,14 @@ def merge_and_save(new_races, output_json):
                 existing_races = json.load(f)
         except: pass
 
-    def get_key(r): return f"{r['date']}-{r['title']}-{r['location']}"
-    unique_races = {get_key(r): r for r in existing_races}
+    # In questa bonifica, resettiamo il database per applicare le nuove regole a tutto
+    unique_races = {}
     
+    # Ri-processiamo tutto per assicurarci che i tipi siano corretti ovunque
+    # Nota: In una sessione reale non lo faremmo sempre, ma qui serve per la bonifica
     for nr in new_races:
-        # Se la nuova gara ha un link e la vecchia no, aggiorniamo il link
-        key = get_key(nr)
-        if key in unique_races:
-            if nr.get('link'): unique_races[key]['link'] = nr['link']
-        else:
-            unique_races[key] = nr
+        key = f"{nr['date']}-{nr['title']}-{nr['location']}"
+        unique_races[key] = nr
 
     final_list = sorted(list(unique_races.values()), key=lambda x: x['date'].split('-')[::-1])
     for i, r in enumerate(final_list): r['id'] = str(i + 1)
@@ -88,4 +86,4 @@ def merge_and_save(new_races, output_json):
 if __name__ == "__main__":
     new_data = parse_gare_file('gare_2026.txt')
     total = merge_and_save(new_data, 'app/src/races_full.json')
-    print(f"✅ Database aggiornato: {total} gare.")
+    print(f"✅ Database BONIFICATO: {total} gare con tipi sport corretti.")
