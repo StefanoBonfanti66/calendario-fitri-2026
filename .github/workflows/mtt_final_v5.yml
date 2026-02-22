@@ -34,14 +34,18 @@ jobs:
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
-        # Scarichiamo eventuali cambiamenti remoti per essere allineati al 100%
-        git fetch origin main
-        git checkout main
-        git pull origin main --rebase
         
+        # 1. Aggiungiamo i dati nuovi
         git add gare_fitri_2026.txt
-        if ! git diff --cached --quiet gare_fitri_2026.txt; then
+        
+        # 2. Se ci sono cambi, creiamo un commit locale
+        if ! git diff --cached --quiet; then
           git commit -m "Update races data [skip ci]"
+          
+          # 3. Scarichiamo eventuali cambiamenti remoti e integriamo (conflitto risolto qui)
+          git pull origin main --rebase --autostash
+          
+          # 4. Inviamo tutto
           git push origin main
         else
           echo "Nessun nuovo dato."
