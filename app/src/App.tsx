@@ -66,31 +66,73 @@ const RaceCard = React.memo(({
                     {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (<div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50"><Navigation className="w-3 h-3 text-blue-400" /><span className="text-[10px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span></div>)}
                 </div>
             </div>
-            <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
-                <div className="flex flex-col gap-2">
-                    {race.category ? <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">{race.category}</span> : <div></div>}
+            <div className="flex flex-col gap-4 mt-auto pt-5 border-t border-slate-50">
+                <div className="flex items-center justify-between">
+                    {race.category ? (
+                        <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">
+                            {race.category}
+                        </span>
+                    ) : <div></div>}
+                    
                     {isSelected && (
                         <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit relative group/legend">
-                                {['A', 'B', 'C'].map(p => (<button key={p} onClick={(e) => { e.stopPropagation(); onPriority(race.id, p); }} className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${priority === p ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm') : 'text-slate-400 hover:bg-white'}`}>{p}</button>))}
-                                <div className="absolute bottom-full left-0 mb-2 w-48 p-3 bg-slate-900 text-white text-[9px] rounded-xl opacity-0 invisible group-hover/legend:opacity-100 group-hover/legend:visible transition-all z-50 shadow-xl border border-white/10">
-                                    <p className="mb-1.5"><b className="text-yellow-400">A: OBIETTIVO</b> - Gara clou.</p>
-                                    <p className="mb-1.5"><b className="text-blue-400">B: PREPARAZIONE</b> - Test.</p>
-                                    <p><b>C: ALLENAMENTO</b> - Test senza scarico.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit h-9">
-                                <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
-                                <input type="number" placeholder="0" className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center" value={cost || ''} onChange={(e) => onCost(race.id, parseFloat(e.target.value) || 0)} />
-                            </div>
-                            <button onClick={(e) => { e.stopPropagation(); onSingleCard(race); }} className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white transition-all shadow-sm" title="Genera Post Instagram"><Image className="w-4 h-4" /></button>
-                            <button onClick={(e) => { e.stopPropagation(); onChecklist(race); }} className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-white transition-all shadow-sm" title="Checklist"><ShoppingBag className="w-4 h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); onSingleCard(race); }} className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-all" title="Genera Post"><Image className="w-4 h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); onChecklist(race); }} className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-slate-50 transition-all" title="Checklist"><ShoppingBag className="w-4 h-4" /></button>
                         </div>
                     )}
                 </div>
+                
+                {isSelected && (
+                    <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                        <div className="flex items-center gap-1 relative group/legend">
+                            {['A', 'B', 'C'].map(p => (
+                                <button
+                                    key={p}
+                                    onClick={(e) => { e.stopPropagation(); onPriority(race.id, p); }}
+                                    className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
+                                        priority === p
+                                        ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
+                                        : 'text-slate-400 hover:bg-white'
+                                    }`}
+                                >
+                                    {p}
+                                </button>
+                            ))}
+                            <div className="absolute bottom-full left-0 mb-2 w-48 p-3 bg-slate-900 text-white text-[9px] rounded-xl opacity-0 invisible group-hover/legend:opacity-100 group-hover/legend:visible transition-all z-50 shadow-xl border border-white/10">
+                                <p className="mb-1.5"><b className="text-yellow-400">A: OBIETTIVO</b> - Gara clou.</p>
+                                <p className="mb-1.5"><b className="text-blue-400">B: PREPARAZIONE</b> - Test.</p>
+                                <p><b>C: ALLENAMENTO</b> - Test senza scarico.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-200 h-8">
+                            <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
+                            <input 
+                                type="number" 
+                                placeholder="0"
+                                className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center"
+                                value={cost || ''}
+                                onChange={(e) => onCost(race.id, parseFloat(e.target.value) || 0)}
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                        </div>
+                    </div>
+                )}
+                
                 <div className="flex items-center gap-2">
-                    {race.link && <a href={race.link} target="_blank" rel="noopener noreferrer" className="p-3 rounded-[1.25rem] text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors shadow-sm" title="Scheda" onClick={(e) => e.stopPropagation()}><ExternalLink className="w-4 h-4" /></a>}
-                    <button onClick={() => onToggle(race.id)} className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${isSelected ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'}`}>{isSelected ? <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</> : <><Plus className="w-3.5 h-3.5" /> Aggiungi</>}</button>
+                    {race.link && (
+                        <a href={race.link} target="_blank" rel="noopener noreferrer" className="p-3 rounded-[1.25rem] text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors shadow-sm" title="Scheda" onClick={(e) => e.stopPropagation()}><ExternalLink className="w-4 h-4" /></a>
+                    )}
+                    <button
+                        onClick={() => onToggle(race.id)}
+                        className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+                            isSelected
+                            ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-100'
+                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
+                        }`}
+                    >
+                        {isSelected ? <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</> : <><Plus className="w-3.5 h-3.5" /> Aggiungi</>}
+                    </button>
                 </div>
             </div>
         </div>
@@ -518,13 +560,26 @@ const App: React.FC = () => {
                                   <span className="text-4xl font-black">{race.date.split('-')[0]}</span>
                               </div>
                               <div className="space-y-2">
-                                  {racePriorities[race.id] === 'A' && <div className="flex items-center gap-2 text-yellow-500 mb-2"><Star className="w-6 h-6 fill-current" /><span className="text-xl font-black uppercase">Objective</span></div>}
+                                  {racePriorities[race.id] === 'A' && <div className="flex items-center gap-2 text-yellow-500 mb-2"><Star className="w-6 h-6 fill-current" /><span className="text-xl font-black uppercase tracking-widest">Main Objective</span></div>}
                                   {race.event && <div className="text-xl font-black text-white/40 uppercase tracking-[0.2em] mb-1">{race.event}</div>}
                                   <h2 className="text-4xl font-black leading-tight max-w-2xl">{race.title}</h2>
-                                  <div className="flex items-center gap-4 text-white/40 text-xl font-bold"><MapPin className="w-6 h-6" /><span>{race.location}</span></div>
+                                  <div className="flex items-center gap-4 text-white/40 text-xl font-bold">
+                                      <MapPin className="w-6 h-6" />
+                                      <span>{race.location} • {race.region}</span>
+                                  </div>
                               </div>
                           </div>
-                          <div className="flex flex-col items-end gap-4"><span className={`px-10 py-4 rounded-3xl text-3xl font-black uppercase ${race.type === 'Triathlon' ? 'bg-blue-600' : 'bg-orange-600'}`}>{race.type}</span></div>
+                          <div className="flex flex-col items-end gap-4">
+                              <span className={`px-10 py-4 rounded-3xl text-3xl font-black uppercase ${race.type === 'Triathlon' ? 'bg-blue-600' : race.type === 'Duathlon' ? 'bg-orange-600' : race.type.includes('Winter') ? 'bg-cyan-600' : 'bg-emerald-600'}`}>
+                                  {race.type}
+                              </span>
+                              {race.distance && (
+                                  <div className="flex items-center gap-3 text-white/60">
+                                      <Bike className="w-6 h-6" />
+                                      <span className="text-xl font-black uppercase tracking-widest">{race.distance}</span>
+                                  </div>
+                              )}
+                          </div>
                       </div>
                   ))}
               </div>
