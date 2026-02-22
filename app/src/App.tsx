@@ -414,10 +414,28 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-100">
       <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg shadow-red-100 rotate-3"><Trophy className="w-6 h-6" /></div>
-            <div><h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1><span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">MTT Milano Triathlon Team</span></div>
-          </div>
+                    <div className="flex items-center gap-4">
+                      <a 
+                          href="https://www.milanotriathlonteam.com/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg shadow-red-100 rotate-3 hover:scale-110 transition-transform cursor-pointer"
+                          title="Sito Ufficiale MTT"
+                      >
+                          <Trophy className="w-6 h-6" />
+                      </a>
+                      <div>
+                        <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
+                        <a 
+                          href="https://www.milanotriathlonteam.com/" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] hover:underline"
+                        >
+                          MTT Milano Triathlon Team
+                        </a>
+                      </div>
+                    </div>
           <div className="flex gap-2">
             <button onClick={exportToICS} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario</span></button>
             <button onClick={exportToCSV} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel</span></button>
@@ -482,11 +500,32 @@ const App: React.FC = () => {
                                 <div className="mt-4 flex gap-1 h-1.5"><div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / myPlan.length) * 100}%` }}></div><div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / myPlan.length) * 100}%` }}></div><div className="bg-slate-600 rounded-full flex-1"></div></div>
                             </div>
                             <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-300">{type}</span><span className="text-xs font-black">{count}</span></div>))}</div></div>
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-400 uppercase">Km Stimati</div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-            )}
+                                                        <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
+                                                            <span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Logistica</span>
+                                                            <div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-400 uppercase">Km Stimati</div></div></div>
+                                                        </div>
+                                                    </div>
+                            
+                                                    {/* MTT Promotion */}
+                                                    <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="bg-red-600/20 p-2 rounded-lg">
+                                                                <Trophy className="w-5 h-5 text-red-500" />
+                                                            </div>
+                                                            <p className="text-xs font-bold text-slate-300">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p>
+                                                        </div>
+                                                        <a 
+                                                            href="https://www.milanotriathlonteam.com/" 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-900/20"
+                                                        >
+                                                            Diventa un MTT
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
 
             <div className="flex items-center justify-between px-2">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{filteredRaces.length} gare trovate</span>
