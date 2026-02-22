@@ -339,6 +339,31 @@ const App: React.FC = () => {
     return { registration, travel, total: registration + travel };
   }, [selectedRaces, raceCosts, races]);
 
+  // Dashboard Stats
+  const seasonStats = useMemo(() => {
+    const selectedData = races.filter(r => selectedRaces.includes(r.id));
+    
+    const priorities = { A: 0, B: 0, C: 0 };
+    const types: Record<string, number> = {};
+    let totalKm = 0;
+
+    selectedData.forEach(r => {
+        // Priorità
+        const p = racePriorities[r.id] || 'C';
+        if (p === 'A') priorities.A++;
+        else if (p === 'B') priorities.B++;
+        else priorities.C++;
+
+        // Tipi
+        types[r.type] = (types[r.type] || 0) + 1;
+
+        // KM
+        if (r.distanceFromHome) totalKm += (r.distanceFromHome * 2);
+    });
+
+    return { priorities, types, totalKm };
+  }, [selectedRaces, racePriorities, races]);
+
   const addRaceFinal = useCallback((id: string) => {
     setSelectedRaces((prev) => [...prev, id]);
     setRacePriorities(prev => ({ ...prev, [id]: 'C' }));
@@ -738,7 +763,66 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-8 space-y-4">
+        <div className="lg:col-span-8 space-y-6">
+            {/* Season Dashboard */}
+            {selectedRaces.length > 0 && (
+                <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-slate-200 overflow-hidden relative group">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                        <Trophy className="w-40 h-40" />
+                    </div>
+                    
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="bg-blue-500 p-2 rounded-xl">
+                                <Activity className="w-5 h-5 text-white" />
+                            </div>
+                            <h2 className="text-xl font-black uppercase tracking-tight">Analisi Stagione 2026</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            {/* Focus Obiettivi */}
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-4">Focus Target</span>
+                                <div className="flex items-end gap-3">
+                                    <div className="text-3xl font-black text-yellow-400">{seasonStats.priorities.A}</div>
+                                    <div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Obiettivi A</div>
+                                </div>
+                                <div className="mt-4 flex gap-1 h-1.5">
+                                    <div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / selectedRaces.length) * 100}%` }}></div>
+                                    <div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / selectedRaces.length) * 100}%` }}></div>
+                                    <div className="bg-slate-600 rounded-full flex-1"></div>
+                                </div>
+                            </div>
+
+                            {/* Mix Sport */}
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-4">Mix Discipline</span>
+                                <div className="space-y-2">
+                                    {Object.entries(seasonStats.types).map(([type, count]) => (
+                                        <div key={type} className="flex items-center justify-between">
+                                            <span className="text-[10px] font-bold text-slate-300">{type}</span>
+                                            <span className="text-xs font-black">{count}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Logistica */}
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-4">Logistica Totale</span>
+                                <div className="flex items-center gap-3">
+                                    <Navigation className="w-8 h-8 text-blue-400" />
+                                    <div>
+                                        <div className="text-2xl font-black">{seasonStats.totalKm}</div>
+                                        <div className="text-[10px] font-bold text-slate-400 uppercase">Km Totali Stimati</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="flex items-center justify-between mb-4 px-2">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     Risultati: <b>{filteredRaces.length}</b> gare trovate
