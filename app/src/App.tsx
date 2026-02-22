@@ -36,38 +36,13 @@ const getEquipment = (type: string) => {
     return base;
 };
 
-// Componente Card memoizzato per massime performance
 const RaceCard = React.memo(({ 
-    race, 
-    isSelected, 
-    priority, 
-    cost, 
-    onToggle, 
-    onPriority, 
-    onCost,
-    onSingleCard,
-    onChecklist,
-    getRankColor 
+    race, isSelected, priority, cost, onToggle, onPriority, onCost, onSingleCard, onChecklist, getRankColor 
 }: { 
-    race: Race, 
-    isSelected: boolean, 
-    priority: string, 
-    cost: number, 
-    onToggle: (id: string) => void,
-    onPriority: (id: string, p: string) => void,
-    onCost: (id: string, c: number) => void,
-    onSingleCard: (race: Race) => void,
-    onChecklist: (race: Race) => void,
-    getRankColor: (r: string) => string
+    race: Race, isSelected: boolean, priority: string, cost: number, onToggle: (id: string) => void, onPriority: (id: string, p: string) => void, onCost: (id: string, c: number) => void, onSingleCard: (race: Race) => void, onChecklist: (race: Race) => void, getRankColor: (r: string) => string
 }) => {
     return (
-        <div 
-            className={`group bg-white p-6 rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 flex flex-col ${
-                isSelected 
-                ? 'border-blue-500 ring-4 ring-blue-50 shadow-lg shadow-blue-100/50' 
-                : 'border-white hover:border-blue-100 shadow-sm'
-            } ${priority === 'A' ? 'bg-yellow-50/20 border-yellow-100' : ''}`}
-        >
+        <div className={`group bg-white p-6 rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 flex flex-col ${isSelected ? 'border-blue-500 ring-4 ring-blue-50 shadow-lg shadow-blue-100/50' : 'border-white hover:border-blue-100 shadow-sm'} ${priority === 'A' ? 'bg-yellow-50/20 border-yellow-100' : ''}`}>
             <div className="flex justify-between items-start mb-5">
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full w-fit">
@@ -76,143 +51,46 @@ const RaceCard = React.memo(({
                     </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${
-                        race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' :
-                        race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' :
-                        race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' :
-                        'bg-emerald-100 text-emerald-700'
-                    }`}>
+                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' : race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' : race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' : 'bg-emerald-100 text-emerald-700'}`}>
                         {race.type}
                     </span>
-                    {race.rank && (
-                        <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`}>
-                            <Star className="w-2.5 h-2.5 fill-current" />
-                            {race.rank}
-                        </div>
-                    )}
+                    {race.rank && <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`}><Star className="w-2.5 h-2.5 fill-current" />{race.rank}</div>}
                 </div>
             </div>
-            
-            {race.event && (
-                <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">
-                    {race.event}
-                </div>
-            )}
-            <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">
-                {race.title}
-            </h3>
-            
+            {race.event && <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">{race.event}</div>}
+            <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">{race.title}</h3>
             <div className="space-y-2 mb-6">
-                <div className="flex items-start gap-2.5">
-                    <MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
-                    <div className="flex flex-col">
-                        <p className="text-xs font-bold text-slate-500 leading-snug">
-                            {race.location}
-                        </p>
-                        <span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
-                    </div>
-                </div>
+                <div className="flex items-start gap-2.5"><MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" /><div className="flex flex-col"><p className="text-xs font-bold text-slate-500 leading-snug">{race.location}</p><span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span></div></div>
                 <div className="flex items-center gap-4">
-                    {race.distance && (
-                        <div className="flex items-center gap-2">
-                            <Bike className="w-4 h-4 text-slate-300 shrink-0" />
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span>
-                        </div>
-                    )}
-                    {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (
-                        <div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50">
-                            <Navigation className="w-3 h-3 text-blue-400" />
-                            <span className="text-[10px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span>
-                        </div>
-                    )}
+                    {race.distance && <div className="flex items-center gap-2"><Bike className="w-4 h-4 text-slate-300 shrink-0" /><span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span></div>}
+                    {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (<div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50"><Navigation className="w-3 h-3 text-blue-400" /><span className="text-[10px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span></div>)}
                 </div>
             </div>
-            
             <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-50">
                 <div className="flex flex-col gap-2">
-                    {race.category ? (
-                        <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">
-                            {race.category}
-                        </span>
-                    ) : <div></div>}
-                    
+                    {race.category ? <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">{race.category}</span> : <div></div>}
                     {isSelected && (
                         <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100 w-fit relative group/legend">
-                                {['A', 'B', 'C'].map(p => (
-                                    <button
-                                        key={p}
-                                        onClick={(e) => { e.stopPropagation(); onPriority(race.id, p); }}
-                                        className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${
-                                            priority === p
-                                            ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm')
-                                            : 'text-slate-400 hover:bg-white'
-                                        }`}
-                                    >
-                                        {p}
-                                    </button>
-                                ))}
+                                {['A', 'B', 'C'].map(p => (<button key={p} onClick={(e) => { e.stopPropagation(); onPriority(race.id, p); }} className={`w-7 h-7 rounded-lg text-[10px] font-black transition-all ${priority === p ? (p === 'A' ? 'bg-yellow-400 text-white shadow-sm' : p === 'B' ? 'bg-blue-400 text-white shadow-sm' : 'bg-slate-400 text-white shadow-sm') : 'text-slate-400 hover:bg-white'}`}>{p}</button>))}
                                 <div className="absolute bottom-full left-0 mb-2 w-48 p-3 bg-slate-900 text-white text-[9px] rounded-xl opacity-0 invisible group-hover/legend:opacity-100 group-hover/legend:visible transition-all z-50 shadow-xl border border-white/10">
-                                    <p className="mb-1.5"><b className="text-yellow-400">A: OBIETTIVO</b> - Gara principale, scarico totale.</p>
-                                    <p className="mb-1.5"><b className="text-blue-400">B: PREPARAZIONE</b> - Test di forma, scarico parziale.</p>
-                                    <p><b>C: ALLENAMENTO</b> - Gara test senza scarico.</p>
+                                    <p className="mb-1.5"><b className="text-yellow-400">A: OBIETTIVO</b> - Gara clou.</p>
+                                    <p className="mb-1.5"><b className="text-blue-400">B: PREPARAZIONE</b> - Test.</p>
+                                    <p><b>C: ALLENAMENTO</b> - Test senza scarico.</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 w-fit h-9">
                                 <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
-                                <input 
-                                    type="number" 
-                                    placeholder="0"
-                                    className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center"
-                                    value={cost || ''}
-                                    onChange={(e) => onCost(race.id, parseFloat(e.target.value) || 0)}
-                                />
+                                <input type="number" placeholder="0" className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center" value={cost || ''} onChange={(e) => onCost(race.id, parseFloat(e.target.value) || 0)} />
                             </div>
-                            <button
-                                onClick={(e) => { e.stopPropagation(); onSingleCard(race); }}
-                                className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white transition-all shadow-sm"
-                                title="Genera Post Instagram"
-                            >
-                                <Image className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={(e) => { e.stopPropagation(); onChecklist(race); }}
-                                className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-white transition-all shadow-sm"
-                                title="Checklist Attrezzatura"
-                            >
-                                <ShoppingBag className="w-4 h-4" />
-                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); onSingleCard(race); }} className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white transition-all shadow-sm" title="Genera Post Instagram"><Image className="w-4 h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); onChecklist(race); }} className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-white transition-all shadow-sm" title="Checklist"><ShoppingBag className="w-4 h-4" /></button>
                         </div>
                     )}
                 </div>
-                
                 <div className="flex items-center gap-2">
-                    {race.link && (
-                        <a 
-                            href={race.link} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="p-3 rounded-[1.25rem] text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors shadow-sm"
-                            title="Scheda Ufficiale MyFITri"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <ExternalLink className="w-4 h-4" />
-                        </a>
-                    )}
-                    <button
-                        onClick={() => onToggle(race.id)}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
-                            isSelected
-                            ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0'
-                        }`}
-                    >
-                        {isSelected ? (
-                            <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</>
-                        ) : (
-                            <><Plus className="w-3.5 h-3.5" /> Aggiungi</>
-                        )}
-                    </button>
+                    {race.link && <a href={race.link} target="_blank" rel="noopener noreferrer" className="p-3 rounded-[1.25rem] text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors shadow-sm" title="Scheda" onClick={(e) => e.stopPropagation()}><ExternalLink className="w-4 h-4" /></a>}
+                    <button onClick={() => onToggle(race.id)} className={`flex items-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${isSelected ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'}`}>{isSelected ? <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</> : <><Plus className="w-3.5 h-3.5" /> Aggiungi</>}</button>
                 </div>
             </div>
         </div>
@@ -241,15 +119,15 @@ const App: React.FC = () => {
 
   const getDistance = useCallback((targetLocation: string, home: string) => {
     if (!home) return null;
-    const provinceMatch = targetLocation.match(/\((.*?)\)/);
-    const targetProvince = provinceMatch ? provinceMatch[1] : targetLocation;
-    const startCoords = provinceCoordinates[home];
-    const endCoords = provinceCoordinates[targetProvince];
-    if (!startCoords || !endCoords) return null;
+    const p = targetLocation.match(/\((.*?)\)/);
+    const target = p ? p[1] : targetLocation;
+    const s = provinceCoordinates[home];
+    const e = provinceCoordinates[target];
+    if (!s || !e) return null;
     const R = 6371;
-    const dLat = (endCoords[0] - startCoords[0]) * Math.PI / 180;
-    const dLon = (endCoords[1] - startCoords[1]) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(startCoords[0] * Math.PI / 180) * Math.cos(endCoords[0] * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    const dLat = (e[0] - s[0]) * Math.PI / 180;
+    const dLon = (e[1] - s[1]) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(s[0] * Math.PI / 180) * Math.cos(e[0] * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
     return Math.round(R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))) * 1.2);
   }, []);
 
@@ -259,9 +137,8 @@ const App: React.FC = () => {
       const cityName = race.location.split('(')[0].trim();
       let coords = provinceCoordinates[cityName];
       if (!coords) {
-        const provinceMatch = race.location.match(/\((.*?)\)/);
-        const province = provinceMatch ? provinceMatch[1] : race.location;
-        coords = provinceCoordinates[province];
+        const p = race.location.match(/\((.*?)\)/);
+        coords = provinceCoordinates[p ? p[1] : race.location];
       }
       let mapCoords: [number, number] | undefined = undefined;
       if (coords) {
@@ -273,12 +150,7 @@ const App: React.FC = () => {
   }, [racesState, homeCity, getDistance]);
 
   const myPlan = useMemo(() => {
-    return races.filter((r) => selectedRaces.includes(r.id))
-        .sort((a,b) => {
-            const dateA = a.date.split("-").reverse().join("-");
-            const dateB = b.date.split("-").reverse().join("-");
-            return dateA.localeCompare(dateB);
-        });
+    return races.filter((r) => selectedRaces.includes(r.id)).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
   }, [races, selectedRaces]);
 
   const budgetTotals = useMemo(() => {
@@ -336,12 +208,7 @@ const App: React.FC = () => {
           if (t === 'Cross') color = '#10b981';
           if (s) color = '#ef4444';
           if (p === 'A') color = '#eab308';
-          cache[`${t}-${p}-${s}`] = L.divIcon({
-            className: 'custom-div-icon',
-            html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 8px; font-weight: 900;">${p === 'A' ? 'A' : ''}</div>`,
-            iconSize: [14, 14],
-            iconAnchor: [7, 7]
-          });
+          cache[`${t}-${p}-${s}`] = L.divIcon({ className: 'custom-div-icon', html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 8px; font-weight: 900;">${p === 'A' ? 'A' : ''}</div>`, iconSize: [14, 14], iconAnchor: [7, 7] });
         });
       });
     });
@@ -396,7 +263,6 @@ const App: React.FC = () => {
     const newRace = races.find(r => r.id === id);
     if (newRace) {
       const [nd, nm, ny] = newRace.date.split("-");
-      const diffDays = Math.ceil(Math.abs(new Date(parseInt(ny), parseInt(nm) - 1, parseInt(nd)).getTime() - 0) / 86400000); // Semplificato per brevità qui
       const tooClose = myPlan.some(r => {
           const [rd, rm, ry] = r.date.split("-");
           return Math.ceil(Math.abs(new Date(parseInt(ny), parseInt(nm) - 1, parseInt(nd)).getTime() - new Date(parseInt(ry), parseInt(rm) - 1, parseInt(rd)).getTime()) / 86400000) < 3;
@@ -413,7 +279,7 @@ const App: React.FC = () => {
       reader.onload = (event) => {
         try {
           const imported = JSON.parse(event.target?.result as string);
-          if (Array.isArray(imported)) { setRacesState(imported); alert("Gare caricate!"); }
+          if (Array.isArray(imported)) { setRacesState(imported); }
         } catch (err) { alert("Errore JSON."); }
       };
       reader.readAsText(file);
@@ -430,9 +296,7 @@ const App: React.FC = () => {
     let ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Fitri Planner//IT", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
     myPlan.forEach(race => {
       const [d, m, y] = race.date.split("-");
-      const start = `${y}${m}${d}`;
-      const end = new Date(parseInt(y), parseInt(m) - 1, parseInt(d) + 1).toISOString().slice(0, 10).replace(/-/g, "");
-      ics.push("BEGIN:VEVENT", `UID:${race.id}@mtt`, `DTSTART;VALUE=DATE:${start}`, `DTEND;VALUE=DATE:${end}`, `SUMMARY:${race.title}`, `LOCATION:${race.location}`, `DESCRIPTION:Priorità: ${racePriorities[race.id] || 'C'}`, "END:VEVENT");
+      ics.push("BEGIN:VEVENT", `UID:${race.id}@mtt`, `DTSTART;VALUE=DATE:${y}${m}${d}`, `DTEND;VALUE=DATE:${y}${m}${d}`, `SUMMARY:${race.title}`, `LOCATION:${race.location}`, `DESCRIPTION:Priorità: ${racePriorities[race.id] || 'C'}`, "END:VEVENT");
     });
     ics.push("END:VCALENDAR");
     const blob = new Blob([ics.join("\r\n")], { type: "text/calendar" });
@@ -473,16 +337,16 @@ const App: React.FC = () => {
     }
   };
 
-  const generateSingleRaceCard = async (race: Race) => {
+  const generateSingleRaceCard = useCallback(async (race: Race) => {
     setActiveSingleRace(race);
     setTimeout(async () => {
         if (singleCardRef.current) {
             const dataUrl = await toPng(singleCardRef.current, { backgroundColor: '#0f172a', width: 1080, height: 1080 });
-            const link = document.createElement('a'); link.download = `challenge-${race.id}.png`; link.href = dataUrl; link.click();
+            const link = document.createElement('a'); link.download = `mtt-challenge-${race.id}.png`; link.href = dataUrl; link.click();
             setActiveSingleRace(null);
         }
-    }, 100);
-  };
+    }, 200);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-100">
@@ -490,18 +354,12 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg shadow-red-100 rotate-3"><Trophy className="w-6 h-6" /></div>
-            <div>
-              <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
-              <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">MTT Milano Triathlon Team</span>
-            </div>
+            <div><h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1><span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">MTT Milano Triathlon Team</span></div>
           </div>
           <div className="flex gap-2">
             <button onClick={exportToICS} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario</span></button>
             <button onClick={exportToCSV} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel</span></button>
-            <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-sm font-bold cursor-pointer shadow-xl shadow-slate-200">
-              <Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span>
-              <input type="file" className="hidden" accept=".json" onChange={handleFileUpload} />
-            </label>
+            <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-sm font-bold cursor-pointer shadow-xl shadow-slate-200"><Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span><input type="file" className="hidden" accept=".json" onChange={handleFileUpload} /></label>
           </div>
         </div>
       </header>
@@ -513,80 +371,31 @@ const App: React.FC = () => {
                 <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-500" /> Filtri</h2>
                 <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterRegion("Tutte"); setFilterDistance("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline">Reset</button>
             </div>
-            
             <div className="space-y-5">
-              <div className="relative group">
-                <Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
-                <input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-              </div>
-
-              {homeCity && (
-                  <div>
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between"><span>Raggio d'azione</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label>
-                    <input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" />
-                  </div>
-              )}
-
-              <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Sport</label>
-                <div className="flex flex-wrap gap-2">
-                    {["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (
-                    <button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-500"}`}>{t}</button>
-                    ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Settori Speciali</label>
-                <div className="flex flex-wrap gap-2">
-                    {["Paratriathlon", "Kids", "Youth"].map((s) => (
-                    <button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"}`}>{s}</button>
-                    ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">La tua provincia</label>
-                    <select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer">
-                        <option value="">Seleziona...</option>
-                        {Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}
-                    </select>
-                  </div>
-              </div>
+              <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
+              {homeCity && (<div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between"><span>Raggio d'azione</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" /></div>)}
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (<button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-500"}`}>{t}</button>))}</div></div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"}`}>{s}</button>))}</div></div>
+              <div className="grid grid-cols-1 gap-4"><div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">La tua provincia</label><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer"><option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
             </div>
-
             <div className="mt-10 pt-10 border-t border-slate-100">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-lg font-black text-slate-800">Il Tuo Anno <span className="text-blue-600">({myPlan.length})</span></h2>
-                    <div className="flex gap-2">
-                        <span title="Race Card"><Camera className="w-4 h-4 text-slate-400 cursor-pointer hover:text-blue-600" onClick={generateRaceCard} /></span>
-                    </div>
+                    <div className="flex gap-2"><span title="Race Card" className="cursor-pointer"><Camera className="w-4 h-4 text-slate-400 hover:text-blue-600" onClick={generateRaceCard} /></span></div>
                 </div>
-                
                 <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {myPlan.map((race, index) => (
                     <div key={race.id} className={`p-4 rounded-2xl border transition-all ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 bg-white'}`}>
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[10px] font-black text-blue-500">{race.date}</span>
-                                    {racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}
-                                </div>
+                                <div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-500">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div>
                                 <h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4>
                             </div>
                             <button onClick={() => toggleRace(race.id)} className="text-slate-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                         </div>
-                    </div>
-                    ))}
+                    </div>))}
                 </div>
-
-                {myPlan.length > 0 && (
-                    <div className="mt-6 pt-6 border-t border-slate-100 space-y-2 text-xs font-bold">
-                        <div className="flex justify-between text-slate-500"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div>
-                        <div className="flex justify-between text-emerald-600 text-sm font-black"><span>TOTALE STIMATO</span><span>€ {budgetTotals.total.toFixed(2)}</span></div>
-                    </div>
-                )}
+                {myPlan.length > 0 && (<div className="mt-6 pt-6 border-t border-slate-100 space-y-2 text-xs font-bold"><div className="flex justify-between text-slate-500"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div><div className="flex justify-between text-emerald-600 text-sm font-black"><span>TOTALE STIMATO</span><span>€ {budgetTotals.total.toFixed(2)}</span></div></div>)}
             </div>
           </div>
         </div>
@@ -594,14 +403,25 @@ const App: React.FC = () => {
         <div className="lg:col-span-8 space-y-6">
             {nextObjective && timeLeft && (
                 <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Prossimo Obiettivo</span>
-                        <h2 className="text-2xl font-black uppercase">{nextObjective.title}</h2>
-                    </div>
-                    <div className="flex gap-4 text-center">
-                        <div><div className="text-3xl font-black">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div>
-                        <div className="text-2xl opacity-30">:</div>
-                        <div><div className="text-3xl font-black">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div>
+                    <div><span className="text-[10px] font-black uppercase tracking-widest opacity-60">Prossimo Obiettivo</span><h2 className="text-2xl font-black uppercase">{nextObjective.title}</h2></div>
+                    <div className="flex gap-4 text-center"><div><div className="text-3xl font-black">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div><div className="text-2xl opacity-30">:</div><div><div className="text-3xl font-black">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div></div>
+                </div>
+            )}
+
+            {myPlan.length > 0 && (
+                <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group">
+                    <div className="absolute top-0 right-0 p-8 opacity-5"><Trophy className="w-40 h-40" /></div>
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-8"><div className="bg-blue-500 p-2 rounded-xl"><Activity className="w-5 h-5 text-white" /></div><h2 className="text-xl font-black uppercase tracking-tight">Analisi Stagione</h2></div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
+                                <span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Focus Target</span>
+                                <div className="flex items-end gap-3"><div className="text-3xl font-black text-yellow-400">{seasonStats.priorities.A}</div><div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Obiettivi A</div></div>
+                                <div className="mt-4 flex gap-1 h-1.5"><div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / myPlan.length) * 100}%` }}></div><div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / myPlan.length) * 100}%` }}></div><div className="bg-slate-600 rounded-full flex-1"></div></div>
+                            </div>
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-300">{type}</span><span className="text-xs font-black">{count}</span></div>))}</div></div>
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-400 uppercase">Km Stimati</div></div></div></div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -617,19 +437,7 @@ const App: React.FC = () => {
             {viewMode === 'list' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredRaces.map((race) => (
-                        <RaceCard 
-                            key={race.id}
-                            race={race}
-                            isSelected={selectedRaces.includes(race.id)}
-                            priority={racePriorities[race.id] || 'C'}
-                            cost={raceCosts[race.id] || 0}
-                            onToggle={toggleRace}
-                            onPriority={setPriority}
-                            onCost={updateCost}
-                            onSingleCard={generateSingleRaceCard}
-                            onChecklist={setActiveChecklistRace}
-                            getRankColor={getRankColor}
-                        />
+                        <RaceCard key={race.id} race={race} isSelected={selectedRaces.includes(race.id)} priority={racePriorities[race.id] || 'C'} cost={raceCosts[race.id] || 0} onToggle={toggleRace} onPriority={setPriority} onCost={updateCost} onSingleCard={generateSingleRaceCard} onChecklist={setActiveChecklistRace} getRankColor={getRankColor} />
                     ))}
                 </div>
             ) : (
@@ -638,12 +446,7 @@ const App: React.FC = () => {
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         {filteredRaces.map(race => race.mapCoords && (
                             <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}>
-                                <Popup>
-                                    <div className="p-2 min-w-[150px]">
-                                        <h4 className="font-bold text-sm">{race.title}</h4>
-                                        <button onClick={() => toggleRace(race.id)} className="w-full mt-2 py-1 bg-blue-600 text-white rounded text-[10px] font-black uppercase">{selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}</button>
-                                    </div>
-                                </Popup>
+                                <Popup><div className="p-2 min-w-[150px]"><h4 className="font-bold text-sm">{race.title}</h4><button onClick={() => toggleRace(race.id)} className="w-full mt-2 py-1 bg-blue-600 text-white rounded text-[10px] font-black uppercase">{selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}</button></div></Popup>
                             </Marker>
                         ))}
                     </MapContainer>
@@ -653,37 +456,86 @@ const App: React.FC = () => {
       </main>
 
       {activeChecklistRace && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
                   <h3 className="text-xl font-black text-slate-800 mb-6 uppercase">Checklist {activeChecklistRace.type}</h3>
-                  <div className="space-y-3">{getEquipment(activeChecklistRace.type).map((item, i) => (<div key={i} className="p-3 bg-slate-50 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><div className="w-4 h-4 rounded border-2 border-slate-300"></div>{item}</div>))}</div>
+                  <div className="space-y-3">{getEquipment(activeChecklistRace.type).map((item, i) => (<div key={i} className="p-3 bg-slate-50 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><CheckCircle className="w-4 h-4 text-emerald-500" />{item}</div>))}</div>
                   <button onClick={() => setActiveChecklistRace(null)} className="w-full mt-8 py-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase">Chiudi</button>
               </div>
           </div>
       )}
 
       {pendingConfirmId && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full text-center">
-                  <h3 className="text-xl font-black mb-4">Gara molto vicina!</h3>
-                  <p className="text-slate-500 mb-8 font-medium">Recupero inferiore a 3 giorni. Continuare?</p>
-                  <div className="flex gap-3">
-                      <button onClick={() => setPendingConfirmId(null)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-black text-xs uppercase">Annulla</button>
-                      <button onClick={() => addRaceFinal(pendingConfirmId)} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase">Conferma</button>
-                  </div>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full text-center animate-in zoom-in-95">
+                  <div className="bg-orange-50 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6"><AlertTriangle className="w-8 h-8 text-orange-500" /></div>
+                  <h3 className="text-xl font-black mb-4 uppercase">Gara ravvicinata!</h3>
+                  <p className="text-slate-500 mb-8 font-medium">Hai meno di 3 giorni di recupero. Vuoi procedere?</p>
+                  <div className="flex gap-3"><button onClick={() => setPendingConfirmId(null)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-black text-xs uppercase">Annulla</button><button onClick={() => addRaceFinal(pendingConfirmId)} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase">Conferma</button></div>
               </div>
           </div>
       )}
 
-      {activeSingleRace && (
-          <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
-              <div ref={singleCardRef} className="w-[1080px] h-[1080px] bg-slate-900 p-20 flex flex-col items-center justify-center text-white text-center">
-                  <h1 className="text-8xl font-black uppercase mb-10">{activeSingleRace.title}</h1>
-                  <div className="text-4xl font-bold text-red-500 mb-10">MTT MILANO TRIATHLON TEAM</div>
-                  <div className="text-6xl font-black bg-white/10 px-10 py-5 rounded-3xl">{activeSingleRace.date}</div>
+      {/* Template Nascosto per Generazione Immagine (Race Card Stagionale) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+          <div ref={cardRef} className="w-[1080px] min-h-[1920px] bg-slate-900 p-20 flex flex-col text-white font-sans">
+              <div className="flex items-center justify-between mb-20 border-b-4 border-red-600 pb-10">
+                  <div className="flex items-center gap-8">
+                      <div className="bg-red-600 p-6 rounded-[2.5rem] rotate-3 shadow-2xl"><Trophy className="w-20 h-20 text-white" /></div>
+                      <div>
+                          <h1 className="text-7xl font-black tracking-tighter uppercase leading-none mb-2">My 2026 Season</h1>
+                          <p className="text-2xl font-bold text-red-500 uppercase tracking-[0.5em]">MTT Milano Triathlon Team</p>
+                      </div>
+                  </div>
+                  <div className="text-right text-9xl font-black text-white/10 leading-none">2026</div>
               </div>
+              <div className="flex-1 space-y-10">
+                  {myPlan.map((race) => (
+                      <div key={race.id} className={`p-10 rounded-[3rem] flex items-center justify-between border-4 transition-all ${racePriorities[race.id] === 'A' ? 'bg-yellow-500/10 border-yellow-500' : 'bg-white/5 border-white/5'}`}>
+                          <div className="flex items-center gap-10">
+                              <div className="flex flex-col items-center justify-center bg-white/10 w-28 h-28 rounded-[2rem] border-2 border-white/10">
+                                  <span className="text-sm font-black uppercase text-blue-400">{race.date.split('-')[1]}</span>
+                                  <span className="text-4xl font-black">{race.date.split('-')[0]}</span>
+                              </div>
+                              <div className="space-y-2">
+                                  {racePriorities[race.id] === 'A' && <div className="flex items-center gap-2 text-yellow-500 mb-2"><Star className="w-6 h-6 fill-current" /><span className="text-xl font-black uppercase">Objective</span></div>}
+                                  {race.event && <div className="text-xl font-black text-white/40 uppercase tracking-[0.2em] mb-1">{race.event}</div>}
+                                  <h2 className="text-4xl font-black leading-tight max-w-2xl">{race.title}</h2>
+                                  <div className="flex items-center gap-4 text-white/40 text-xl font-bold"><MapPin className="w-6 h-6" /><span>{race.location}</span></div>
+                              </div>
+                          </div>
+                          <div className="flex flex-col items-end gap-4"><span className={`px-10 py-4 rounded-3xl text-3xl font-black uppercase ${race.type === 'Triathlon' ? 'bg-blue-600' : 'bg-orange-600'}`}>{race.type}</span></div>
+                      </div>
+                  ))}
+              </div>
+              <div className="mt-20 pt-10 border-t-2 border-white/10 flex justify-between items-end opacity-40"><div className="text-xl font-bold">mtt-milano.it • fitri-planner.vercel.app</div><Trophy className="w-10 h-10" /></div>
           </div>
-      )}
+      </div>
+
+      {/* Template Nascosto per Instagram Goal Card (Post Gara Singola) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+          {activeSingleRace && (
+              <div ref={singleCardRef} className="w-[1080px] h-[1080px] bg-slate-900 p-20 flex flex-col items-center justify-center text-white font-sans relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-10 opacity-5"><Trophy className="w-[600px] h-[600px]" /></div>
+                  <div className="z-10 text-center space-y-10">
+                      <div className="bg-red-600 px-8 py-3 rounded-full inline-block mb-4"><span className="text-2xl font-black uppercase tracking-[0.5em]">Next Challenge</span></div>
+                      <div className="space-y-4">
+                          <h1 className="text-8xl font-black tracking-tighter leading-none uppercase">{activeSingleRace.event || activeSingleRace.title}</h1>
+                          <p className="text-4xl font-bold text-red-500 uppercase tracking-[0.3em]">MTT Milano Triathlon Team</p>
+                      </div>
+                      <div className="flex flex-col items-center gap-6 pt-10">
+                          <div className="flex items-center gap-6 bg-white/10 px-10 py-6 rounded-[2.5rem] border-2 border-white/10"><Calendar className="w-12 h-12 text-blue-400" /><span className="text-6xl font-black">{activeSingleRace.date}</span></div>
+                          <div className="flex items-center gap-4 text-white/60 text-3xl font-bold"><MapPin className="w-10 h-10" /><span>{activeSingleRace.location}</span></div>
+                      </div>
+                      <div className="pt-10 flex gap-6">
+                          <span className="px-10 py-4 bg-blue-600 rounded-3xl text-3xl font-black uppercase">{activeSingleRace.type}</span>
+                          {activeSingleRace.distance && <span className="px-10 py-4 bg-slate-700 rounded-3xl text-3xl font-black uppercase tracking-widest">{activeSingleRace.distance}</span>}
+                      </div>
+                  </div>
+                  <div className="absolute bottom-10 left-0 right-0 text-center opacity-30 text-xl font-bold">mtt-milano.it • fitri-planner.vercel.app</div>
+              </div>
+          )}
+      </div>
     </div>
   );
 };
