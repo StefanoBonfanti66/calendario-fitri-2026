@@ -35,7 +35,15 @@ def parse_gare_file(file_path):
             date = f"{day}-{month_map.get(month_abbr, '00')}-2026"
 
             rank = next((r for r in ["Silver", "Gold", "Bronze", "Internazionale"] if r in full_sub_title), "")
-            category = next((c for c in ["Giovanile", "Paratriathlon", "Kids", "Youth"] if c in full_sub_title), "")
+            
+            # Estrazione Categoria potenziata (controlla anche il titolo evento)
+            category = ""
+            search_text = (full_sub_title + " " + event_title).lower()
+            if "paratriathlon" in search_text: category = "Paratriathlon"
+            elif "kids" in search_text: category = "Kids"
+            elif "youth" in search_text: category = "Youth"
+            elif "giovanile" in search_text: category = "Giovanile"
+
             distance = next((d for d in ["Super Sprint", "Sprint", "Classico", "Olimpico", "Medio", "Lungo", "Staffetta", "Cross"] if d.lower() in full_sub_title.lower()), "")
 
             race_type = "Triathlon"
