@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useMemo, useTransition, useCallback } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
-  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera
+  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera, Image, ShoppingBag
 } from "lucide-react";
+
+const getEquipment = (type: string) => {
+    const base = ["Chip", "Body MTT", "Pettorale", "Gel", "Documento", "Tessera"];
+    if (type === 'Triathlon') return [...base, "Muta", "Occhialini", "Scarpe Bici", "Casco", "Scarpe Corsa"];
+    if (type === 'Duathlon') return [...base, "Scarpe Bici", "Casco", "Scarpe Corsa"];
+    if (type.includes('Winter')) return [...base, "Termica", "Guanti", "Scarpe/Sci"];
+    if (type === 'Cross') return [...base, "MTB", "Casco", "Scarpe Trail"];
+    return base;
+};
 import { toPng } from 'html-to-image';
 import racesData from "./races_full.json";
 import { provinceCoordinates } from "./coords";
@@ -44,6 +53,8 @@ const RaceCard = React.memo(({
     onToggle: (id: string) => void,
     onPriority: (id: string, p: string) => void,
     onCost: (id: string, c: number) => void,
+    onSingleCard: (race: Race) => void,
+    onChecklist: (race: Race) => void,
     getRankColor: (r: string) => string
 }) => {
     return (
@@ -152,11 +163,24 @@ const RaceCard = React.memo(({
                                     className="bg-transparent border-none outline-none text-[10px] font-black text-slate-600 w-10 text-center"
                                     value={cost || ''}
                                     onChange={(e) => onCost(race.id, parseFloat(e.target.value) || 0)}
-                                />
-                            </div>
-                        </div>
-                    )}
-                </div>
+                                                                                />
+                                                                            </div>
+                                                                                                                        <button
+                                                                                                                            onClick={(e) => { e.stopPropagation(); onSingleCard(race); }}
+                                                                                                                            className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white transition-all shadow-sm"
+                                                                                                                            title="Genera Post Instagram"
+                                                                                                                        >
+                                                                                                                            <Image className="w-4 h-4" />
+                                                                                                                        </button>
+                                                                                                                        <button
+                                                                                                                            onClick={(e) => { e.stopPropagation(); onChecklist(race); }}
+                                                                                                                            className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-white transition-all shadow-sm"
+                                                                                                                            title="Checklist Attrezzatura"
+                                                                                                                        >
+                                                                                                                            <ShoppingBag className="w-4 h-4" />
+                                                                                                                        </button>
+                                                                                                                    </div>
+                                                                                                                )}                </div>
                 
                 <div className="flex items-center gap-2">
                     {race.link && (
@@ -194,6 +218,9 @@ const RaceCard = React.memo(({
 const App: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const cardRef = React.useRef<HTMLDivElement>(null);
+  const singleCardRef = React.useRef<HTMLDivElement>(null);
+  const [activeSingleRace, setActiveSingleRace] = useState<Race | null>(null);
+  const [activeChecklistRace, setActiveChecklistRace] = useState<Race | null>(null);
   const [racesState, setRacesState] = useState<Race[]>([]);
   const [selectedRaces, setSelectedRaces] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -201,6 +228,7 @@ const App: React.FC = () => {
   const [filterRegion, setFilterRegion] = useState("Tutte");
   const [filterDistance, setFilterDistance] = useState("Tutte");
   const [filterSpecial, setFilterSpecial] = useState<string[]>([]);
+  const [filterRadius, setFilterRadius] = useState<number>(1000); // Default 1000km (Illimitato)
   const [homeCity, setHomeCity] = useState(localStorage.getItem("home_city") || "");
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
@@ -328,6 +356,30 @@ const App: React.FC = () => {
     } catch (err) {
       console.error('Errore generazione immagine', err);
     }
+  };
+
+  const generateSingleRaceCard = async (race: Race) => {
+    setActiveSingleRace(race);
+    // Piccolo timeout per permettere a React di renderizzare il template nascosto col nuovo dato
+    setTimeout(async () => {
+        if (!singleCardRef.current) return;
+        try {
+            const dataUrl = await toPng(singleCardRef.current, { 
+                cacheBust: true, 
+                backgroundColor: '#0f172a',
+                width: 1080,
+                height: 1080
+            });
+            const link = document.createElement('a');
+            link.download = `mtt-challenge-${race.id}.png`;
+            link.href = dataUrl;
+            link.click();
+            setActiveSingleRace(null);
+        } catch (err) {
+            console.error(err);
+            setActiveSingleRace(null);
+        }
+    }, 100);
   };
 
   const budgetTotals = useMemo(() => {
@@ -510,13 +562,15 @@ const App: React.FC = () => {
                    (race.event?.toLowerCase() || "").includes(searchStr);
         });
 
-        return matchesSearch && matchesType && matchesRegion && matchesDistance && matchesSpecial;
+        const matchesRadius = filterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= filterRadius;
+
+        return matchesSearch && matchesType && matchesRegion && matchesDistance && matchesSpecial && matchesRadius;
     }).sort((a,b) => {
         const dateA = a.date.split("-").reverse().join("-");
         const dateB = b.date.split("-").reverse().join("-");
         return dateA.localeCompare(dateB);
     });
-  }, [races, searchTerm, filterType, filterRegion, filterDistance, filterSpecial]);
+  }, [races, searchTerm, filterType, filterRegion, filterDistance, filterSpecial, filterRadius]);
 
   const myPlan = useMemo(() => {
     return races.filter((r) => selectedRaces.includes(r.id))
@@ -637,7 +691,7 @@ const App: React.FC = () => {
                 <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <Filter className="w-4 h-4 text-blue-500" /> Filtri Avanzati
                 </h2>
-                { (searchTerm || filterType !== 'Tutti' || filterRegion !== 'Tutte' || filterSpecial.length > 0) && (
+                { (searchTerm || filterType !== 'Tutti' || filterRegion !== 'Tutte' || filterSpecial.length > 0 || filterRadius < 1000) && (
                     <button 
                         onClick={() => { 
                             setSearchTerm(""); 
@@ -645,6 +699,7 @@ const App: React.FC = () => {
                             setFilterRegion("Tutte"); 
                             setFilterDistance("Tutte"); 
                             setFilterSpecial([]);
+                            setFilterRadius(1000);
                         }}
                         className="text-[10px] font-bold text-blue-600 hover:underline"
                     >
@@ -664,6 +719,25 @@ const App: React.FC = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
+
+              {/* Filtro Raggio */}
+              {homeCity && (
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block flex justify-between">
+                        <span>Raggio d'azione</span>
+                        <span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `Entro ${filterRadius} km`}</span>
+                    </label>
+                    <input 
+                        type="range" 
+                        min="50" 
+                        max="1000" 
+                        step="50"
+                        value={filterRadius}
+                        onChange={(e) => setFilterRadius(parseInt(e.target.value))}
+                        className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    />
+                  </div>
+              )}
 
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Sport</label>
@@ -982,6 +1056,8 @@ const App: React.FC = () => {
                             onToggle={toggleRace}
                             onPriority={setPriority}
                             onCost={updateCost}
+                            onSingleCard={generateSingleRaceCard}
+                            onChecklist={setActiveChecklistRace}
                             getRankColor={getRankColor}
                         />
                     ))}
@@ -1159,6 +1235,99 @@ const App: React.FC = () => {
                   </div>
               </div>
           </div>
+      </div>
+
+      {/* Modal Checklist Attrezzatura */}
+      {activeChecklistRace && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl border border-slate-100 scale-in-center animate-in zoom-in-95 duration-200">
+                  <div className="flex justify-between items-start mb-6">
+                      <div className="bg-emerald-50 w-12 h-12 rounded-2xl flex items-center justify-center">
+                          <ShoppingBag className="w-6 h-6 text-emerald-600" />
+                      </div>
+                      <button onClick={() => setActiveChecklistRace(null)} className="p-2 hover:bg-slate-50 rounded-xl transition-colors">
+                          <X className="w-5 h-5 text-slate-400" />
+                      </button>
+                  </div>
+                  
+                  <h3 className="text-xl font-black text-slate-800 mb-1 uppercase tracking-tight">Checklist Borsa</h3>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Gara: {activeChecklistRace.title}</p>
+                  
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                      {getEquipment(activeChecklistRace.type).map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 group cursor-pointer hover:bg-white hover:border-emerald-200 transition-all">
+                              <div className="w-5 h-5 rounded-md border-2 border-slate-300 flex items-center justify-center group-hover:border-emerald-500 transition-colors">
+                                  <CheckCircle className="w-3 h-3 text-emerald-500 opacity-0 group-hover:opacity-100" />
+                              </div>
+                              <span className="text-sm font-bold text-slate-600">{item}</span>
+                          </div>
+                      ))}
+                  </div>
+
+                  <button 
+                    onClick={() => setActiveChecklistRace(null)}
+                    className="w-full mt-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-lg shadow-slate-200"
+                  >
+                      Chiudi Checklist
+                  </button>
+              </div>
+          </div>
+      )}
+
+      {/* Template Nascosto per Single Race Card (Instagram Post) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+          {activeSingleRace && (
+              <div 
+                ref={singleCardRef}
+                className="w-[1080px] h-[1080px] bg-slate-900 p-20 flex flex-col items-center justify-center text-white font-sans relative overflow-hidden"
+              >
+                  {/* Sfondo Decorativo */}
+                  <div className="absolute top-0 right-0 p-10 opacity-5">
+                      <Trophy className="w-[600px] h-[600px]" />
+                  </div>
+                  
+                  <div className="z-10 text-center space-y-10">
+                      <div className="bg-red-600 px-8 py-3 rounded-full inline-block mb-4">
+                          <span className="text-2xl font-black uppercase tracking-[0.5em]">Next Challenge</span>
+                      </div>
+                      
+                      <div className="space-y-4">
+                          <h1 className="text-8xl font-black tracking-tighter leading-none uppercase">
+                              {activeSingleRace.event || activeSingleRace.title}
+                          </h1>
+                          <p className="text-4xl font-bold text-red-500 uppercase tracking-[0.3em]">
+                              MTT Milano Triathlon Team
+                          </p>
+                      </div>
+
+                      <div className="flex flex-col items-center gap-6 pt-10">
+                          <div className="flex items-center gap-6 bg-white/10 px-10 py-6 rounded-[2.5rem] border-2 border-white/10">
+                              <Calendar className="w-12 h-12 text-blue-400" />
+                              <span className="text-6xl font-black">{activeSingleRace.date}</span>
+                          </div>
+                          <div className="flex items-center gap-4 text-white/60 text-3xl font-bold">
+                              <MapPin className="w-10 h-10" />
+                              <span>{activeSingleRace.location}</span>
+                          </div>
+                      </div>
+
+                      <div className="pt-10 flex gap-6">
+                          <span className="px-10 py-4 bg-blue-600 rounded-3xl text-3xl font-black uppercase">
+                              {activeSingleRace.type}
+                          </span>
+                          {activeSingleRace.distance && (
+                              <span className="px-10 py-4 bg-slate-700 rounded-3xl text-3xl font-black uppercase tracking-widest">
+                                  {activeSingleRace.distance}
+                              </span>
+                          )}
+                      </div>
+                  </div>
+
+                  <div className="absolute bottom-10 left-0 right-0 text-center opacity-30 text-xl font-bold">
+                      mtt-milano.it • fitri-planner.vercel.app
+                  </div>
+              </div>
+          )}
       </div>
     </div>
   );
