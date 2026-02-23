@@ -988,6 +988,19 @@
     "id": "76"
   },
   {
+    "date": "31-05-2026",
+    "title": "Aquathlon Atipico\t\tParatriathlon",
+    "event": "LYKOS FOR OTHERS",
+    "location": "Pisogne (Brescia)",
+    "region": "Lombardia",
+    "type": "Aquathlon",
+    "distance": "",
+    "rank": "",
+    "category": "Paratriathlon",
+    "link": "",
+    "id": "77"
+  },
+  {
     "date": "02-06-2026",
     "title": "Aquathlon Kids\t\tGiovanile",
     "event": "6° AQUATHLON DELLA VITTORINO - MEMORIAL AARON BERTONCINI",
@@ -998,7 +1011,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "77"
+    "id": "78"
   },
   {
     "date": "02-06-2026",
@@ -1011,7 +1024,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "78"
+    "id": "79"
   },
   {
     "date": "02-06-2026",
@@ -1024,7 +1037,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "79"
+    "id": "80"
   },
   {
     "date": "06-06-2026",
@@ -1037,7 +1050,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "80"
+    "id": "81"
   },
   {
     "date": "06-06-2026",
@@ -1050,7 +1063,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "81"
+    "id": "82"
   },
   {
     "date": "07-06-2026",
@@ -1063,7 +1076,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "82"
+    "id": "83"
   },
   {
     "date": "07-06-2026",
@@ -1076,7 +1089,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "83"
+    "id": "84"
   },
   {
     "date": "13-06-2026",
@@ -1089,7 +1102,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "84"
+    "id": "85"
   },
   {
     "date": "13-06-2026",
@@ -1102,7 +1115,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "85"
+    "id": "86"
   },
   {
     "date": "14-06-2026",
@@ -1115,7 +1128,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "86"
+    "id": "87"
   },
   {
     "date": "14-06-2026",
@@ -1128,7 +1141,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "87"
+    "id": "88"
   },
   {
     "date": "14-06-2026",
@@ -1141,7 +1154,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "88"
+    "id": "89"
   },
   {
     "date": "14-06-2026",
@@ -1154,7 +1167,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "89"
+    "id": "90"
   },
   {
     "date": "20-06-2026",
@@ -1167,7 +1180,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "90"
+    "id": "91"
   },
   {
     "date": "20-06-2026",
@@ -1180,7 +1193,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "91"
+    "id": "92"
   },
   {
     "date": "20-06-2026",
@@ -1193,7 +1206,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "92"
+    "id": "93"
   },
   {
     "date": "21-06-2026",
@@ -1206,7 +1219,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "93"
+    "id": "94"
   },
   {
     "date": "21-06-2026",
@@ -1219,7 +1232,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "94"
+    "id": "95"
   },
   {
     "date": "21-06-2026",
@@ -1232,7 +1245,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "95"
+    "id": "96"
   },
   {
     "date": "21-06-2026",
@@ -1245,7 +1258,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "96"
+    "id": "97"
   },
   {
     "date": "21-06-2026",
@@ -1258,7 +1271,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "97"
+    "id": "98"
   },
   {
     "date": "27-06-2026",
@@ -1271,7 +1284,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "98"
+    "id": "99"
   },
   {
     "date": "28-06-2026",
@@ -1284,7 +1297,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "99"
+    "id": "100"
   },
   {
     "date": "28-06-2026",
@@ -1297,7 +1310,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "100"
+    "id": "101"
   },
   {
     "date": "03-07-2026",
@@ -1310,6 +1323,6 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "101"
+    "id": "102"
   }
 ]
