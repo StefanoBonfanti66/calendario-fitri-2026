@@ -39,6 +39,19 @@
     "id": "3"
   },
   {
+    "date": "01-02-2026",
+    "title": "01-02-2026Catania (Catania)",
+    "event": "1° COPPA S. AGATA DUATHLON SUPER SPRINT",
+    "location": "Catania (Catania)",
+    "region": "Sicilia",
+    "type": "Duathlon",
+    "distance": "",
+    "rank": "",
+    "category": "",
+    "link": "Sicilia",
+    "id": "4"
+  },
+  {
     "date": "07-02-2026",
     "title": "Winter Duathlon Atipico\t\tGiovanile",
     "event": "C.I. WINTER TRIATHLON A SQUADRE",
@@ -49,7 +62,20 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "4"
+    "id": "5"
+  },
+  {
+    "date": "07-02-2026",
+    "title": "07-02-2026Alagna Valsesia (Vercelli)",
+    "event": "C.I. WINTER TRIATHLON A SQUADRE",
+    "location": "Alagna Valsesia (Vercelli)",
+    "region": "Piemonte",
+    "type": "Winter",
+    "distance": "",
+    "rank": "",
+    "category": "",
+    "link": "Piemonte",
+    "id": "6"
   },
   {
     "date": "22-02-2026",
@@ -62,7 +88,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "5"
+    "id": "7"
   },
   {
     "date": "22-02-2026",
@@ -75,7 +101,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "6"
+    "id": "8"
   },
   {
     "date": "22-02-2026",
@@ -88,7 +114,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "7"
+    "id": "9"
+  },
+  {
+    "date": "22-02-2026",
+    "title": "Italia",
+    "event": "1° WINTER TRIATHLON MONTE BONDONE",
+    "location": "Trento (Trento)",
+    "region": "Trentino-Alto Adige/Südtirol",
+    "type": "Winter",
+    "distance": "",
+    "rank": "",
+    "category": "",
+    "link": "Winter Triathlon Sprint |",
+    "id": "10"
+  },
+  {
+    "date": "22-02-2026",
+    "title": "22-02-2026Barzanò (Lecco)",
+    "event": "DUATHLON SPRINT DI BARZANO'",
+    "location": "Barzanò (Lecco)",
+    "region": "Lombardia",
+    "type": "Duathlon",
+    "distance": "",
+    "rank": "",
+    "category": "",
+    "link": "Lombardia",
+    "id": "11"
+  },
+  {
+    "date": "22-02-2026",
+    "title": "22-02-2026Sabaudia (Latina)",
+    "event": "SABAUDIA DUATHLON DI CARNEVALE VII EDIZIONE",
+    "location": "Sabaudia (Latina)",
+    "region": "Lazio",
+    "type": "Duathlon",
+    "distance": "",
+    "rank": "",
+    "category": "",
+    "link": "Lazio",
+    "id": "12"
   },
   {
     "date": "27-02-2026",
@@ -101,7 +166,20 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "8"
+    "id": "13"
+  },
+  {
+    "date": "27-02-2026",
+    "title": "dal 27-02-2026 al 28-02-2026Comelico Superiore (Belluno)",
+    "event": "2026 WORLD TRIATHLON WINTER DUATHLON CHAMPIONSHIPS PADOLA",
+    "location": "dal  al 28-02-2026Comelico Superiore (Belluno)",
+    "region": "Veneto",
+    "type": "Duathlon",
+    "distance": "",
+    "rank": "",
+    "category": "",
+    "link": "Veneto",
+    "id": "14"
   },
   {
     "date": "01-03-2026",
@@ -114,7 +192,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "9"
+    "id": "15"
   },
   {
     "date": "01-03-2026",
@@ -127,7 +205,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "10"
+    "id": "16"
   },
   {
     "date": "01-03-2026",
@@ -140,7 +218,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "11"
+    "id": "17"
   },
   {
     "date": "01-03-2026",
@@ -153,7 +231,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "12"
+    "id": "18"
   },
   {
     "date": "01-03-2026",
@@ -166,7 +244,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "13"
+    "id": "19"
   },
   {
     "date": "07-03-2026",
@@ -179,7 +257,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "14"
+    "id": "20"
   },
   {
     "date": "08-03-2026",
@@ -192,7 +270,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "15"
+    "id": "21"
   },
   {
     "date": "08-03-2026",
@@ -205,7 +283,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "16"
+    "id": "22"
   },
   {
     "date": "15-03-2026",
@@ -218,7 +296,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "17"
+    "id": "23"
   },
   {
     "date": "15-03-2026",
@@ -231,7 +309,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "18"
+    "id": "24"
   },
   {
     "date": "15-03-2026",
@@ -244,7 +322,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "19"
+    "id": "25"
   },
   {
     "date": "21-03-2026",
@@ -257,7 +335,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "20"
+    "id": "26"
   },
   {
     "date": "21-03-2026",
@@ -270,7 +348,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "21"
+    "id": "27"
   },
   {
     "date": "22-03-2026",
@@ -283,7 +361,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "22"
+    "id": "28"
   },
   {
     "date": "22-03-2026",
@@ -296,7 +374,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "23"
+    "id": "29"
   },
   {
     "date": "22-03-2026",
@@ -309,7 +387,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "24"
+    "id": "30"
   },
   {
     "date": "29-03-2026",
@@ -322,7 +400,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "25"
+    "id": "31"
   },
   {
     "date": "29-03-2026",
@@ -335,7 +413,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "26"
+    "id": "32"
   },
   {
     "date": "29-03-2026",
@@ -348,7 +426,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "27"
+    "id": "33"
   },
   {
     "date": "29-03-2026",
@@ -361,7 +439,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "28"
+    "id": "34"
   },
   {
     "date": "29-03-2026",
@@ -374,7 +452,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "29"
+    "id": "35"
   },
   {
     "date": "29-03-2026",
@@ -387,7 +465,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "30"
+    "id": "36"
   },
   {
     "date": "29-03-2026",
@@ -400,7 +478,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "31"
+    "id": "37"
   },
   {
     "date": "29-03-2026",
@@ -413,7 +491,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "32"
+    "id": "38"
   },
   {
     "date": "12-04-2026",
@@ -426,7 +504,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "33"
+    "id": "39"
   },
   {
     "date": "12-04-2026",
@@ -439,7 +517,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "34"
+    "id": "40"
   },
   {
     "date": "12-04-2026",
@@ -452,7 +530,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "35"
+    "id": "41"
   },
   {
     "date": "12-04-2026",
@@ -465,7 +543,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "36"
+    "id": "42"
   },
   {
     "date": "12-04-2026",
@@ -478,7 +556,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "37"
+    "id": "43"
   },
   {
     "date": "12-04-2026",
@@ -491,7 +569,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "38"
+    "id": "44"
   },
   {
     "date": "12-04-2026",
@@ -504,7 +582,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "39"
+    "id": "45"
   },
   {
     "date": "18-04-2026",
@@ -517,7 +595,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "40"
+    "id": "46"
   },
   {
     "date": "18-04-2026",
@@ -530,7 +608,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "41"
+    "id": "47"
   },
   {
     "date": "18-04-2026",
@@ -543,7 +621,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "42"
+    "id": "48"
   },
   {
     "date": "18-04-2026",
@@ -556,7 +634,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "43"
+    "id": "49"
   },
   {
     "date": "18-04-2026",
@@ -569,7 +647,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "44"
+    "id": "50"
   },
   {
     "date": "19-04-2026",
@@ -582,7 +660,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "45"
+    "id": "51"
   },
   {
     "date": "19-04-2026",
@@ -595,7 +673,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "46"
+    "id": "52"
   },
   {
     "date": "25-04-2026",
@@ -608,7 +686,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "47"
+    "id": "53"
   },
   {
     "date": "25-04-2026",
@@ -621,7 +699,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "48"
+    "id": "54"
   },
   {
     "date": "26-04-2026",
@@ -634,7 +712,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "49"
+    "id": "55"
   },
   {
     "date": "26-04-2026",
@@ -647,7 +725,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "50"
+    "id": "56"
   },
   {
     "date": "26-04-2026",
@@ -660,7 +738,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "51"
+    "id": "57"
   },
   {
     "date": "01-05-2026",
@@ -673,7 +751,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "52"
+    "id": "58"
   },
   {
     "date": "01-05-2026",
@@ -686,7 +764,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "53"
+    "id": "59"
   },
   {
     "date": "02-05-2026",
@@ -699,7 +777,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "54"
+    "id": "60"
   },
   {
     "date": "03-05-2026",
@@ -712,7 +790,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "55"
+    "id": "61"
   },
   {
     "date": "03-05-2026",
@@ -725,7 +803,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "56"
+    "id": "62"
   },
   {
     "date": "03-05-2026",
@@ -738,7 +816,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "57"
+    "id": "63"
   },
   {
     "date": "08-05-2026",
@@ -751,7 +829,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "58"
+    "id": "64"
   },
   {
     "date": "09-05-2026",
@@ -764,7 +842,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "59"
+    "id": "65"
   },
   {
     "date": "09-05-2026",
@@ -777,7 +855,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "60"
+    "id": "66"
   },
   {
     "date": "10-05-2026",
@@ -790,7 +868,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "61"
+    "id": "67"
   },
   {
     "date": "10-05-2026",
@@ -803,7 +881,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "62"
+    "id": "68"
   },
   {
     "date": "10-05-2026",
@@ -816,7 +894,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "63"
+    "id": "69"
   },
   {
     "date": "10-05-2026",
@@ -829,7 +907,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "64"
+    "id": "70"
   },
   {
     "date": "10-05-2026",
@@ -842,7 +920,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "65"
+    "id": "71"
   },
   {
     "date": "10-05-2026",
@@ -855,7 +933,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "66"
+    "id": "72"
   },
   {
     "date": "10-05-2026",
@@ -868,7 +946,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "67"
+    "id": "73"
   },
   {
     "date": "10-05-2026",
@@ -881,7 +959,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "68"
+    "id": "74"
   },
   {
     "date": "13-05-2026",
@@ -894,7 +972,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "69"
+    "id": "75"
   },
   {
     "date": "16-05-2026",
@@ -907,7 +985,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "70"
+    "id": "76"
   },
   {
     "date": "16-05-2026",
@@ -920,7 +998,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "71"
+    "id": "77"
   },
   {
     "date": "17-05-2026",
@@ -933,7 +1011,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "72"
+    "id": "78"
   },
   {
     "date": "17-05-2026",
@@ -946,7 +1024,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "73"
+    "id": "79"
   },
   {
     "date": "17-05-2026",
@@ -959,7 +1037,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "74"
+    "id": "80"
   },
   {
     "date": "24-05-2026",
@@ -972,7 +1050,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "75"
+    "id": "81"
   },
   {
     "date": "24-05-2026",
@@ -985,7 +1063,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "76"
+    "id": "82"
   },
   {
     "date": "24-05-2026",
@@ -998,7 +1076,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "77"
+    "id": "83"
   },
   {
     "date": "30-05-2026",
@@ -1011,7 +1089,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "78"
+    "id": "84"
   },
   {
     "date": "31-05-2026",
@@ -1024,7 +1102,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "79"
+    "id": "85"
   },
   {
     "date": "31-05-2026",
@@ -1037,7 +1115,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "80"
+    "id": "86"
   },
   {
     "date": "31-05-2026",
@@ -1050,7 +1128,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "81"
+    "id": "87"
   },
   {
     "date": "02-06-2026",
@@ -1063,7 +1141,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "82"
+    "id": "88"
   },
   {
     "date": "02-06-2026",
@@ -1076,7 +1154,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "83"
+    "id": "89"
   },
   {
     "date": "02-06-2026",
@@ -1089,7 +1167,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "84"
+    "id": "90"
   },
   {
     "date": "06-06-2026",
@@ -1102,7 +1180,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "85"
+    "id": "91"
   },
   {
     "date": "06-06-2026",
@@ -1115,7 +1193,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "86"
+    "id": "92"
   },
   {
     "date": "07-06-2026",
@@ -1128,7 +1206,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "87"
+    "id": "93"
   },
   {
     "date": "07-06-2026",
@@ -1141,7 +1219,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "88"
+    "id": "94"
   },
   {
     "date": "13-06-2026",
@@ -1154,7 +1232,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "89"
+    "id": "95"
   },
   {
     "date": "13-06-2026",
@@ -1167,7 +1245,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "90"
+    "id": "96"
   },
   {
     "date": "14-06-2026",
@@ -1180,7 +1258,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "91"
+    "id": "97"
   },
   {
     "date": "14-06-2026",
@@ -1193,7 +1271,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "92"
+    "id": "98"
   },
   {
     "date": "14-06-2026",
@@ -1206,7 +1284,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "93"
+    "id": "99"
   },
   {
     "date": "14-06-2026",
@@ -1219,7 +1297,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "94"
+    "id": "100"
   },
   {
     "date": "20-06-2026",
@@ -1232,7 +1310,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "95"
+    "id": "101"
   },
   {
     "date": "20-06-2026",
@@ -1245,7 +1323,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "96"
+    "id": "102"
   },
   {
     "date": "20-06-2026",
@@ -1258,7 +1336,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "97"
+    "id": "103"
   },
   {
     "date": "21-06-2026",
@@ -1271,7 +1349,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "98"
+    "id": "104"
   },
   {
     "date": "21-06-2026",
@@ -1284,7 +1362,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "99"
+    "id": "105"
   },
   {
     "date": "21-06-2026",
@@ -1297,7 +1375,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "100"
+    "id": "106"
   },
   {
     "date": "21-06-2026",
@@ -1310,7 +1388,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "101"
+    "id": "107"
   },
   {
     "date": "21-06-2026",
@@ -1323,7 +1401,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "102"
+    "id": "108"
   },
   {
     "date": "27-06-2026",
@@ -1336,7 +1414,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "103"
+    "id": "109"
   },
   {
     "date": "28-06-2026",
@@ -1349,7 +1427,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "104"
+    "id": "110"
   },
   {
     "date": "28-06-2026",
@@ -1362,7 +1440,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "105"
+    "id": "111"
   },
   {
     "date": "03-07-2026",
@@ -1375,6 +1453,6 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "106"
+    "id": "112"
   }
 ]
