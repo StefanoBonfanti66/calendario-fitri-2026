@@ -1,31 +1,33 @@
 # 🏊‍♂️ MTT Milano Triathlon Team - Season Planner 2026
 
-Una Web App professionale e ultra-veloce progettata per gli atleti del **MTT**, dedicata alla pianificazione strategica della stagione agonistica 2026.
+Una Web App professionale progettata per gli atleti del **MTT**, dedicata alla pianificazione strategica e analitica della stagione agonistica 2026.
 
 ## 🚀 Visione del Progetto
-L'app trasforma il calendario testuale ufficiale FITRI in uno strumento interattivo di gestione sportiva. Permette agli atleti di visualizzare la distribuzione geografica delle gare, valutare l'impatto logistico ed economico e organizzare i propri picchi di forma (Periodizzazione A-B-C).
+L'app trasforma il calendario ufficiale FITRI in un ecosistema interattivo. Permette agli atleti di gestire ogni aspetto della stagione: dalla logistica geografica all'analisi climatica, fino alla condivisione social dei propri obiettivi.
 
-## ✨ Funzionalità Evolute
+## ✨ Funzionalità Elite
 
-### 🧭 Navigazione & Logistica
-- **🗺️ Mappa Interattiva**: Visualizzazione dinamica di tutte le gare d'Italia con marker differenziati per sport.
-- **📏 Calcolo Distanze**: Integrazione di un database di coordinate per il calcolo istantaneo dei KM dalla base di Milano (o altra provincia).
-- **🏎️ Performance UI**: Ottimizzata con React 19 Transitions per un passaggio istantaneo tra vista Lista e Mappa.
+### 🧭 Logistica & Navigazione Avanzata
+- **🗺️ Mappa Interattiva**: Pin colorati per sport e icone speciali per gli obiettivi A.
+- **📏 Raggio d'Azione**: Slider per filtrare le gare entro una specifica distanza chilometrica.
+- **📍 Direct Go!**: Integrazione con Google Maps per avviare il navigatore verso la gara con un clic.
+- **🌡️ Smart Prep (Meteo)**: Analisi dei dati storici medi (temperatura e pioggia) per ogni località e data.
 
-### 🎯 Gestione Atleta
-- **📈 Sistema di Priorità A-B-C**: Classificazione delle gare tra obiettivi stagionali (A), gare di preparazione (B) e allenamenti (C).
-- **🛡️ Safety Check**: Algoritmo di monitoraggio del recupero che avverte l'atleta in caso di gare troppo ravvicinate (< 3 giorni).
-- **📅 Sincronizzazione**: Esportazione universale in formato `.ics` compatibile con Google Calendar, Outlook e Apple Calendar.
+### 🎯 Gestione & Diario Atleta
+- **📈 Dashboard Analitica**: Riepilogo automatico della stagione (Focus Target, Mix Discipline, KM totali).
+- **📝 Diario di Gara**: Note personali persistenti per ogni evento (strategie, alimentazione, setup tecnico).
+- **🎒 Smart Checklist**: Lista dell'attrezzatura necessaria generata automaticamente in base allo sport (Triathlon, Duathlon, Cross, Winter).
+- **🛡️ Safety Check**: Algoritmo di protezione del recupero (< 3 giorni).
 
-### 💰 Budgeting
-- **💸 Financial Planner**: Gestione dei costi di iscrizione e stima automatica delle spese di viaggio basata sulla distanza chilometrica.
+### 📸 Social & Export
+- **🖼️ Social Card Generator**: Creazione di infografiche professionali per Instagram (Stagione intera o singola sfida).
+- **📅 Sincronizzazione Totale**: Esportazione in `.ics` (Calendario) e `.csv` (Excel) con inclusione di note e priorità.
 
-## 🤖 Automazione & Tecnologia
-L'applicazione è basata su un'architettura **"Live-Data"**:
-- **Backend Crawler**: Script Python + Playwright che monitora il sito FITRI ogni notte.
-- **Data Pipeline**: Elaborazione automatica tramite GitHub Actions che aggiorna il database JSON.
+## 🤖 Automazione & Stack
+- **Crawler**: Python + Playwright con sblocco dinamico dei filtri MyFITri.
+- **Pipeline**: GitHub Actions per il refresh settimanale automatico dei dati.
 - **Frontend**: React 19, TypeScript, Tailwind CSS, Leaflet.js.
-- **PWA**: Completamente installabile su dispositivi iOS e Android come app nativa.
+- **Hosting**: Vercel con Analytics integrato per il monitoraggio degli accessi.
 
 ---
-*Sviluppato per MTT Milano Triathlon Team - Stagione 2026*
+*www.milanotriathlonteam.com • Stagione 2026*
