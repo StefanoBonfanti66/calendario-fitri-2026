@@ -79,12 +79,13 @@ def merge_and_save(new_races, output_json):
 
     unique_races = {}
     # Priorità ai nuovi dati ma manteniamo i vecchi se unici
+    # La chiave ora include l'evento per evitare di perdere gare diverse nello stesso giorno/luogo
     for r in existing_races:
-        key = f"{r['date']}-{r['title']}-{r['location']}"
+        key = f"{r['date']}-{r['event']}-{r['title']}-{r['location']}"
         unique_races[key] = r
     
     for nr in new_races:
-        key = f"{nr['date']}-{nr['title']}-{nr['location']}"
+        key = f"{nr['date']}-{nr['event']}-{nr['title']}-{nr['location']}"
         unique_races[key] = nr
 
     final_list = sorted(list(unique_races.values()), key=lambda x: x['date'].split('-')[::-1])
@@ -95,6 +96,8 @@ def merge_and_save(new_races, output_json):
     return len(final_list)
 
 if __name__ == "__main__":
-    new_data = parse_gare_file('gare_2026.txt')
+    import sys
+    input_file = sys.argv[1] if len(sys.argv) > 1 else 'gare_2026.txt'
+    new_data = parse_gare_file(input_file)
     total = merge_and_save(new_data, 'app/src/races_full.json')
-    print(f"✅ Database AGGIORNATO: {total} gare.")
+    print(f"✅ Database AGGIORNATO ({input_file}): {total} gare.")
