@@ -5,3 +5,5 @@ requests
 lxml
 fastapi
 uvicorn
+markdown
+xhtml2pdf

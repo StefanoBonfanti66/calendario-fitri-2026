@@ -46,9 +46,32 @@ def run():
                         const linkEl = card.querySelector('a[href*="/evento/"]');
                         const link = linkEl ? linkEl.href : "";
                         
-                        if (lines.length >= 3) {
-                            // Nuovo formato: EVENTO | DATA LOC | SPECIALITÀ | LINK
-                            out.push(`${lines[0]} | ${lines[1]} | ${lines[lines.length-1]} | ${link}`);
+                        if (lines.length >= 2) {
+                            const event = lines[0];
+                            const dateLoc = lines[1];
+                            const keywords = ["SPRINT", "OLIMPICO", "MEDIO", "LUNGO", "CROSS", "WINTER", "DUATHLON", "TRIATHLON", "AQUATHLON", "STAFFETTA", "CRONO", "KIDS", "GIOVANI", "MINIDUATHLON", "MINITRIATHLON", "YOUTH"];
+                            
+                            // La regione è solitamente la terza riga, se non è già una specialità
+                            let region = "Italia";
+                            let specStartIdx = 2;
+                            if (lines.length > 2 && !keywords.some(k => lines[2].toUpperCase().includes(k))) {
+                                region = lines[2];
+                                specStartIdx = 3;
+                            }
+
+                            // Troviamo tutte le righe che descrivono una specialità/distanza
+                            const specialties = lines.slice(specStartIdx).filter(l => 
+                                keywords.some(k => l.toUpperCase().includes(k))
+                            );
+
+                            if (specialties.length > 0) {
+                                specialties.forEach(s => {
+                                    out.push(`${event} | ${dateLoc} | ${region} | ${s} | ${link}`);
+                                });
+                            } else {
+                                // Fallback all'ultima riga se non troviamo keyword
+                                out.push(`${event} | ${dateLoc} | ${region} | ${lines[lines.length-1]} | ${link}`);
+                            }
                         }
                     }
                 });

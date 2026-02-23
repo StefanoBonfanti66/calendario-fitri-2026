@@ -31,9 +31,19 @@ def parse_gare_file(file_path):
                 city = main_date_loc_raw
 
             region = "Italia"
+            link = ""
+            
+            # Se abbiamo almeno 4 parti (0: Evento, 1: DataLoc, 2: Regione, 3: Specialità)
             if len(parts) >= 4:
                 region = parts[2].strip()
                 sub_event_part_raw = parts[3].strip()
+                if len(parts) >= 5:
+                    link = parts[4].strip()
+            else:
+                # Caso con 3 parti (0: Evento, 1: DataLoc, 2: Specialità)
+                sub_event_part_raw = parts[2].strip()
+                if len(parts) >= 4:
+                    link = parts[3].strip()
 
             # Logica sport (MOLTO RIGOROSA)
             search_text_upper = (sub_event_part_raw + " " + event_title).upper()
@@ -54,7 +64,7 @@ def parse_gare_file(file_path):
             new_races.append({
                 "date": date, "title": sub_event_part_raw, "event": event_title,
                 "location": city, "region": region, "type": race_type,
-                "distance": distance, "rank": "", "category": category
+                "distance": distance, "rank": "", "category": category, "link": link
             })
         except: continue
     return new_races
