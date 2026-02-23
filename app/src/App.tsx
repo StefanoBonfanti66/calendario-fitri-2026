@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useTransition, useCallback } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
-  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera, Image, ShoppingBag
+  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera, Image, ShoppingBag, Cloud, Sun
 } from "lucide-react";
 import { toPng } from 'html-to-image';
 import racesData from "./races_full.json";
 import { provinceCoordinates } from "./coords";
+import { getWeatherData } from "./weatherData";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -36,6 +37,7 @@ const getEquipment = (type: string) => {
     return base;
 };
 
+// Componente Card memoizzato per massime performance
 const RaceCard = React.memo(({ 
     race, isSelected, priority, cost, onToggle, onPriority, onCost, onSingleCard, onChecklist, getRankColor 
 }: { 
@@ -45,46 +47,64 @@ const RaceCard = React.memo(({
         <div className={`group bg-white p-6 rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 flex flex-col ${isSelected ? 'border-blue-500 ring-4 ring-blue-50 shadow-lg shadow-blue-100/50' : 'border-white hover:border-blue-100 shadow-sm'} ${priority === 'A' ? 'bg-yellow-50/20 border-yellow-100' : ''}`}>
             <div className="flex justify-between items-start mb-5">
                 <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full w-fit">
+                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full w-fit" title="Data dell'evento">
                         <Calendar className="w-3.5 h-3.5 text-blue-500" />
                         <span className="text-[11px] font-black text-slate-700">{race.date}</span>
                     </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' : race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' : race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' : race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' : race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' : 'bg-emerald-100 text-emerald-700'}`} title={`Tipo di sport: ${race.type}`}>
                         {race.type}
                     </span>
-                    {race.rank && <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`}><Star className="w-2.5 h-2.5 fill-current" />{race.rank}</div>}
+                    {race.rank && <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`} title={`Rank gara: ${race.rank}`}><Star className="w-2.5 h-2.5 fill-current" />{race.rank}</div>}
                 </div>
             </div>
+            
             {race.event && <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">{race.event}</div>}
             <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">{race.title}</h3>
+            
             <div className="space-y-2 mb-6">
-                <div className="flex items-start gap-2.5"><MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" /><div className="flex flex-col"><p className="text-xs font-bold text-slate-500 leading-snug">{race.location}</p><span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span></div></div>
+                <div className="flex items-start gap-2.5" title="Località e Regione">
+                    <MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
+                    <div className="flex flex-col">
+                        <p className="text-xs font-bold text-slate-500 leading-snug">{race.location}</p>
+                        <span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
+                    </div>
+                </div>
                 <div className="flex items-center gap-4">
-                    {race.distance && <div className="flex items-center gap-2"><Bike className="w-4 h-4 text-slate-300 shrink-0" /><span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span></div>}
-                    {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (<div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50"><Navigation className="w-3 h-3 text-blue-400" /><span className="text-[10px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span></div>)}
+                    {race.distance && <div className="flex items-center gap-2" title="Distanza della gara"><Bike className="w-4 h-4 text-slate-300 shrink-0" /><span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span></div>}
+                    {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (<div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50" title="Distanza stimata dalla tua provincia"><Navigation className="w-3 h-3 text-blue-400" /><span className="text-[10px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span></div>)}
+                    {(() => {
+                        const weather = getWeatherData(race.region, race.date);
+                        return (
+                            <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100" title={`Meteo storico medio: ${weather.temp}°C, Pioggia ${weather.rain}%`}>
+                                {weather.rain > 20 ? <Cloud className="w-3.5 h-3.5 text-slate-400" /> : <Sun className="w-3.5 h-3.5 text-orange-400" />}
+                                <span className="text-[10px] font-black text-slate-500 uppercase">{weather.temp}°C</span>
+                            </div>
+                        );
+                    })()}
                 </div>
             </div>
+            
             <div className="flex flex-col gap-4 mt-auto pt-5 border-t border-slate-50">
                 <div className="flex items-center justify-between">
                     {race.category ? (
-                        <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit">
+                        <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit" title="Categoria della gara">
                             {race.category}
                         </span>
                     ) : <div></div>}
                     
                     {isSelected && (
                         <div className="flex items-center gap-2">
-                            <button onClick={(e) => { e.stopPropagation(); onSingleCard(race); }} className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-all" title="Genera Post"><Image className="w-4 h-4" /></button>
-                            <button onClick={(e) => { e.stopPropagation(); onChecklist(race); }} className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-slate-50 transition-all" title="Checklist"><ShoppingBag className="w-4 h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); onSingleCard(race); }} className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-all" title="Genera card immagine per Instagram Post"><Image className="w-4 h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); onChecklist(race); }} className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-slate-50 transition-all" title="Visualizza checklist attrezzatura consigliata"><ShoppingBag className="w-4 h-4" /></button>
                         </div>
                     )}
                 </div>
                 
                 {isSelected && (
                     <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                        <div className="flex items-center gap-1 relative group/legend">
+                        <div className="flex items-center gap-1 relative group/legend" title="Imposta priorità (A=Obiettivo, B=Preparazione, C=Allenamento)">
                             {['A', 'B', 'C'].map(p => (
                                 <button
                                     key={p}
@@ -105,7 +125,7 @@ const RaceCard = React.memo(({
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-200 h-8">
+                        <div className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-200 h-8" title="Inserisci costo iscrizione per il budget">
                             <span className="text-[9px] font-black text-slate-400 uppercase">€</span>
                             <input 
                                 type="number" 
@@ -121,7 +141,7 @@ const RaceCard = React.memo(({
                 
                 <div className="flex items-center gap-2">
                     {race.link && (
-                        <a href={race.link} target="_blank" rel="noopener noreferrer" className="p-3 rounded-[1.25rem] text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors shadow-sm" title="Scheda" onClick={(e) => e.stopPropagation()}><ExternalLink className="w-4 h-4" /></a>
+                        <a href={race.link} target="_blank" rel="noopener noreferrer" className="p-3 rounded-[1.25rem] text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors shadow-sm" title="Vai alla scheda ufficiale MyFITri" onClick={(e) => e.stopPropagation()}><ExternalLink className="w-4 h-4" /></a>
                     )}
                     <button
                         onClick={() => onToggle(race.id)}
@@ -130,6 +150,7 @@ const RaceCard = React.memo(({
                             ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-100'
                             : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
                         }`}
+                        title={isSelected ? "Rimuovi gara dal piano" : "Aggiungi gara al tuo piano stagione"}
                     >
                         {isSelected ? <><Trash2 className="w-3.5 h-3.5" /> Rimuovi</> : <><Plus className="w-3.5 h-3.5" /> Aggiungi</>}
                     </button>
@@ -267,11 +288,6 @@ const App: React.FC = () => {
     return ["Tutte", ...Array.from(r).sort()];
   }, [races]);
 
-  const distances = useMemo(() => {
-    const d = new Set(races.map(race => race.distance).filter(Boolean));
-    return ["Tutte", ...Array.from(d).sort()];
-  }, [races]);
-
   useEffect(() => {
     const saved = localStorage.getItem("selected_races");
     if (saved) try { setSelectedRaces(JSON.parse(saved)); } catch (e) {}
@@ -304,8 +320,8 @@ const App: React.FC = () => {
     }
     const newRace = races.find(r => r.id === id);
     if (newRace) {
-      const [nd, nm, ny] = newRace.date.split("-");
       const tooClose = myPlan.some(r => {
+          const [nd, nm, ny] = newRace.date.split("-");
           const [rd, rm, ry] = r.date.split("-");
           return Math.ceil(Math.abs(new Date(parseInt(ny), parseInt(nm) - 1, parseInt(nd)).getTime() - new Date(parseInt(ry), parseInt(rm) - 1, parseInt(rd)).getTime()) / 86400000) < 3;
       });
@@ -357,34 +373,17 @@ const App: React.FC = () => {
   const filteredRaces = useMemo(() => {
     return races.filter((race) => {
         const matchesSearch = (race.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || (race.location?.toLowerCase() || "").includes(searchTerm.toLowerCase());
-        
-        // Filtro Sport Esatto
         let matchesType = filterType === "Tutti";
-        if (filterType === "Triathlon") {
-            matchesType = race.type === "Triathlon";
-        } else if (filterType === "Duathlon") {
-            matchesType = race.type === "Duathlon";
-        } else if (filterType === "Winter") {
-            matchesType = race.type.includes("Winter");
-        } else if (filterType === "Cross") {
-            matchesType = race.type === "Cross";
-        }
-
+        if (filterType === "Triathlon") matchesType = race.type === "Triathlon";
+        else if (filterType === "Duathlon") matchesType = race.type === "Duathlon";
+        else if (filterType === "Winter") matchesType = race.type.includes("Winter");
+        else if (filterType === "Cross") matchesType = race.type === "Cross";
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
-        const matchesDistance = filterDistance === "Tutte" || race.distance === filterDistance;
-        
-        // Logica filtri speciali (Paratriathlon, Kids, Youth) - Corrispondenza Esatta o Parziale mirata
-        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => {
-            const searchStr = s.toLowerCase();
-            return (race.category?.toLowerCase() || "").includes(searchStr) || 
-                   (race.title?.toLowerCase() || "").includes(searchStr);
-        });
-
+        const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => (race.category?.toLowerCase() || "").includes(s.toLowerCase()) || (race.title?.toLowerCase() || "").includes(s.toLowerCase()));
         const matchesRadius = filterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= filterRadius;
-        
-        return matchesSearch && matchesType && matchesRegion && matchesDistance && matchesSpecial && matchesRadius;
+        return matchesSearch && matchesType && matchesRegion && matchesSpecial && matchesRadius;
     }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
-  }, [races, searchTerm, filterType, filterRegion, filterDistance, filterSpecial, filterRadius]);
+  }, [races, searchTerm, filterType, filterRegion, filterSpecial, filterRadius]);
 
   const getRankColor = useCallback((rank: string) => {
     if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
@@ -414,32 +413,14 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-100">
       <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <a 
-                          href="https://www.milanotriathlonteam.com/" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg shadow-red-100 rotate-3 hover:scale-110 transition-transform cursor-pointer"
-                          title="Sito Ufficiale MTT"
-                      >
-                          <Trophy className="w-6 h-6" />
-                      </a>
-                      <div>
-                        <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
-                        <a 
-                          href="https://www.milanotriathlonteam.com/" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] hover:underline"
-                        >
-                          MTT Milano Triathlon Team
-                        </a>
-                      </div>
-                    </div>
+          <div className="flex items-center gap-4">
+            <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg rotate-3 hover:scale-110 transition-transform" title="Sito Ufficiale MTT"><Trophy className="w-6 h-6" /></a>
+            <div><h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1><a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] hover:underline">MTT Milano Triathlon Team</a></div>
+          </div>
           <div className="flex gap-2">
-            <button onClick={exportToICS} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario</span></button>
-            <button onClick={exportToCSV} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl text-sm font-bold disabled:opacity-50"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel</span></button>
-            <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-sm font-bold cursor-pointer shadow-xl shadow-slate-200"><Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span><input type="file" className="hidden" accept=".json" onChange={handleFileUpload} /></label>
+            <button onClick={exportToICS} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl text-sm font-bold disabled:opacity-50" title="Esporta piano gare in formato Calendario (.ics)"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario</span></button>
+            <button onClick={exportToCSV} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl text-sm font-bold disabled:opacity-50" title="Esporta piano gare in formato Excel (.csv)"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel</span></button>
+            <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-sm font-bold cursor-pointer shadow-xl" title="Carica un piano gare salvato precedentemente (.json)"><Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span><input type="file" className="hidden" accept=".json" onChange={handleFileUpload} /></label>
           </div>
         </div>
       </header>
@@ -449,29 +430,23 @@ const App: React.FC = () => {
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 sticky top-28">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-500" /> Filtri</h2>
-                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterRegion("Tutte"); setFilterDistance("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline">Reset</button>
+                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline" title="Resetta tutti i filtri">Reset</button>
             </div>
             <div className="space-y-5">
-              <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
-              {homeCity && (<div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between"><span>Raggio d'azione</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" /></div>)}
-              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (<button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-500"}`}>{t}</button>))}</div></div>
-              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"}`}>{s}</button>))}</div></div>
-              <div className="grid grid-cols-1 gap-4"><div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">La tua provincia</label><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer"><option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
+              <div className="relative group" title="Cerca per titolo, evento o località"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
+              {homeCity && (<div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between"><span>Raggio d'azione</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" title="Filtra le gare in base alla distanza dalla tua provincia" /></div>)}
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (<button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white shadow-md" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`} title={`Mostra solo gare di ${t}`}>{t}</button>))}</div></div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white shadow-md" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`} title={`Filtra per settore ${s}`}>{s}</button>))}</div></div>
+              <div className="grid grid-cols-1 gap-4"><div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">La tua provincia</label><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100" title="Imposta la tua provincia per calcolare le distanze"><option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
             </div>
             <div className="mt-10 pt-10 border-t border-slate-100">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-black text-slate-800">Il Tuo Anno <span className="text-blue-600">({myPlan.length})</span></h2>
-                    <div className="flex gap-2"><span title="Race Card" className="cursor-pointer"><Camera className="w-4 h-4 text-slate-400 hover:text-blue-600" onClick={generateRaceCard} /></span></div>
-                </div>
+                <div className="flex items-center justify-between mb-6"><h2 className="text-lg font-black text-slate-800">Il Tuo Anno <span className="text-blue-600">({myPlan.length})</span></h2><div className="flex gap-2"><span title="Genera Race Card stagionale per Social"><Camera className="w-4 h-4 text-slate-400 cursor-pointer hover:text-blue-600" onClick={generateRaceCard} /></span></div></div>
                 <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                    {myPlan.map((race, index) => (
-                    <div key={race.id} className={`p-4 rounded-2xl border transition-all ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 bg-white'}`}>
+                    {myPlan.map((race) => (
+                    <div key={race.id} className={`p-4 rounded-2xl border transition-all ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 bg-white shadow-sm'}`}>
                         <div className="flex justify-between items-start">
-                            <div className="space-y-1">
-                                <div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-500">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div>
-                                <h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4>
-                            </div>
-                            <button onClick={() => toggleRace(race.id)} className="text-slate-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                            <div className="space-y-1"><div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-500">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div><h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4></div>
+                            <button onClick={() => toggleRace(race.id)} className="text-slate-300 hover:text-red-500" title="Rimuovi dal piano"><Trash2 className="w-4 h-4" /></button>
                         </div>
                     </div>))}
                 </div>
@@ -482,9 +457,17 @@ const App: React.FC = () => {
 
         <div className="lg:col-span-8 space-y-6">
             {nextObjective && timeLeft && (
-                <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div><span className="text-[10px] font-black uppercase tracking-widest opacity-60">Prossimo Obiettivo</span><h2 className="text-2xl font-black uppercase">{nextObjective.title}</h2></div>
-                    <div className="flex gap-4 text-center"><div><div className="text-3xl font-black">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div><div className="text-2xl opacity-30">:</div><div><div className="text-3xl font-black">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div></div>
+                <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                    <div className="absolute right-0 top-0 p-4 opacity-10 rotate-12"><Trophy className="w-32 h-32" /></div>
+                    <div className="relative z-10">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60 bg-white/20 px-2 py-1 rounded">Prossimo Obiettivo</span>
+                        <h2 className="text-2xl font-black uppercase mt-2">{nextObjective.title}</h2>
+                    </div>
+                    <div className="flex gap-4 text-center relative z-10">
+                        <div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div>
+                        <div className="text-2xl mt-3 opacity-30">:</div>
+                        <div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div>
+                    </div>
                 </div>
             )}
 
@@ -500,38 +483,21 @@ const App: React.FC = () => {
                                 <div className="mt-4 flex gap-1 h-1.5"><div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / myPlan.length) * 100}%` }}></div><div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / myPlan.length) * 100}%` }}></div><div className="bg-slate-600 rounded-full flex-1"></div></div>
                             </div>
                             <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-300">{type}</span><span className="text-xs font-black">{count}</span></div>))}</div></div>
-                                                        <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
-                                                            <span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Logistica</span>
-                                                            <div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-400 uppercase">Km Stimati</div></div></div>
-                                                        </div>
-                                                    </div>
-                            
-                                                    {/* MTT Promotion */}
-                                                    <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="bg-red-600/20 p-2 rounded-lg">
-                                                                <Trophy className="w-5 h-5 text-red-500" />
-                                                            </div>
-                                                            <p className="text-xs font-bold text-slate-300">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p>
-                                                        </div>
-                                                        <a 
-                                                            href="https://www.milanotriathlonteam.com/" 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer"
-                                                            className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-900/20"
-                                                        >
-                                                            Diventa un MTT
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-400 uppercase">Km Stimati</div></div></div></div>
+                        </div>
+                        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div className="flex items-center gap-4"><div className="bg-red-600/20 p-2 rounded-lg"><Trophy className="w-5 h-5 text-red-500" /></div><p className="text-xs font-bold text-slate-300">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p></div>
+                            <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">Diventa un MTT</a>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="flex items-center justify-between px-2">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{filteredRaces.length} gare trovate</span>
                 <div className="flex bg-slate-100 p-1 rounded-xl">
-                    <button onClick={() => handleViewChange('list')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase ${viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}>Lista</button>
-                    <button onClick={() => handleViewChange('map')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase ${viewMode === 'map' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}>Mappa</button>
+                    <button onClick={() => handleViewChange('list')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`} title="Visualizzazione a lista">Lista</button>
+                    <button onClick={() => handleViewChange('map')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'map' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`} title="Visualizzazione su mappa geografica">Mappa</button>
                 </div>
             </div>
 
@@ -559,94 +525,73 @@ const App: React.FC = () => {
       {activeChecklistRace && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
               <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
-                  <h3 className="text-xl font-black text-slate-800 mb-6 uppercase">Checklist {activeChecklistRace.type}</h3>
-                  <div className="space-y-3">{getEquipment(activeChecklistRace.type).map((item, i) => (<div key={i} className="p-3 bg-slate-50 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><CheckCircle className="w-4 h-4 text-emerald-500" />{item}</div>))}</div>
-                  <button onClick={() => setActiveChecklistRace(null)} className="w-full mt-8 py-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase">Chiudi</button>
+                  <div className="flex justify-between items-start mb-6"><div className="bg-emerald-50 p-3 rounded-2xl"><ShoppingBag className="w-6 h-6 text-emerald-600" /></div><button onClick={() => setActiveChecklistRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-400" /></button></div>
+                  <h3 className="text-xl font-black text-slate-800 mb-1 uppercase tracking-tight">Checklist Borsa</h3><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Tipo: {activeChecklistRace.type}</p>
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">{getEquipment(activeChecklistRace.type).map((item, i) => (<div key={i} className="p-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3 border border-slate-100 hover:bg-white hover:border-emerald-200 transition-all cursor-default"><CheckCircle className="w-4 h-4 text-emerald-500" />{item}</div>))}</div>
+                  <button onClick={() => setActiveChecklistRace(null)} className="w-full mt-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all">Chiudi Checklist</button>
               </div>
           </div>
       )}
 
       {pendingConfirmId && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full text-center animate-in zoom-in-95">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full text-center animate-in zoom-in-95 shadow-2xl">
                   <div className="bg-orange-50 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6"><AlertTriangle className="w-8 h-8 text-orange-500" /></div>
-                  <h3 className="text-xl font-black mb-4 uppercase">Gara ravvicinata!</h3>
-                  <p className="text-slate-500 mb-8 font-medium">Hai meno di 3 giorni di recupero. Vuoi procedere?</p>
-                  <div className="flex gap-3"><button onClick={() => setPendingConfirmId(null)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-black text-xs uppercase">Annulla</button><button onClick={() => addRaceFinal(pendingConfirmId)} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase">Conferma</button></div>
+                  <h3 className="text-xl font-black mb-4 uppercase">Gara molto vicina!</h3><p className="text-slate-500 mb-8 font-medium">Hai meno di 3 giorni di recupero tra questa e un'altra gara. Confermi l'aggiunta?</p>
+                  <div className="flex gap-3"><button onClick={() => setPendingConfirmId(null)} className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 rounded-2xl font-black text-xs uppercase transition-all">Annulla</button><button onClick={() => addRaceFinal(pendingConfirmId)} className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-xs uppercase shadow-lg transition-all">Conferma</button></div>
               </div>
           </div>
       )}
 
-      {/* Template Nascosto per Generazione Immagine (Race Card Stagionale) */}
+      {/* TEMPLATE SOCIAL: STAGIONALE */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
-          <div ref={cardRef} className="w-[1080px] min-h-[1920px] bg-slate-900 p-20 flex flex-col text-white font-sans">
-              <div className="flex items-center justify-between mb-20 border-b-4 border-red-600 pb-10">
+          <div ref={cardRef} className="w-[1080px] min-h-[1920px] bg-slate-900 p-20 flex flex-col text-white font-sans relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-10 opacity-5"><Trophy className="w-[800px] h-[800px]" /></div>
+              <div className="flex items-center justify-between mb-20 border-b-4 border-red-600 pb-10 relative z-10">
                   <div className="flex items-center gap-8">
                       <div className="bg-red-600 p-6 rounded-[2.5rem] rotate-3 shadow-2xl"><Trophy className="w-20 h-20 text-white" /></div>
-                      <div>
-                          <h1 className="text-7xl font-black tracking-tighter uppercase leading-none mb-2">My 2026 Season</h1>
-                          <p className="text-2xl font-bold text-red-500 uppercase tracking-[0.5em]">MTT Milano Triathlon Team</p>
-                      </div>
+                      <div><h1 className="text-7xl font-black tracking-tighter uppercase leading-none mb-2">My 2026 Season</h1><p className="text-2xl font-bold text-red-500 uppercase tracking-[0.5em]">MTT Milano Triathlon Team</p></div>
                   </div>
                   <div className="text-right text-9xl font-black text-white/10 leading-none">2026</div>
               </div>
-              <div className="flex-1 space-y-10">
-                  {myPlan.map((race) => (
+              <div className="flex-1 space-y-10 relative z-10">
+                  {myPlan.slice(0, 10).map((race) => (
                       <div key={race.id} className={`p-10 rounded-[3rem] flex items-center justify-between border-4 transition-all ${racePriorities[race.id] === 'A' ? 'bg-yellow-500/10 border-yellow-500' : 'bg-white/5 border-white/5'}`}>
                           <div className="flex items-center gap-10">
-                              <div className="flex flex-col items-center justify-center bg-white/10 w-28 h-28 rounded-[2rem] border-2 border-white/10">
-                                  <span className="text-sm font-black uppercase text-blue-400">{race.date.split('-')[1]}</span>
-                                  <span className="text-4xl font-black">{race.date.split('-')[0]}</span>
-                              </div>
+                              <div className="flex flex-col items-center justify-center bg-white/10 w-28 h-28 rounded-[2rem] border-2 border-white/10"><span className="text-sm font-black uppercase text-blue-400">{race.date.split('-')[1]}</span><span className="text-4xl font-black">{race.date.split('-')[0]}</span></div>
                               <div className="space-y-2">
                                   {racePriorities[race.id] === 'A' && <div className="flex items-center gap-2 text-yellow-500 mb-2"><Star className="w-6 h-6 fill-current" /><span className="text-xl font-black uppercase tracking-widest">Main Objective</span></div>}
                                   {race.event && <div className="text-xl font-black text-white/40 uppercase tracking-[0.2em] mb-1">{race.event}</div>}
                                   <h2 className="text-4xl font-black leading-tight max-w-2xl">{race.title}</h2>
-                                  <div className="flex items-center gap-4 text-white/40 text-xl font-bold">
-                                      <MapPin className="w-6 h-6" />
-                                      <span>{race.location} • {race.region}</span>
-                                  </div>
+                                  <div className="flex items-center gap-4 text-white/40 text-xl font-bold"><MapPin className="w-6 h-6" /><span>{race.location} • {race.region}</span></div>
                               </div>
                           </div>
                           <div className="flex flex-col items-end gap-4">
-                              <span className={`px-10 py-4 rounded-3xl text-3xl font-black uppercase ${race.type === 'Triathlon' ? 'bg-blue-600' : race.type === 'Duathlon' ? 'bg-orange-600' : race.type.includes('Winter') ? 'bg-cyan-600' : 'bg-emerald-600'}`}>
-                                  {race.type}
-                              </span>
-                              {race.distance && (
-                                  <div className="flex items-center gap-3 text-white/60">
-                                      <Bike className="w-6 h-6" />
-                                      <span className="text-xl font-black uppercase tracking-widest">{race.distance}</span>
-                                  </div>
-                              )}
+                              <span className={`px-10 py-4 rounded-3xl text-3xl font-black uppercase ${race.type === 'Triathlon' ? 'bg-blue-600' : race.type === 'Duathlon' ? 'bg-orange-600' : race.type.includes('Winter') ? 'bg-cyan-600' : 'bg-emerald-600'}`}>{race.type}</span>
+                              {race.distance && <div className="flex items-center gap-3 text-white/60"><Bike className="w-6 h-6" /><span className="text-xl font-black uppercase tracking-widest">{race.distance}</span></div>}
                           </div>
                       </div>
                   ))}
               </div>
-              <div className="mt-20 pt-10 border-t-2 border-white/10 flex justify-between items-end opacity-40"><div className="text-xl font-bold">mtt-milano.it • fitri-planner.vercel.app</div><Trophy className="w-10 h-10" /></div>
+              <div className="mt-20 pt-10 border-t-2 border-white/10 flex justify-between items-end opacity-40 relative z-10"><div className="text-xl font-bold"><p>Generato da MTT Season Planner</p><p className="text-red-500 uppercase tracking-widest">www.milanotriathlonteam.com</p></div><div className="flex items-center gap-4"><Trophy className="w-10 h-10" /><span className="text-4xl font-black uppercase italic">Ready to Race</span></div></div>
           </div>
       </div>
 
-      {/* Template Nascosto per Instagram Goal Card (Post Gara Singola) */}
+      {/* TEMPLATE SOCIAL: SINGOLA GARA */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
           {activeSingleRace && (
-              <div ref={singleCardRef} className="w-[1080px] h-[1080px] bg-slate-900 p-20 flex flex-col items-center justify-center text-white font-sans relative overflow-hidden">
+              <div ref={singleCardRef} className="w-[1080px] h-[1080px] bg-slate-900 p-20 flex flex-col items-center justify-center text-white font-sans relative overflow-hidden text-center">
                   <div className="absolute top-0 right-0 p-10 opacity-5"><Trophy className="w-[600px] h-[600px]" /></div>
-                  <div className="z-10 text-center space-y-10">
-                      <div className="bg-red-600 px-8 py-3 rounded-full inline-block mb-4"><span className="text-2xl font-black uppercase tracking-[0.5em]">Next Challenge</span></div>
-                      <div className="space-y-4">
-                          <h1 className="text-8xl font-black tracking-tighter leading-none uppercase">{activeSingleRace.event || activeSingleRace.title}</h1>
-                          <p className="text-4xl font-bold text-red-500 uppercase tracking-[0.3em]">MTT Milano Triathlon Team</p>
-                      </div>
-                      <div className="flex flex-col items-center gap-6 pt-10">
-                          <div className="flex items-center gap-6 bg-white/10 px-10 py-6 rounded-[2.5rem] border-2 border-white/10"><Calendar className="w-12 h-12 text-blue-400" /><span className="text-6xl font-black">{activeSingleRace.date}</span></div>
-                          <div className="flex items-center gap-4 text-white/60 text-3xl font-bold"><MapPin className="w-10 h-10" /><span>{activeSingleRace.location}</span></div>
-                      </div>
-                      <div className="pt-10 flex gap-6">
-                          <span className="px-10 py-4 bg-blue-600 rounded-3xl text-3xl font-black uppercase">{activeSingleRace.type}</span>
-                          {activeSingleRace.distance && <span className="px-10 py-4 bg-slate-700 rounded-3xl text-3xl font-black uppercase tracking-widest">{activeSingleRace.distance}</span>}
+                  <div className="z-10 space-y-10">
+                      <div className="bg-red-600 px-8 py-3 rounded-full inline-block mb-4 shadow-2xl"><span className="text-2xl font-black uppercase tracking-[0.5em]">Next Challenge</span></div>
+                      <div className="space-y-4"><h1 className="text-8xl font-black tracking-tighter leading-none uppercase drop-shadow-2xl">{activeSingleRace.event || activeSingleRace.title}</h1><p className="text-4xl font-bold text-red-500 uppercase tracking-[0.3em]">MTT Milano Triathlon Team</p></div>
+                      <div className="flex flex-col items-center gap-6 pt-10"><div className="flex items-center gap-6 bg-white/10 px-10 py-6 rounded-[2.5rem] border-2 border-white/10 shadow-xl"><Calendar className="w-12 h-12 text-blue-400" /><span className="text-6xl font-black">{activeSingleRace.date}</span></div><div className="flex items-center gap-4 text-white/60 text-3xl font-bold"><MapPin className="w-10 h-10" /><span>{activeSingleRace.location} • {activeSingleRace.region}</span></div></div>
+                      <div className="pt-10 flex gap-6 justify-center">
+                          <span className={`px-10 py-4 rounded-3xl text-3xl font-black uppercase shadow-lg ${activeSingleRace.type === 'Triathlon' ? 'bg-blue-600' : 'bg-orange-600'}`}>{activeSingleRace.type}</span>
+                          {activeSingleRace.distance && <span className="px-10 py-4 bg-slate-700 rounded-3xl text-3xl font-black uppercase tracking-widest shadow-lg">{activeSingleRace.distance}</span>}
                       </div>
                   </div>
-                  <div className="absolute bottom-10 left-0 right-0 text-center opacity-30 text-xl font-bold">mtt-milano.it • fitri-planner.vercel.app</div>
+                  <div className="absolute bottom-10 left-0 right-0 text-center opacity-30 text-xl font-bold">www.milanotriathlonteam.com</div>
               </div>
           )}
       </div>
