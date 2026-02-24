@@ -3,182 +3,117 @@ import sys
 import re
 from playwright.sync_api import sync_playwright
 
-# Configurazione
-YEAR = "2026"
 OUTPUT_FILE = "gare_2026.txt"
-MONTHS = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", 
-          "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
-
-# Keywords per esplodere le gare raggruppate
-# Ordine importante: dal più specifico al più generico
-SUB_EVENTS = [
-    "ASSOLUTI", "AGE GROUP", "PARATRIATHLON", "PARADUATHLON", "STAFFETTA", 
-    "COPPA CRONO", "JUNIOR", "YOUTH", "KIDS", "GIOVANI", "SUPER SPRINT", 
-    "MINITRIATHLON", "MINIDUATHLON", "ATIPICO", "CLASSICO", "MEDIO", "LUNGO", 
-    "70.3", "IRONMAN", "CROSS", "WINTER", "AQUATHLON", "SPRINT", "OLIMPICO"
-]
-
-def clean_text(text):
-    return re.sub(r'\s+', ' ', text).strip()
 
 def run():
-    print("🚀 MTT SCRAPER V16: MONTH-BY-MONTH PRECISION MODE")
-    all_races = []
+    print("🚀 SCRAPER V23: LOGICA ESTRAZIONE PRECISA (PREDAZZO/MAGIONE STYLE)")
+    all_final_races = []
 
     with sync_playwright() as p:
+        # Per test locale: headless=False. Per GitHub Action: headless=True.
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(viewport={'width': 1280, 'height': 1000})
+        page = context.new_page()
+
+        print("🔗 Caricamento MyFITri...")
+        page.goto("https://www.myfitri.it/calendario", wait_until="networkidle")
+        time.sleep(5)
+
+        print("🧹 Sblocco filtro mese (Logica User)...")
         try:
-            # Avvio browser
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                viewport={'width': 1920, 'height': 1080}
-            )
-            page = context.new_page()
+            months_regex = re.compile(r"Gennaio|Febbraio|Marzo|Aprile|Maggio|Giugno|Luglio|Agosto|Settembre|Ottobre|Novembre|Dicembre", re.IGNORECASE)
+            page.locator("span").filter(has_text=months_regex).locator("i").click()
+            print("✅ Filtro rimosso.")
+        except: pass
+
+        time.sleep(3)
+
+        print("🖱️ Caricamento completo del calendario...")
+        for _ in range(45):
+            page.mouse.wheel(0, 3000)
+            time.sleep(1.0)
+
+        print("📋 Estrazione card e parsing strutturato...")
+        raw_cards = page.evaluate("""() => {
+            return Array.from(document.querySelectorAll('.v-card'))
+                .filter(c => c.innerText.includes('2026'))
+                .map(c => ({
+                    text: c.innerText,
+                    link: c.querySelector('a[href*="/evento/"]')?.href || ""
+                }));
+        }""")
+
+        print(f"🧐 Analisi di {len(raw_cards)} eventi trovati...")
+        
+        # Regex per le date abbreviate (es: 10-gen, 18-apr)
+        short_date_pattern = re.compile(r'^(\d{1,2}-(?:gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic))', re.IGNORECASE)
+
+        for card in raw_cards:
+            # Dividiamo il testo della card in righe, pulendo spazi e tab
+            lines = [l.strip() for l in card['text'].split('\n') if l.strip()]
+            if len(lines) < 2: continue
             
-            print("🔗 Connecting to MyFITri...")
-            page.goto("https://www.myfitri.it/calendario", wait_until="networkidle", timeout=60000)
-            time.sleep(5)
+            # 1. Titolo Evento (sempre la prima riga)
+            event_name = lines[0]
+            
+            # 2. Data e Regione (cerchiamo la riga che contiene l'anno 2026)
+            main_info_line = ""
+            for l in lines:
+                if "2026" in l:
+                    main_info_line = l
+                    break
+            
+            if not main_info_line: continue
 
-            # 1. RESET INIZIALE
-            print("🧹 Initial Reset...")
-            page.evaluate("""() => {
-                document.querySelectorAll('.v-chip__close, button[aria-label*="close"]').forEach(el => el.click());
-                const tabs = Array.from(document.querySelectorAll('.v-tab'));
-                const tutti = tabs.find(t => t.innerText && t.innerText.toUpperCase().includes('TUTTI'));
-                if (tutti) tutti.click();
-            }""")
-            time.sleep(3)
+            # Estrazione Data Standard (es. 10-01-2026)
+            date_match = re.search(r'(\d{2}-\d{2}-2026)', main_info_line)
+            standard_date = date_match.group(1) if date_match else "01-01-2026"
+            
+            # Estrazione Regione (tutto ciò che segue il carattere '|')
+            region = "Italia"
+            if "|" in main_info_line:
+                region = main_info_line.split("|")[-1].strip()
 
-            # 2. ITERAZIONE MESI
-            for month in MONTHS:
-                print(f"📅 Processing: {month}...")
-                
-                # Tenta di attivare il filtro mese (match completo o prime 3 lettere)
-                clicked = page.evaluate(f"""(m) => {{
-                    const elements = Array.from(document.querySelectorAll('.v-tab, .v-chip, span, button'));
-                    const target = elements.find(el => {{
-                        const txt = el.innerText ? el.innerText.trim().toUpperCase() : "";
-                        return txt === m.toUpperCase() || txt === m.toUpperCase().substring(0,3);
-                    }});
-                    
-                    if (target) {{
-                        target.click();
-                        return true;
-                    }}
-                    return false;
-                }}""", month)
-                
-                if not clicked:
-                    print(f"⚠️  Filter for {month} not found. Trying generic scroll fallback.")
-                
-                time.sleep(3) 
-                
-                # Scroll tattico
-                page.mouse.wheel(0, 1000)
-                time.sleep(1)
-                page.mouse.wheel(0, 2000)
-                time.sleep(1)
-
-                # ESTRAZIONE DATI
-                raw_data = page.evaluate("""() => {
-                    const cards = document.querySelectorAll('.v-card');
-                    const data = [];
-                    cards.forEach(card => {
-                        const text = card.innerText || "";
-                        if (text.includes('2026')) {
-                            const linkEl = card.querySelector('a[href*="/evento/"]');
-                            const link = linkEl ? linkEl.href : "";
-                            const titleEl = card.querySelector('.v-card__title, .text-h5, .text-h6');
-                            let title = titleEl ? titleEl.innerText : "";
-                            
-                            data.push({ full_text: text, link: link, explicit_title: title });
-                        }
-                    });
-                    return data;
-                }""")
-
-                # PROCESSING PYTHON
-                count_month = 0
-                for item in raw_data:
-                    lines = [l.strip() for l in item['full_text'].split('\n') if l.strip()]
-                    if len(lines) < 2: continue
-
-                    # Dati base
-                    event_title = clean_text(item['explicit_title']) if item['explicit_title'] else clean_text(lines[0])
-                    date_match = re.search(r'(\d{2}-\d{2}-2026)', item['full_text'])
-                    event_date = date_match.group(1) if date_match else "01-01-2026"
-                    
-                    # Regione
-                    region = "Italia"
-                    for l in lines:
-                        if any(r in l for r in ["Lombardia", "Veneto", "Piemonte", "Sicilia", "Lazio", "Emilia", "Toscana", "Sardegna", "Campania", "Puglia"]):
-                            region = clean_text(l)
-                            break
-                    
-                    location = clean_text(lines[1]).replace(event_date, "").strip() # Rimuove la data dalla riga location
-                    if not location: location = "Location Unknown"
-
-                    # Esplosione Gare
-                    full_text_upper = item['full_text'].upper()
-                    found_sub_events = []
-                    
-                    # Cerca keywords specifiche
-                    for sub in SUB_EVENTS:
-                        if sub in full_text_upper:
-                            found_sub_events.append(sub)
-                    
-                    # Logica di deduplica intelligente
-                    main_types = ["SPRINT", "OLIMPICO", "MEDIO", "LUNGO", "STAFFETTA", "KIDS", "GIOVANI", "ATIPICO", "SUPER SPRINT", "CLASSICO"]
-                    found_main_types = sorted(list(set([t for t in main_types if t in full_text_upper])))
-                    
-                    if len(found_main_types) > 0:
-                        for ft in found_main_types:
-                            # Costruisci descrizione completa
-                            cats = [c for c in ["ASSOLUTI", "AGE GROUP", "PARATRIATHLON", "U23"] if c in full_text_upper]
-                            cat_str = " ".join(cats)
-                            
-                            # Prefisso sport
-                            sport = "Triathlon"
-                            if "DUATHLON" in full_text_upper: sport = "Duathlon"
-                            elif "AQUATHLON" in full_text_upper: sport = "Aquathlon"
-                            elif "WINTER" in full_text_upper: sport = "Winter Triathlon"
-                            
-                            full_spec = f"{sport} {ft.title()} {cat_str}".strip()
-                            entry = f"{event_title} | {event_date} {location} | {region} | {full_spec} | {item['link']}"
-                            all_races.append(entry)
-                            count_month += 1
+            # 3. Estrazione Specialità (Sottogare)
+            # Scorriamo le righe cercando quelle che seguono una data abbreviata
+            sub_event_found = False
+            for i, l in enumerate(lines):
+                if short_date_pattern.match(l):
+                    # Abbiamo trovato una data abbreviata (es. 11-gen)
+                    # La specialità è solitamente nella riga immediatamente successiva
+                    # o nella stessa riga se non ci sono a capo
+                    spec_candidate = ""
+                    if i + 1 < len(lines) and not short_date_pattern.match(lines[i+1]):
+                        spec_candidate = lines[i+1]
                     else:
-                        # Fallback generico
-                        spec = lines[-1]
-                        entry = f"{event_title} | {event_date} {location} | {region} | {spec} | {item['link']}"
-                        all_races.append(entry)
-                        count_month += 1
+                        spec_candidate = short_date_pattern.sub("", l).strip()
+                    
+                    if spec_candidate and not any(s in spec_candidate.upper() for s in ["VAI ALLA", "RANK", "DETTAGLI"]):
+                        # Pulizia tabulazioni multiple nel nome specialità
+                        spec_candidate = re.sub(r'\t+', ' ', spec_candidate).strip()
+                        all_final_races.append(f"{event_name} | {standard_date} | {region} | {spec_candidate} | {card['link']}")
+                        sub_event_found = True
 
-                print(f"   > Extracted {count_month} races for {month}.")
+            # 4. Fallback per gare singole (se non abbiamo trovato date abbreviate)
+            if not sub_event_found:
+                # Prendiamo l'ultima riga sensata che non sia un comando
+                for l in reversed(lines):
+                    if not any(s in l.upper() for s in ["VAI ALLA", "RANK", "DETTAGLI", "2026", "2025"]):
+                        all_final_races.append(f"{event_name} | {standard_date} | {region} | {l} | {card['link']}")
+                        break
 
-                # Reset filtro
-                page.evaluate("""() => {
-                    document.querySelectorAll('.v-chip__close, button[aria-label*="close"]').forEach(el => el.click());
-                }""")
-                time.sleep(2)
+        # Deduplicazione finale
+        unique_output = sorted(list(set(all_final_races)))
 
-            # SALVATAGGIO FINALE
-            unique_races = sorted(list(set(all_races)))
-            
-            if len(unique_races) > 10:
-                with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-                    for line in unique_races:
-                        f.write(line + "\n")
-                print(f"✨ SUCCESS: {len(unique_races)} unique races extracted and saved.")
-            else:
-                print(f"⚠️ WARNING: Only {len(unique_races)} races found.")
+        if len(unique_output) > 50:
+            with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+                for r in unique_output:
+                    f.write(r + "\n")
+            print(f"✨ SUCCESS: {len(unique_output)} gare/specialità estratte correttamente!")
+        else:
+            print(f"❌ Errore: Trovate solo {len(unique_output)} gare.")
 
-            browser.close()
-
-        except Exception as e:
-            print(f"❌ FATAL ERROR: {e}")
-            import traceback
-            traceback.print_exc()
+        browser.close()
 
 if __name__ == "__main__":
     run()
