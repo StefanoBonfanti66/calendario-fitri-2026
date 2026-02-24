@@ -63,16 +63,15 @@ def parse_gare_file(file_path):
 
             # Estrazione Rank (Gold, Silver, Bronze)
             rank = ""
-            for r in ["Gold", "Silver", "Bronze"]:
-                if r.lower() in sub_event_part_raw.lower():
-                    rank = r
-                    # Puliamo il titolo rimuovendo il rank e spazi extra/tab
-                    sub_event_part_raw = re.sub(r.lower(), '', sub_event_part_raw, flags=re.IGNORECASE).strip()
-                    break
+            # Cerchiamo il rank e lo rimuoviamo dal titolo in modo pulito
+            match_rank = re.search(r'\b(Gold|Silver|Bronze)\b', sub_event_part_raw, re.IGNORECASE)
+            if match_rank:
+                rank = match_rank.group(1).capitalize()
+                sub_event_part_raw = re.sub(r'\b(Gold|Silver|Bronze)\b', '', sub_event_part_raw, flags=re.IGNORECASE).strip()
             
-            # Pulizia ulteriore da tabulazioni e spazi doppi nel titolo
-            sub_event_part_raw = re.sub(r'\t+', ' ', sub_event_part_raw)
-            sub_event_part_raw = re.sub(r' +', ' ', sub_event_part_raw).strip()
+            # Pulizia profonda: rimuove pipe, tab, spazi doppi e residui
+            sub_event_part_raw = sub_event_part_raw.replace('|', '').strip()
+            sub_event_part_raw = re.sub(r'\s+', ' ', sub_event_part_raw).strip()
 
             new_races.append({
                 "date": date, "title": sub_event_part_raw, "event": event_title,
