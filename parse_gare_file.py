@@ -70,8 +70,11 @@ def parse_gare_file(file_path):
                 sub_event_part_raw = re.sub(r'\b(Gold|Silver|Bronze)\b', '', sub_event_part_raw, flags=re.IGNORECASE).strip()
             
             # Pulizia profonda: rimuove pipe, tab, spazi doppi e residui
-            sub_event_part_raw = sub_event_part_raw.replace('|', '').strip()
+            sub_event_part_raw = sub_event_part_raw.replace('|', ' ').strip()
             sub_event_part_raw = re.sub(r'\s+', ' ', sub_event_part_raw).strip()
+
+            # Rimuoviamo eventuali caratteri non alfanumerici pendenti alla fine (come | o spazi)
+            sub_event_part_raw = sub_event_part_raw.strip(' |')
 
             new_races.append({
                 "date": date, "title": sub_event_part_raw, "event": event_title,
