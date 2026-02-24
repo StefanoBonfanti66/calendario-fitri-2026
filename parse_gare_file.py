@@ -61,10 +61,23 @@ def parse_gare_file(file_path):
 
             distance = next((d for d in ["Super Sprint", "Sprint", "Classico", "Olimpico", "Medio", "Lungo", "Staffetta", "Cross"] if d.lower() in sub_event_part_raw.lower()), "")
 
+            # Estrazione Rank (Gold, Silver, Bronze)
+            rank = ""
+            for r in ["Gold", "Silver", "Bronze"]:
+                if r.lower() in sub_event_part_raw.lower():
+                    rank = r
+                    # Puliamo il titolo rimuovendo il rank e spazi extra/tab
+                    sub_event_part_raw = re.sub(r.lower(), '', sub_event_part_raw, flags=re.IGNORECASE).strip()
+                    break
+            
+            # Pulizia ulteriore da tabulazioni e spazi doppi nel titolo
+            sub_event_part_raw = re.sub(r'\t+', ' ', sub_event_part_raw)
+            sub_event_part_raw = re.sub(r' +', ' ', sub_event_part_raw).strip()
+
             new_races.append({
                 "date": date, "title": sub_event_part_raw, "event": event_title,
                 "location": city, "region": region, "type": race_type,
-                "distance": distance, "rank": "", "category": category, "link": link
+                "distance": distance, "rank": rank, "category": category, "link": link
             })
         except: continue
     return new_races

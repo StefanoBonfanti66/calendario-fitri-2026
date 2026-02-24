@@ -221,6 +221,84 @@
     "id": "17"
   },
   {
+    "date": "01-01-2026",
+    "title": "Duathlon Sprint |",
+    "event": "ASTICO DUATHLON 2026",
+    "location": "",
+    "region": "Italia",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "18"
+  },
+  {
+    "date": "01-01-2026",
+    "title": "Triathlon Sprint |",
+    "event": "CHALLENGE CESENATICO 2026",
+    "location": "",
+    "region": "Italia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "19"
+  },
+  {
+    "date": "01-01-2026",
+    "title": "Duathlon Sprint |",
+    "event": "DUATHLON SPRINT - SPORT IN FESTA 2026",
+    "location": "",
+    "region": "Italia",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "20"
+  },
+  {
+    "date": "01-01-2026",
+    "title": "Triathlon Sprint |",
+    "event": "FITCENTER TRIATHLON SPRINT BISCEGLIE 2026",
+    "location": "",
+    "region": "Italia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "21"
+  },
+  {
+    "date": "01-01-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "VENICE CAORLE TRI 2026",
+    "location": "",
+    "region": "Italia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "22"
+  },
+  {
+    "date": "01-01-2026",
+    "title": "Triathlon Sprint |",
+    "event": "VENICE CAORLE TRI 2026",
+    "location": "",
+    "region": "Italia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "23"
+  },
+  {
     "date": "10-01-2026",
     "title": "Winter Duathlon Kids\t\tGiovanile",
     "event": "5° WINTER TRIATHLON & WINTER DUATHLON PREDAZZO",
@@ -231,7 +309,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "18"
+    "id": "24"
   },
   {
     "date": "10-01-2026",
@@ -244,7 +322,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "19"
+    "id": "25"
   },
   {
     "date": "10-01-2026",
@@ -257,7 +335,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "20"
+    "id": "26"
   },
   {
     "date": "10-01-2026",
@@ -270,7 +348,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "21"
+    "id": "27"
   },
   {
     "date": "10-01-2026",
@@ -283,7 +361,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "22"
+    "id": "28"
   },
   {
     "date": "24-01-2026",
@@ -296,7 +374,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "23"
+    "id": "29"
   },
   {
     "date": "24-01-2026",
@@ -309,7 +387,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "24"
+    "id": "30"
   },
   {
     "date": "24-01-2026",
@@ -322,7 +400,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "25"
+    "id": "31"
   },
   {
     "date": "01-02-2026",
@@ -335,7 +413,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "26"
+    "id": "32"
   },
   {
     "date": "01-02-2026",
@@ -348,7 +426,7 @@
     "rank": "",
     "category": "",
     "link": "Sicilia",
-    "id": "27"
+    "id": "33"
   },
   {
     "date": "01-02-2026",
@@ -361,7 +439,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "28"
+    "id": "34"
   },
   {
     "date": "07-02-2026",
@@ -374,7 +452,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "29"
+    "id": "35"
   },
   {
     "date": "07-02-2026",
@@ -387,7 +465,7 @@
     "rank": "",
     "category": "",
     "link": "Piemonte",
-    "id": "30"
+    "id": "36"
   },
   {
     "date": "07-02-2026",
@@ -400,7 +478,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "31"
+    "id": "37"
   },
   {
     "date": "07-02-2026",
@@ -413,7 +491,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "32"
+    "id": "38"
   },
   {
     "date": "07-02-2026",
@@ -426,7 +504,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "33"
+    "id": "39"
   },
   {
     "date": "07-02-2026",
@@ -439,7 +517,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "34"
+    "id": "40"
   },
   {
     "date": "07-02-2026",
@@ -452,7 +530,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "35"
+    "id": "41"
   },
   {
     "date": "22-02-2026",
@@ -465,7 +543,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "36"
+    "id": "42"
   },
   {
     "date": "22-02-2026",
@@ -478,7 +556,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "37"
+    "id": "43"
   },
   {
     "date": "22-02-2026",
@@ -491,7 +569,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "38"
+    "id": "44"
   },
   {
     "date": "22-02-2026",
@@ -504,7 +582,7 @@
     "rank": "",
     "category": "",
     "link": "Winter Triathlon Sprint |",
-    "id": "39"
+    "id": "45"
   },
   {
     "date": "22-02-2026",
@@ -517,7 +595,7 @@
     "rank": "",
     "category": "",
     "link": "Lombardia",
-    "id": "40"
+    "id": "46"
   },
   {
     "date": "22-02-2026",
@@ -530,7 +608,7 @@
     "rank": "",
     "category": "",
     "link": "Lazio",
-    "id": "41"
+    "id": "47"
   },
   {
     "date": "22-02-2026",
@@ -543,7 +621,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "42"
+    "id": "48"
   },
   {
     "date": "22-02-2026",
@@ -556,7 +634,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "43"
+    "id": "49"
   },
   {
     "date": "22-02-2026",
@@ -569,7 +647,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "44"
+    "id": "50"
   },
   {
     "date": "22-02-2026",
@@ -582,7 +660,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "45"
+    "id": "51"
   },
   {
     "date": "22-02-2026",
@@ -595,7 +673,33 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "46"
+    "id": "52"
+  },
+  {
+    "date": "22-02-2026",
+    "title": "Duathlon Sprint |",
+    "event": "DUATHLON SPRINT DI BARZANO'",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "53"
+  },
+  {
+    "date": "22-02-2026",
+    "title": "Duathlon Sprint |",
+    "event": "SABAUDIA DUATHLON DI CARNEVALE VII EDIZIONE",
+    "location": "",
+    "region": "Lazio",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "54"
   },
   {
     "date": "27-02-2026",
@@ -608,7 +712,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "47"
+    "id": "55"
   },
   {
     "date": "27-02-2026",
@@ -621,7 +725,7 @@
     "rank": "",
     "category": "",
     "link": "Veneto",
-    "id": "48"
+    "id": "56"
   },
   {
     "date": "01-03-2026",
@@ -634,7 +738,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "49"
+    "id": "57"
   },
   {
     "date": "01-03-2026",
@@ -647,7 +751,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "50"
+    "id": "58"
   },
   {
     "date": "01-03-2026",
@@ -660,7 +764,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "51"
+    "id": "59"
   },
   {
     "date": "01-03-2026",
@@ -673,7 +777,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "52"
+    "id": "60"
   },
   {
     "date": "01-03-2026",
@@ -686,7 +790,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "53"
+    "id": "61"
   },
   {
     "date": "01-03-2026",
@@ -699,7 +803,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "54"
+    "id": "62"
   },
   {
     "date": "01-03-2026",
@@ -712,7 +816,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "55"
+    "id": "63"
   },
   {
     "date": "01-03-2026",
@@ -725,7 +829,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "56"
+    "id": "64"
   },
   {
     "date": "01-03-2026",
@@ -738,7 +842,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "57"
+    "id": "65"
   },
   {
     "date": "01-03-2026",
@@ -751,7 +855,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "58"
+    "id": "66"
   },
   {
     "date": "01-03-2026",
@@ -764,7 +868,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "59"
+    "id": "67"
   },
   {
     "date": "01-03-2026",
@@ -777,7 +881,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "60"
+    "id": "68"
   },
   {
     "date": "01-03-2026",
@@ -790,7 +894,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "61"
+    "id": "69"
   },
   {
     "date": "01-03-2026",
@@ -803,7 +907,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "62"
+    "id": "70"
   },
   {
     "date": "01-03-2026",
@@ -816,7 +920,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "63"
+    "id": "71"
   },
   {
     "date": "01-03-2026",
@@ -829,7 +933,33 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "64"
+    "id": "72"
+  },
+  {
+    "date": "01-03-2026",
+    "title": "Duathlon Sprint Paratriathlon |",
+    "event": "DUATHLON NETIUM",
+    "location": "",
+    "region": "Puglia",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "Paratriathlon",
+    "link": "",
+    "id": "73"
+  },
+  {
+    "date": "01-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "DUATHLON SPRINT DI FORLÌ",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "74"
   },
   {
     "date": "07-03-2026",
@@ -842,7 +972,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "65"
+    "id": "75"
   },
   {
     "date": "08-03-2026",
@@ -855,7 +985,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "66"
+    "id": "76"
   },
   {
     "date": "08-03-2026",
@@ -868,7 +998,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "67"
+    "id": "77"
   },
   {
     "date": "08-03-2026",
@@ -881,7 +1011,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "68"
+    "id": "78"
   },
   {
     "date": "08-03-2026",
@@ -894,7 +1024,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "69"
+    "id": "79"
   },
   {
     "date": "08-03-2026",
@@ -907,7 +1037,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "70"
+    "id": "80"
   },
   {
     "date": "08-03-2026",
@@ -920,7 +1050,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "71"
+    "id": "81"
   },
   {
     "date": "08-03-2026",
@@ -933,7 +1063,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "72"
+    "id": "82"
   },
   {
     "date": "08-03-2026",
@@ -946,7 +1076,33 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "73"
+    "id": "83"
+  },
+  {
+    "date": "08-03-2026",
+    "title": "Duathlon |",
+    "event": "CAMPIONATO ITALIANO DUATHLON CROSS",
+    "location": "",
+    "region": "Veneto",
+    "type": "Duathlon",
+    "distance": "",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "84"
+  },
+  {
+    "date": "08-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "IX DUATHLON SPRINT CITTÀ DI FOLIGNO - MEMORIAL DANILO PASCUCCI - DUATHLON YOUTH - DUATHLON KIDS",
+    "location": "",
+    "region": "Umbria",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "Kids",
+    "link": "",
+    "id": "85"
   },
   {
     "date": "15-03-2026",
@@ -959,7 +1115,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "74"
+    "id": "86"
   },
   {
     "date": "15-03-2026",
@@ -972,7 +1128,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "75"
+    "id": "87"
   },
   {
     "date": "15-03-2026",
@@ -985,7 +1141,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "76"
+    "id": "88"
   },
   {
     "date": "15-03-2026",
@@ -998,7 +1154,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "77"
+    "id": "89"
   },
   {
     "date": "15-03-2026",
@@ -1011,7 +1167,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "78"
+    "id": "90"
   },
   {
     "date": "15-03-2026",
@@ -1024,7 +1180,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "79"
+    "id": "91"
+  },
+  {
+    "date": "15-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "1° DUATHLON SPRINT DI OSTIA \"EGIDIO E FRANCESCO\"",
+    "location": "",
+    "region": "Lazio",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "92"
+  },
+  {
+    "date": "15-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "DUATHLON SAN DAMIANO",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "93"
+  },
+  {
+    "date": "15-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "FREESTYLE CAMPIONATO REGIONALE DUATHLON DI CATEGORIA",
+    "location": "",
+    "region": "Toscana",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "94"
   },
   {
     "date": "21-03-2026",
@@ -1037,7 +1232,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "80"
+    "id": "95"
   },
   {
     "date": "21-03-2026",
@@ -1050,7 +1245,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "81"
+    "id": "96"
   },
   {
     "date": "21-03-2026",
@@ -1063,7 +1258,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "82"
+    "id": "97"
   },
   {
     "date": "21-03-2026",
@@ -1076,7 +1271,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "83"
+    "id": "98"
   },
   {
     "date": "21-03-2026",
@@ -1089,7 +1284,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "84"
+    "id": "99"
   },
   {
     "date": "21-03-2026",
@@ -1102,7 +1297,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "85"
+    "id": "100"
   },
   {
     "date": "21-03-2026",
@@ -1115,7 +1310,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "86"
+    "id": "101"
   },
   {
     "date": "21-03-2026",
@@ -1128,7 +1323,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "87"
+    "id": "102"
   },
   {
     "date": "21-03-2026",
@@ -1141,7 +1336,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "88"
+    "id": "103"
+  },
+  {
+    "date": "21-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "CAMPIONATO ITALIANO DUATHLON SPRINT ASSOLUTO / AGE GROUP / PARADUATHLON / COPPA CRONO",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "104"
+  },
+  {
+    "date": "21-03-2026",
+    "title": "Duathlon Super Sprint Paratriathlon |",
+    "event": "CAMPIONATO ITALIANO DUATHLON SPRINT ASSOLUTO / AGE GROUP / PARADUATHLON / COPPA CRONO",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Duathlon",
+    "distance": "Super Sprint",
+    "rank": "Silver",
+    "category": "Paratriathlon",
+    "link": "",
+    "id": "105"
+  },
+  {
+    "date": "21-03-2026",
+    "title": "Duathlon Super Sprint |",
+    "event": "CAMPIONATO ITALIANO DUATHLON SPRINT ASSOLUTO / AGE GROUP / PARADUATHLON / COPPA CRONO",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Duathlon",
+    "distance": "Super Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "106"
   },
   {
     "date": "22-03-2026",
@@ -1154,7 +1388,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "89"
+    "id": "107"
   },
   {
     "date": "22-03-2026",
@@ -1167,7 +1401,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "90"
+    "id": "108"
   },
   {
     "date": "22-03-2026",
@@ -1180,7 +1414,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "91"
+    "id": "109"
   },
   {
     "date": "28-03-2026",
@@ -1193,7 +1427,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "92"
+    "id": "110"
   },
   {
     "date": "28-03-2026",
@@ -1206,7 +1440,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "93"
+    "id": "111"
   },
   {
     "date": "28-03-2026",
@@ -1219,7 +1453,20 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "94"
+    "id": "112"
+  },
+  {
+    "date": "28-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "DUATHLON SPRINT DI PUNTA SECCA",
+    "location": "",
+    "region": "Sicilia",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "113"
   },
   {
     "date": "29-03-2026",
@@ -1232,7 +1479,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "95"
+    "id": "114"
   },
   {
     "date": "29-03-2026",
@@ -1245,7 +1492,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "96"
+    "id": "115"
   },
   {
     "date": "29-03-2026",
@@ -1258,7 +1505,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "97"
+    "id": "116"
   },
   {
     "date": "29-03-2026",
@@ -1271,7 +1518,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "98"
+    "id": "117"
   },
   {
     "date": "29-03-2026",
@@ -1284,7 +1531,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "99"
+    "id": "118"
   },
   {
     "date": "29-03-2026",
@@ -1297,7 +1544,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "100"
+    "id": "119"
   },
   {
     "date": "29-03-2026",
@@ -1310,7 +1557,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "101"
+    "id": "120"
   },
   {
     "date": "29-03-2026",
@@ -1323,7 +1570,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "102"
+    "id": "121"
   },
   {
     "date": "29-03-2026",
@@ -1336,7 +1583,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "103"
+    "id": "122"
   },
   {
     "date": "29-03-2026",
@@ -1349,7 +1596,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "104"
+    "id": "123"
   },
   {
     "date": "29-03-2026",
@@ -1362,7 +1609,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "105"
+    "id": "124"
   },
   {
     "date": "29-03-2026",
@@ -1375,7 +1622,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "106"
+    "id": "125"
   },
   {
     "date": "29-03-2026",
@@ -1388,7 +1635,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "107"
+    "id": "126"
   },
   {
     "date": "29-03-2026",
@@ -1401,7 +1648,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "108"
+    "id": "127"
   },
   {
     "date": "29-03-2026",
@@ -1414,7 +1661,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "109"
+    "id": "128"
   },
   {
     "date": "29-03-2026",
@@ -1427,7 +1674,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "110"
+    "id": "129"
   },
   {
     "date": "29-03-2026",
@@ -1440,7 +1687,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "111"
+    "id": "130"
   },
   {
     "date": "29-03-2026",
@@ -1453,7 +1700,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "112"
+    "id": "131"
   },
   {
     "date": "29-03-2026",
@@ -1466,7 +1713,85 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "113"
+    "id": "132"
+  },
+  {
+    "date": "29-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "1° DUATHLON DELLA LUNIGIANA",
+    "location": "",
+    "region": "Toscana",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "133"
+  },
+  {
+    "date": "29-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "22° DUATHLON SPRINT CITTA' DELLO ZAFFERANO",
+    "location": "",
+    "region": "Sardegna",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "134"
+  },
+  {
+    "date": "29-03-2026",
+    "title": "Duathlon Classico |",
+    "event": "3° DUATHLON CLASSICO SILVER NO DRAFT DEL LITORALE PISANO",
+    "location": "",
+    "region": "Toscana",
+    "type": "Duathlon",
+    "distance": "Classico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "135"
+  },
+  {
+    "date": "29-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "ADRIATIC SERIES DUATHLON SPRINT TOLENTINO",
+    "location": "",
+    "region": "Marche",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "136"
+  },
+  {
+    "date": "29-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "DUATHLON DELL'ECOLOGIA",
+    "location": "",
+    "region": "Lazio",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "137"
+  },
+  {
+    "date": "29-03-2026",
+    "title": "Duathlon Sprint |",
+    "event": "DUATHLON SPRINT CITTÀ DI SANTENA",
+    "location": "",
+    "region": "Piemonte",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "138"
   },
   {
     "date": "12-04-2026",
@@ -1479,7 +1804,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "114"
+    "id": "139"
   },
   {
     "date": "12-04-2026",
@@ -1492,7 +1817,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "115"
+    "id": "140"
   },
   {
     "date": "12-04-2026",
@@ -1505,7 +1830,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "116"
+    "id": "141"
   },
   {
     "date": "12-04-2026",
@@ -1518,7 +1843,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "117"
+    "id": "142"
   },
   {
     "date": "12-04-2026",
@@ -1531,7 +1856,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "118"
+    "id": "143"
   },
   {
     "date": "12-04-2026",
@@ -1544,7 +1869,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "119"
+    "id": "144"
   },
   {
     "date": "12-04-2026",
@@ -1557,7 +1882,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "120"
+    "id": "145"
   },
   {
     "date": "12-04-2026",
@@ -1570,7 +1895,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "121"
+    "id": "146"
   },
   {
     "date": "12-04-2026",
@@ -1583,7 +1908,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "122"
+    "id": "147"
   },
   {
     "date": "12-04-2026",
@@ -1596,7 +1921,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "123"
+    "id": "148"
   },
   {
     "date": "12-04-2026",
@@ -1609,7 +1934,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "124"
+    "id": "149"
   },
   {
     "date": "12-04-2026",
@@ -1622,7 +1947,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "125"
+    "id": "150"
   },
   {
     "date": "12-04-2026",
@@ -1635,7 +1960,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "126"
+    "id": "151"
   },
   {
     "date": "12-04-2026",
@@ -1648,7 +1973,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "127"
+    "id": "152"
   },
   {
     "date": "12-04-2026",
@@ -1661,7 +1986,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "128"
+    "id": "153"
   },
   {
     "date": "12-04-2026",
@@ -1674,7 +1999,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "129"
+    "id": "154"
   },
   {
     "date": "12-04-2026",
@@ -1687,7 +2012,59 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "130"
+    "id": "155"
+  },
+  {
+    "date": "12-04-2026",
+    "title": "Duathlon Sprint MTB |",
+    "event": "4° DUATHLON DEL PIAVE",
+    "location": "",
+    "region": "Veneto",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "156"
+  },
+  {
+    "date": "12-04-2026",
+    "title": "Duathlon Classico |",
+    "event": "CAMPIONATI ITALIANI DI DUATHLON CLASSICO NO DRAFT - ASSOLUTI - DI CATEGORIA - ELITE E AGE GROUP",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Duathlon",
+    "distance": "Classico",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "157"
+  },
+  {
+    "date": "12-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "MANGIA'S TRIATHLON SICILY",
+    "location": "",
+    "region": "Sicilia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "158"
+  },
+  {
+    "date": "12-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "SANTA MARINELLA TRIATHLON SPRINT",
+    "location": "",
+    "region": "Lazio",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "159"
   },
   {
     "date": "18-04-2026",
@@ -1700,7 +2077,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "131"
+    "id": "160"
   },
   {
     "date": "18-04-2026",
@@ -1713,7 +2090,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "132"
+    "id": "161"
   },
   {
     "date": "18-04-2026",
@@ -1726,7 +2103,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "133"
+    "id": "162"
   },
   {
     "date": "18-04-2026",
@@ -1739,7 +2116,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "134"
+    "id": "163"
   },
   {
     "date": "18-04-2026",
@@ -1752,7 +2129,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "135"
+    "id": "164"
   },
   {
     "date": "18-04-2026",
@@ -1765,7 +2142,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "136"
+    "id": "165"
   },
   {
     "date": "18-04-2026",
@@ -1778,7 +2155,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "137"
+    "id": "166"
   },
   {
     "date": "18-04-2026",
@@ -1791,7 +2168,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "138"
+    "id": "167"
   },
   {
     "date": "18-04-2026",
@@ -1804,7 +2181,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "139"
+    "id": "168"
   },
   {
     "date": "18-04-2026",
@@ -1817,7 +2194,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "140"
+    "id": "169"
   },
   {
     "date": "18-04-2026",
@@ -1830,7 +2207,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "141"
+    "id": "170"
   },
   {
     "date": "18-04-2026",
@@ -1843,7 +2220,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "142"
+    "id": "171"
   },
   {
     "date": "18-04-2026",
@@ -1856,7 +2233,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "143"
+    "id": "172"
   },
   {
     "date": "18-04-2026",
@@ -1869,7 +2246,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "144"
+    "id": "173"
   },
   {
     "date": "18-04-2026",
@@ -1882,7 +2259,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "145"
+    "id": "174"
   },
   {
     "date": "18-04-2026",
@@ -1895,7 +2272,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "146"
+    "id": "175"
   },
   {
     "date": "18-04-2026",
@@ -1908,7 +2285,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "147"
+    "id": "176"
   },
   {
     "date": "18-04-2026",
@@ -1921,7 +2298,98 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "148"
+    "id": "177"
+  },
+  {
+    "date": "18-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "ADRIATIC SERIES TRIATHLON CESENATICO ITALIA",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "178"
+  },
+  {
+    "date": "18-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "ADRIATIC SERIES TRIATHLON CESENATICO ITALIA",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "179"
+  },
+  {
+    "date": "18-04-2026",
+    "title": "Duathlon Sprint |",
+    "event": "C.I. GIOVANI INDIVIDUALE E MIXED RELAY 2+2",
+    "location": "",
+    "region": "Umbria",
+    "type": "Duathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "180"
+  },
+  {
+    "date": "18-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "ELBA WEEKEND TRI",
+    "location": "",
+    "region": "Toscana",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "181"
+  },
+  {
+    "date": "18-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "ELBA WEEKEND TRI",
+    "location": "",
+    "region": "Toscana",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "182"
+  },
+  {
+    "date": "18-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "MILANOTRI - FOLLOWYOURPASSION",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "183"
+  },
+  {
+    "date": "18-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "MILANOTRI - FOLLOWYOURPASSION",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "184"
   },
   {
     "date": "19-04-2026",
@@ -1934,7 +2402,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "149"
+    "id": "185"
   },
   {
     "date": "19-04-2026",
@@ -1947,7 +2415,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "150"
+    "id": "186"
   },
   {
     "date": "19-04-2026",
@@ -1960,7 +2428,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "151"
+    "id": "187"
   },
   {
     "date": "19-04-2026",
@@ -1973,7 +2441,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "152"
+    "id": "188"
   },
   {
     "date": "19-04-2026",
@@ -1986,7 +2454,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "153"
+    "id": "189"
   },
   {
     "date": "19-04-2026",
@@ -1999,7 +2467,59 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "154"
+    "id": "190"
+  },
+  {
+    "date": "19-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "32° TRIATHLON DI ANDORA",
+    "location": "",
+    "region": "Liguria",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "191"
+  },
+  {
+    "date": "19-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "32° TRIATHLON DI ANDORA",
+    "location": "",
+    "region": "Liguria",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "192"
+  },
+  {
+    "date": "19-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "DE SORTIS ARGONAUTI TRI",
+    "location": "",
+    "region": "Basilicata",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "193"
+  },
+  {
+    "date": "19-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "DE SORTIS ARGONAUTI TRI",
+    "location": "",
+    "region": "Basilicata",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "194"
   },
   {
     "date": "25-04-2026",
@@ -2012,7 +2532,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "155"
+    "id": "195"
   },
   {
     "date": "25-04-2026",
@@ -2025,7 +2545,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "156"
+    "id": "196"
   },
   {
     "date": "25-04-2026",
@@ -2038,7 +2558,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "157"
+    "id": "197"
   },
   {
     "date": "25-04-2026",
@@ -2051,7 +2571,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "158"
+    "id": "198"
   },
   {
     "date": "25-04-2026",
@@ -2064,7 +2584,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "159"
+    "id": "199"
   },
   {
     "date": "25-04-2026",
@@ -2077,7 +2597,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "160"
+    "id": "200"
+  },
+  {
+    "date": "25-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "9° LIGNANO “EYOF EUROPEAN TEST EVENT” TRIATHLON MEMORIAL ARDITO",
+    "location": "",
+    "region": "Friuli-Venezia Giulia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "201"
+  },
+  {
+    "date": "25-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "ADRIATIC SERIES TRIATHLON CUPRA MARITTIMA",
+    "location": "",
+    "region": "Marche",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "202"
+  },
+  {
+    "date": "25-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "ADRIATIC SERIES TRIATHLON CUPRA MARITTIMA",
+    "location": "",
+    "region": "Marche",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "203"
   },
   {
     "date": "26-04-2026",
@@ -2090,7 +2649,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "161"
+    "id": "204"
   },
   {
     "date": "26-04-2026",
@@ -2103,7 +2662,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "162"
+    "id": "205"
   },
   {
     "date": "26-04-2026",
@@ -2116,7 +2675,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "163"
+    "id": "206"
   },
   {
     "date": "26-04-2026",
@@ -2129,7 +2688,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "164"
+    "id": "207"
   },
   {
     "date": "26-04-2026",
@@ -2142,7 +2701,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "165"
+    "id": "208"
   },
   {
     "date": "26-04-2026",
@@ -2155,7 +2714,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "166"
+    "id": "209"
   },
   {
     "date": "26-04-2026",
@@ -2168,7 +2727,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "167"
+    "id": "210"
   },
   {
     "date": "26-04-2026",
@@ -2181,7 +2740,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "168"
+    "id": "211"
+  },
+  {
+    "date": "26-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "IRON ISLAND HALF TRIATHLON - TRIATHLON OLIMPICO NO DRAFT",
+    "location": "",
+    "region": "Sicilia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "212"
+  },
+  {
+    "date": "26-04-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "SABAUDIA TRIATHLON OLIMPICO XIII EDIZIONE \"MEMORIAL RICCARDO GIORGI E SIMONE BESCO\"",
+    "location": "",
+    "region": "Lazio",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "213"
+  },
+  {
+    "date": "26-04-2026",
+    "title": "Triathlon Sprint |",
+    "event": "TRIATHLON SPRINT DEI PRINCIPI",
+    "location": "",
+    "region": "Piemonte",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "214"
   },
   {
     "date": "01-05-2026",
@@ -2194,7 +2792,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "169"
+    "id": "215"
   },
   {
     "date": "01-05-2026",
@@ -2207,7 +2805,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "170"
+    "id": "216"
   },
   {
     "date": "01-05-2026",
@@ -2220,7 +2818,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "171"
+    "id": "217"
   },
   {
     "date": "01-05-2026",
@@ -2233,7 +2831,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "172"
+    "id": "218"
   },
   {
     "date": "01-05-2026",
@@ -2246,7 +2844,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "173"
+    "id": "219"
   },
   {
     "date": "01-05-2026",
@@ -2259,7 +2857,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "174"
+    "id": "220"
+  },
+  {
+    "date": "01-05-2026",
+    "title": "Triathlon Medio |",
+    "event": "CHIATRI - FOLLOWYOURPASSION",
+    "location": "",
+    "region": "Sardegna",
+    "type": "Triathlon",
+    "distance": "Medio",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "221"
+  },
+  {
+    "date": "01-05-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "CHIATRI - FOLLOWYOURPASSION",
+    "location": "",
+    "region": "Sardegna",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "222"
+  },
+  {
+    "date": "01-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "CHIATRI - FOLLOWYOURPASSION",
+    "location": "",
+    "region": "Sardegna",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "223"
   },
   {
     "date": "02-05-2026",
@@ -2272,7 +2909,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "175"
+    "id": "224"
   },
   {
     "date": "02-05-2026",
@@ -2285,7 +2922,20 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "176"
+    "id": "225"
+  },
+  {
+    "date": "02-05-2026",
+    "title": "Triathlon Sprint MTB |",
+    "event": "13°IRON TOUR CROSS - TRIATHLON OFF-ROAD A TAPPE-ISOLA D'ELBA",
+    "location": "",
+    "region": "Toscana",
+    "type": "Cross",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "226"
   },
   {
     "date": "03-05-2026",
@@ -2298,7 +2948,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "177"
+    "id": "227"
   },
   {
     "date": "03-05-2026",
@@ -2311,7 +2961,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "178"
+    "id": "228"
   },
   {
     "date": "03-05-2026",
@@ -2324,7 +2974,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "179"
+    "id": "229"
   },
   {
     "date": "03-05-2026",
@@ -2337,7 +2987,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "180"
+    "id": "230"
   },
   {
     "date": "03-05-2026",
@@ -2350,7 +3000,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "181"
+    "id": "231"
   },
   {
     "date": "03-05-2026",
@@ -2363,7 +3013,33 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "182"
+    "id": "232"
+  },
+  {
+    "date": "03-05-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "GALLIPOLI OLYMPIC TRIWAVE CAROLI EDITION",
+    "location": "",
+    "region": "Puglia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "233"
+  },
+  {
+    "date": "03-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "TRIATHLON SPRINT ALTOTEVERE",
+    "location": "",
+    "region": "Umbria",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "234"
   },
   {
     "date": "08-05-2026",
@@ -2376,7 +3052,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "183"
+    "id": "235"
   },
   {
     "date": "08-05-2026",
@@ -2389,7 +3065,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "184"
+    "id": "236"
   },
   {
     "date": "08-05-2026",
@@ -2402,7 +3078,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "185"
+    "id": "237"
   },
   {
     "date": "09-05-2026",
@@ -2415,7 +3091,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "186"
+    "id": "238"
   },
   {
     "date": "09-05-2026",
@@ -2428,7 +3104,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "187"
+    "id": "239"
   },
   {
     "date": "09-05-2026",
@@ -2441,7 +3117,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "188"
+    "id": "240"
   },
   {
     "date": "09-05-2026",
@@ -2454,7 +3130,20 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "189"
+    "id": "241"
+  },
+  {
+    "date": "09-05-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "37.TRIATHLON DI CALDARO - OLIMPICO",
+    "location": "",
+    "region": "Trentino-Alto Adige/Südtirol",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "242"
   },
   {
     "date": "10-05-2026",
@@ -2467,7 +3156,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "190"
+    "id": "243"
   },
   {
     "date": "10-05-2026",
@@ -2480,7 +3169,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "191"
+    "id": "244"
   },
   {
     "date": "10-05-2026",
@@ -2493,7 +3182,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "192"
+    "id": "245"
   },
   {
     "date": "10-05-2026",
@@ -2506,7 +3195,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "193"
+    "id": "246"
   },
   {
     "date": "10-05-2026",
@@ -2519,7 +3208,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "194"
+    "id": "247"
   },
   {
     "date": "10-05-2026",
@@ -2532,7 +3221,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "195"
+    "id": "248"
   },
   {
     "date": "10-05-2026",
@@ -2545,7 +3234,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "196"
+    "id": "249"
   },
   {
     "date": "10-05-2026",
@@ -2558,7 +3247,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "197"
+    "id": "250"
   },
   {
     "date": "10-05-2026",
@@ -2571,7 +3260,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "198"
+    "id": "251"
   },
   {
     "date": "10-05-2026",
@@ -2584,7 +3273,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "199"
+    "id": "252"
   },
   {
     "date": "10-05-2026",
@@ -2597,7 +3286,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "200"
+    "id": "253"
   },
   {
     "date": "10-05-2026",
@@ -2610,7 +3299,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "201"
+    "id": "254"
   },
   {
     "date": "10-05-2026",
@@ -2623,7 +3312,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "202"
+    "id": "255"
   },
   {
     "date": "10-05-2026",
@@ -2636,7 +3325,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "203"
+    "id": "256"
   },
   {
     "date": "10-05-2026",
@@ -2649,7 +3338,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "204"
+    "id": "257"
   },
   {
     "date": "10-05-2026",
@@ -2662,7 +3351,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "205"
+    "id": "258"
   },
   {
     "date": "10-05-2026",
@@ -2675,7 +3364,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "206"
+    "id": "259"
   },
   {
     "date": "10-05-2026",
@@ -2688,7 +3377,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "207"
+    "id": "260"
   },
   {
     "date": "10-05-2026",
@@ -2701,7 +3390,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "208"
+    "id": "261"
   },
   {
     "date": "10-05-2026",
@@ -2714,7 +3403,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "209"
+    "id": "262"
   },
   {
     "date": "10-05-2026",
@@ -2727,7 +3416,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "210"
+    "id": "263"
   },
   {
     "date": "10-05-2026",
@@ -2740,7 +3429,72 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "211"
+    "id": "264"
+  },
+  {
+    "date": "10-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "GARGANO TRIATHLON SPRINT",
+    "location": "",
+    "region": "Puglia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "265"
+  },
+  {
+    "date": "10-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "LATINA TRIATHLON SPRINT VII EDIZIONE \"MEMORIAL FEDERICO SALVAGNI\"",
+    "location": "",
+    "region": "Lazio",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "266"
+  },
+  {
+    "date": "10-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "MONDELLO CUP 10",
+    "location": "",
+    "region": "Sicilia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "267"
+  },
+  {
+    "date": "10-05-2026",
+    "title": "Triathlon Medio |",
+    "event": "TRIATHLON MEDIO E OLIMPICO NO-DRAFT CITTÀ DI CANDIA",
+    "location": "",
+    "region": "Piemonte",
+    "type": "Triathlon",
+    "distance": "Medio",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "268"
+  },
+  {
+    "date": "10-05-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "TRIATHLON MEDIO E OLIMPICO NO-DRAFT CITTÀ DI CANDIA",
+    "location": "",
+    "region": "Piemonte",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "269"
   },
   {
     "date": "13-05-2026",
@@ -2753,7 +3507,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "212"
+    "id": "270"
   },
   {
     "date": "13-05-2026",
@@ -2766,7 +3520,20 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "213"
+    "id": "271"
+  },
+  {
+    "date": "13-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "IRON TOUR ROAD",
+    "location": "",
+    "region": "Toscana",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "272"
   },
   {
     "date": "16-05-2026",
@@ -2779,7 +3546,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "214"
+    "id": "273"
   },
   {
     "date": "16-05-2026",
@@ -2792,7 +3559,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "215"
+    "id": "274"
   },
   {
     "date": "16-05-2026",
@@ -2805,7 +3572,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "216"
+    "id": "275"
   },
   {
     "date": "16-05-2026",
@@ -2818,7 +3585,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "217"
+    "id": "276"
   },
   {
     "date": "16-05-2026",
@@ -2831,7 +3598,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "218"
+    "id": "277"
   },
   {
     "date": "16-05-2026",
@@ -2844,7 +3611,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "219"
+    "id": "278"
   },
   {
     "date": "16-05-2026",
@@ -2857,7 +3624,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "220"
+    "id": "279"
   },
   {
     "date": "16-05-2026",
@@ -2870,7 +3637,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "221"
+    "id": "280"
   },
   {
     "date": "16-05-2026",
@@ -2883,7 +3650,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "222"
+    "id": "281"
   },
   {
     "date": "16-05-2026",
@@ -2896,7 +3663,20 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "223"
+    "id": "282"
+  },
+  {
+    "date": "16-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "TRIATHLON CITTA’ DI CAGLIARI - CAMPIONATO ITALIANO INTERFORZE TRIATHLON SPRINT",
+    "location": "",
+    "region": "Sardegna",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "283"
   },
   {
     "date": "17-05-2026",
@@ -2909,7 +3689,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "224"
+    "id": "284"
   },
   {
     "date": "17-05-2026",
@@ -2922,7 +3702,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "225"
+    "id": "285"
   },
   {
     "date": "17-05-2026",
@@ -2935,7 +3715,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "226"
+    "id": "286"
   },
   {
     "date": "17-05-2026",
@@ -2948,7 +3728,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "227"
+    "id": "287"
   },
   {
     "date": "17-05-2026",
@@ -2961,7 +3741,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "228"
+    "id": "288"
   },
   {
     "date": "17-05-2026",
@@ -2974,7 +3754,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "229"
+    "id": "289"
   },
   {
     "date": "17-05-2026",
@@ -2987,7 +3767,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "230"
+    "id": "290"
   },
   {
     "date": "17-05-2026",
@@ -3000,7 +3780,33 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "231"
+    "id": "291"
+  },
+  {
+    "date": "17-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "ADRIATIC SERIES TRIATHLON SPRINT SILVER GROTTAMMARE (AP)",
+    "location": "",
+    "region": "Marche",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "292"
+  },
+  {
+    "date": "17-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "VIII TRIATHLON LE BANDIE DEGLI EROI",
+    "location": "",
+    "region": "Veneto",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "293"
   },
   {
     "date": "24-05-2026",
@@ -3013,7 +3819,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "232"
+    "id": "294"
   },
   {
     "date": "24-05-2026",
@@ -3026,7 +3832,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "233"
+    "id": "295"
   },
   {
     "date": "24-05-2026",
@@ -3039,7 +3845,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "234"
+    "id": "296"
   },
   {
     "date": "24-05-2026",
@@ -3052,7 +3858,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "235"
+    "id": "297"
   },
   {
     "date": "24-05-2026",
@@ -3065,7 +3871,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "236"
+    "id": "298"
   },
   {
     "date": "24-05-2026",
@@ -3078,7 +3884,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "237"
+    "id": "299"
   },
   {
     "date": "24-05-2026",
@@ -3091,7 +3897,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "238"
+    "id": "300"
   },
   {
     "date": "24-05-2026",
@@ -3104,7 +3910,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "239"
+    "id": "301"
   },
   {
     "date": "24-05-2026",
@@ -3117,7 +3923,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "240"
+    "id": "302"
+  },
+  {
+    "date": "24-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "13 TRIATHLON SPRINT PIASCO E GIOVANILI",
+    "location": "",
+    "region": "Piemonte",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "303"
+  },
+  {
+    "date": "24-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "6° TRIATHLON CITTA' DI GORIZIA",
+    "location": "",
+    "region": "Friuli-Venezia Giulia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "304"
+  },
+  {
+    "date": "24-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "9° TRIATHLON SPRINT CITTA' DI SALO'",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "305"
   },
   {
     "date": "30-05-2026",
@@ -3130,7 +3975,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "241"
+    "id": "306"
   },
   {
     "date": "30-05-2026",
@@ -3143,7 +3988,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "242"
+    "id": "307"
   },
   {
     "date": "30-05-2026",
@@ -3156,7 +4001,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "243"
+    "id": "308"
   },
   {
     "date": "31-05-2026",
@@ -3169,7 +4014,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "244"
+    "id": "309"
   },
   {
     "date": "31-05-2026",
@@ -3182,7 +4027,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "245"
+    "id": "310"
   },
   {
     "date": "31-05-2026",
@@ -3195,7 +4040,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "246"
+    "id": "311"
   },
   {
     "date": "31-05-2026",
@@ -3208,7 +4053,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "247"
+    "id": "312"
   },
   {
     "date": "31-05-2026",
@@ -3221,7 +4066,33 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "248"
+    "id": "313"
+  },
+  {
+    "date": "31-05-2026",
+    "title": "Triathlon Sprint |",
+    "event": "2°TRIATHLON SPRINT PUSIANO LAKE",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "314"
+  },
+  {
+    "date": "31-05-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "TRANI TRIATHLON OLIMPICO 8^ EDIZIONE - CAMPIONATO ITALIANO INTERFORZE",
+    "location": "",
+    "region": "Puglia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "315"
   },
   {
     "date": "02-06-2026",
@@ -3234,7 +4105,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "249"
+    "id": "316"
   },
   {
     "date": "02-06-2026",
@@ -3247,7 +4118,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "250"
+    "id": "317"
   },
   {
     "date": "02-06-2026",
@@ -3260,7 +4131,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "251"
+    "id": "318"
   },
   {
     "date": "02-06-2026",
@@ -3273,7 +4144,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "252"
+    "id": "319"
   },
   {
     "date": "02-06-2026",
@@ -3286,7 +4157,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "253"
+    "id": "320"
   },
   {
     "date": "02-06-2026",
@@ -3299,7 +4170,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "254"
+    "id": "321"
   },
   {
     "date": "02-06-2026",
@@ -3312,7 +4183,33 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "255"
+    "id": "322"
+  },
+  {
+    "date": "02-06-2026",
+    "title": "Triathlon Sprint Giovanile |",
+    "event": "DIAMOND TRI & GRANDATRIATHLON 20°TRIATHLON SPRINT DEL ROERO",
+    "location": "",
+    "region": "Piemonte",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "Giovanile",
+    "link": "",
+    "id": "323"
+  },
+  {
+    "date": "02-06-2026",
+    "title": "Triathlon Medio |",
+    "event": "IRONLAKE MUGELLO - CAMPIONATO ITALIANO TRIATHLON MEDIO",
+    "location": "",
+    "region": "Toscana",
+    "type": "Triathlon",
+    "distance": "Medio",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "324"
   },
   {
     "date": "06-06-2026",
@@ -3325,7 +4222,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "256"
+    "id": "325"
   },
   {
     "date": "06-06-2026",
@@ -3338,7 +4235,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "257"
+    "id": "326"
   },
   {
     "date": "06-06-2026",
@@ -3351,7 +4248,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "258"
+    "id": "327"
   },
   {
     "date": "06-06-2026",
@@ -3364,7 +4261,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "259"
+    "id": "328"
   },
   {
     "date": "06-06-2026",
@@ -3377,7 +4274,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "260"
+    "id": "329"
   },
   {
     "date": "06-06-2026",
@@ -3390,7 +4287,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "261"
+    "id": "330"
   },
   {
     "date": "06-06-2026",
@@ -3403,7 +4300,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "262"
+    "id": "331"
   },
   {
     "date": "06-06-2026",
@@ -3416,7 +4313,20 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "263"
+    "id": "332"
+  },
+  {
+    "date": "06-06-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "23° TRIATHLON OLIMPICO CITTÀ DI PIETRA LIGURE",
+    "location": "",
+    "region": "Liguria",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "333"
   },
   {
     "date": "07-06-2026",
@@ -3429,7 +4339,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "264"
+    "id": "334"
   },
   {
     "date": "07-06-2026",
@@ -3442,7 +4352,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "265"
+    "id": "335"
   },
   {
     "date": "07-06-2026",
@@ -3455,7 +4365,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "266"
+    "id": "336"
   },
   {
     "date": "07-06-2026",
@@ -3468,7 +4378,20 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "267"
+    "id": "337"
+  },
+  {
+    "date": "07-06-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "ADRIATIC SERIES TRIATHLON OLIMPICO CITTÀ DI VIESTE",
+    "location": "",
+    "region": "Puglia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "338"
   },
   {
     "date": "13-06-2026",
@@ -3481,7 +4404,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "268"
+    "id": "339"
   },
   {
     "date": "13-06-2026",
@@ -3494,7 +4417,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "269"
+    "id": "340"
   },
   {
     "date": "13-06-2026",
@@ -3507,7 +4430,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "270"
+    "id": "341"
   },
   {
     "date": "13-06-2026",
@@ -3520,7 +4443,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "271"
+    "id": "342"
   },
   {
     "date": "13-06-2026",
@@ -3533,7 +4456,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "272"
+    "id": "343"
   },
   {
     "date": "13-06-2026",
@@ -3546,7 +4469,46 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "273"
+    "id": "344"
+  },
+  {
+    "date": "13-06-2026",
+    "title": "Triathlon Sprint |",
+    "event": "2° TRIATHLON CRONO TAVERNOLA",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "345"
+  },
+  {
+    "date": "13-06-2026",
+    "title": "Aquathlon Sprint |",
+    "event": "MANDELLO: TRIATHLON CROSS + AQUATHLON",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Aquathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "346"
+  },
+  {
+    "date": "13-06-2026",
+    "title": "Triathlon Sprint MTB |",
+    "event": "MANDELLO: TRIATHLON CROSS + AQUATHLON",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Aquathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "347"
   },
   {
     "date": "14-06-2026",
@@ -3559,7 +4521,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "274"
+    "id": "348"
   },
   {
     "date": "14-06-2026",
@@ -3572,7 +4534,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "275"
+    "id": "349"
   },
   {
     "date": "14-06-2026",
@@ -3585,7 +4547,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "276"
+    "id": "350"
   },
   {
     "date": "14-06-2026",
@@ -3598,7 +4560,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "277"
+    "id": "351"
   },
   {
     "date": "14-06-2026",
@@ -3611,7 +4573,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "278"
+    "id": "352"
   },
   {
     "date": "14-06-2026",
@@ -3624,7 +4586,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "279"
+    "id": "353"
   },
   {
     "date": "14-06-2026",
@@ -3637,7 +4599,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "280"
+    "id": "354"
   },
   {
     "date": "14-06-2026",
@@ -3650,7 +4612,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "281"
+    "id": "355"
   },
   {
     "date": "14-06-2026",
@@ -3663,7 +4625,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "282"
+    "id": "356"
   },
   {
     "date": "14-06-2026",
@@ -3676,7 +4638,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "283"
+    "id": "357"
   },
   {
     "date": "14-06-2026",
@@ -3689,7 +4651,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "284"
+    "id": "358"
   },
   {
     "date": "14-06-2026",
@@ -3702,7 +4664,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "285"
+    "id": "359"
   },
   {
     "date": "14-06-2026",
@@ -3715,7 +4677,46 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "286"
+    "id": "360"
+  },
+  {
+    "date": "14-06-2026",
+    "title": "Triathlon Olimpico Paratriathlon |",
+    "event": "BIM TRIATHLON",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Gold",
+    "category": "Paratriathlon",
+    "link": "",
+    "id": "361"
+  },
+  {
+    "date": "14-06-2026",
+    "title": "Triathlon Sprint |",
+    "event": "TIVAN TRI TRIATHLON SPRINT",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "362"
+  },
+  {
+    "date": "14-06-2026",
+    "title": "Triathlon Sprint |",
+    "event": "TRIATHLON SPRINT NETIUM",
+    "location": "",
+    "region": "Puglia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "363"
   },
   {
     "date": "20-06-2026",
@@ -3728,7 +4729,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "287"
+    "id": "364"
   },
   {
     "date": "20-06-2026",
@@ -3741,7 +4742,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "288"
+    "id": "365"
   },
   {
     "date": "20-06-2026",
@@ -3754,7 +4755,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "289"
+    "id": "366"
   },
   {
     "date": "20-06-2026",
@@ -3767,7 +4768,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "290"
+    "id": "367"
   },
   {
     "date": "20-06-2026",
@@ -3780,7 +4781,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "291"
+    "id": "368"
   },
   {
     "date": "20-06-2026",
@@ -3793,7 +4794,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "292"
+    "id": "369"
   },
   {
     "date": "20-06-2026",
@@ -3806,7 +4807,7 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "293"
+    "id": "370"
   },
   {
     "date": "20-06-2026",
@@ -3819,7 +4820,46 @@
     "rank": "",
     "category": "Paratriathlon",
     "link": "",
-    "id": "294"
+    "id": "371"
+  },
+  {
+    "date": "20-06-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "TRIATHLON OLIMPICO LAGO DI VICO",
+    "location": "",
+    "region": "Lazio",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "372"
+  },
+  {
+    "date": "20-06-2026",
+    "title": "Triathlon Sprint Paratriathlon |",
+    "event": "TRIATHLON SPRINT DI MAZARA DEL VALLO 1.0",
+    "location": "",
+    "region": "Sicilia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "Paratriathlon",
+    "link": "",
+    "id": "373"
+  },
+  {
+    "date": "20-06-2026",
+    "title": "Triathlon Atipico Internazionale Paratriathlon |",
+    "event": "XTERRA EUROPEAN CHAMPIONSHIP",
+    "location": "",
+    "region": "Trentino-Alto Adige/Südtirol",
+    "type": "Triathlon",
+    "distance": "",
+    "rank": "",
+    "category": "Paratriathlon",
+    "link": "",
+    "id": "374"
   },
   {
     "date": "21-06-2026",
@@ -3832,7 +4872,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "295"
+    "id": "375"
   },
   {
     "date": "21-06-2026",
@@ -3845,7 +4885,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "296"
+    "id": "376"
   },
   {
     "date": "21-06-2026",
@@ -3858,7 +4898,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "297"
+    "id": "377"
   },
   {
     "date": "21-06-2026",
@@ -3871,7 +4911,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "298"
+    "id": "378"
   },
   {
     "date": "21-06-2026",
@@ -3884,7 +4924,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "299"
+    "id": "379"
   },
   {
     "date": "21-06-2026",
@@ -3897,7 +4937,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "300"
+    "id": "380"
   },
   {
     "date": "21-06-2026",
@@ -3910,7 +4950,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "301"
+    "id": "381"
   },
   {
     "date": "21-06-2026",
@@ -3923,7 +4963,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "302"
+    "id": "382"
   },
   {
     "date": "21-06-2026",
@@ -3936,7 +4976,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "303"
+    "id": "383"
   },
   {
     "date": "21-06-2026",
@@ -3949,7 +4989,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "304"
+    "id": "384"
   },
   {
     "date": "21-06-2026",
@@ -3962,7 +5002,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "305"
+    "id": "385"
   },
   {
     "date": "21-06-2026",
@@ -3975,7 +5015,7 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "306"
+    "id": "386"
   },
   {
     "date": "21-06-2026",
@@ -3988,7 +5028,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "307"
+    "id": "387"
   },
   {
     "date": "21-06-2026",
@@ -4001,7 +5041,7 @@
     "rank": "",
     "category": "Giovanile",
     "link": "",
-    "id": "308"
+    "id": "388"
   },
   {
     "date": "21-06-2026",
@@ -4014,7 +5054,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "309"
+    "id": "389"
   },
   {
     "date": "21-06-2026",
@@ -4027,7 +5067,98 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "310"
+    "id": "390"
+  },
+  {
+    "date": "21-06-2026",
+    "title": "Triathlon Medio |",
+    "event": "17° TERRIBLE TRIATHLON IDROMAN",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Medio",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "391"
+  },
+  {
+    "date": "21-06-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "17° TERRIBLE TRIATHLON IDROMAN",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "392"
+  },
+  {
+    "date": "21-06-2026",
+    "title": "Triathlon Sprint |",
+    "event": "17° TERRIBLE TRIATHLON IDROMAN",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "393"
+  },
+  {
+    "date": "21-06-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "MILANO DEEJAY TRI",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "394"
+  },
+  {
+    "date": "21-06-2026",
+    "title": "Triathlon Sprint |",
+    "event": "MILANO DEEJAY TRI",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "395"
+  },
+  {
+    "date": "21-06-2026",
+    "title": "Triathlon Sprint |",
+    "event": "REVINE LAGO TRI",
+    "location": "",
+    "region": "Veneto",
+    "type": "Triathlon",
+    "distance": "Sprint",
+    "rank": "Bronze",
+    "category": "",
+    "link": "",
+    "id": "396"
+  },
+  {
+    "date": "21-06-2026",
+    "title": "Triathlon Olimpico |",
+    "event": "TRIATHLON MARCONI",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Triathlon",
+    "distance": "Olimpico",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "397"
   },
   {
     "date": "27-06-2026",
@@ -4040,7 +5171,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "311"
+    "id": "398"
   },
   {
     "date": "27-06-2026",
@@ -4053,7 +5184,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "312"
+    "id": "399"
   },
   {
     "date": "27-06-2026",
@@ -4066,7 +5197,7 @@
     "rank": "",
     "category": "Kids",
     "link": "",
-    "id": "313"
+    "id": "400"
   },
   {
     "date": "27-06-2026",
@@ -4079,7 +5210,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "314"
+    "id": "401"
   },
   {
     "date": "28-06-2026",
@@ -4092,7 +5223,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "315"
+    "id": "402"
   },
   {
     "date": "28-06-2026",
@@ -4105,7 +5236,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "316"
+    "id": "403"
   },
   {
     "date": "28-06-2026",
@@ -4118,7 +5249,7 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "317"
+    "id": "404"
   },
   {
     "date": "28-06-2026",
@@ -4131,7 +5262,33 @@
     "rank": "",
     "category": "",
     "link": "",
-    "id": "318"
+    "id": "405"
+  },
+  {
+    "date": "28-06-2026",
+    "title": "Triathlon |",
+    "event": "6° TRIATHLON SPRINT LAGO DI MIGNANO - MEMORIAL ALESSANDRO REPETTI",
+    "location": "",
+    "region": "Emilia-Romagna",
+    "type": "Triathlon",
+    "distance": "",
+    "rank": "Silver",
+    "category": "",
+    "link": "",
+    "id": "406"
+  },
+  {
+    "date": "28-06-2026",
+    "title": "Triathlon Medio |",
+    "event": "LOVERETRI - FOLLOWYOURPASSION",
+    "location": "",
+    "region": "Lombardia",
+    "type": "Triathlon",
+    "distance": "Medio",
+    "rank": "Gold",
+    "category": "",
+    "link": "",
+    "id": "407"
   },
   {
     "date": "03-07-2026",
@@ -4144,6 +5301,6 @@
     "rank": "",
     "category": "Youth",
     "link": "",
-    "id": "319"
+    "id": "408"
   }
 ]
