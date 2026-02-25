@@ -1,46 +1,45 @@
 # 📖 Guida Utente - MTT Season Planner 2026
 
-Benvenuto nello strumento ufficiale di pianificazione del **MTT Milano Triathlon Team**. Segui questi passi per organizzare al meglio il tuo 2026 agonistico.
+Benvenuto nello strumento ufficiale di pianificazione del **MTT Milano Triathlon Team**. Questa guida ti aiuterà a sfruttare tutte le potenzialità dell'app per il tuo 2026 agonistico.
 
 ---
 
 ## 📱 1. Installazione (Mobile First)
-L'app è una *PWA (Progressive Web App)*. Per averla sempre sul telefono:
+L'app è una *PWA (Progressive Web App)*.
 - **iPhone:** Apri il sito in Safari -> Tasto Condividi -> **"Aggiungi alla schermata Home"**.
 - **Android:** Apri Chrome -> Tre puntini -> **"Installa applicazione"**.
 
 ---
 
 ## 🧭 2. Logistica e Distanze
-1. Nella barra laterale, seleziona la tua **Provincia** di residenza.
-2. Usa lo slider **"Raggio d'azione"** per nascondere le gare troppo lontane (es. entro 150km).
-3. All'interno di ogni gara, clicca sulla **freccia blu (📍)** per aprire Google Maps e guidare verso la destinazione.
+1. **Provincia:** Seleziona la tua provincia nella barra laterale per calcolare le distanze.
+2. **Raggio d'azione:** Usa lo slider per nascondere le gare troppo lontane.
+3. **Navigatore (📍):** Clicca sulla freccia blu in ogni gara per aprire Google Maps con la destinazione già impostata.
 
 ---
 
-## 🌡️ 3. Analisi Climatica & Attrezzatura
-- **Meteo:** Controlla l'icona Sole/Nuvola su ogni gara. Si basa sulle medie storiche degli ultimi anni per aiutarti a scegliere l'abbigliamento corretto.
-- **Checklist (🎒):** Prima di partire, clicca sullo zaino. L'app ti mostrerà l'elenco di cosa portare (muta, scarpe trail, termiche, ecc.) specifico per quel tipo di gara.
+## 🏆 3. Livello e Tipologia Gara
+- **Badge Sport:** Indica la disciplina (Triathlon, Duathlon, Aquathlon, ecc.).
+- **Badge Rank (⭐):** Accanto allo sport trovi il livello ufficiale FITRI:
+  - **GOLD:** Gare di massimo rilievo nazionale.
+  - **SILVER:** Gare di alto livello.
+  - **BRONZE/ND:** Gare regionali o promozionali.
+- **Titoli Completi:** I titoli lunghi (es. "No-Draft", "Campionati Italiani") sono ora visualizzati integralmente per non perdere dettagli tecnici.
 
 ---
 
 ## 🎯 4. Gestione della Stagione
-- **Obiettivi (A-B-C):** Una volta aggiunta una gara, assegna la priorità. 
-  - **A (Oro):** Apparirà un **Countdown** speciale in cima all'app per la tua prossima gara clou!
-- **Note (📝):** Clicca sulla matita per scrivere i tuoi obiettivi personali o la strategia (es. *"Muta obbligatoria"*, *"Partenza ore 10:00"*).
-- **Dashboard:** In alto vedrai sempre le tue statistiche: quanti KM viaggerai, quante gare farai e il mix di sport.
+- **Obiettivi (A-B-C):** Assegna la priorità alle tue gare. 
+  - **A (Oro):** Attiva un **Countdown** speciale in cima all'app per la tua prossima sfida clou!
+- **Note (📝):** Clicca sulla matita per scrivere strategie, orari di partenza o setup tecnico.
+- **Checklist (🎒):** Clicca sullo zaino per vedere l'attrezzatura necessaria specifica per quel tipo di sport.
 
 ---
 
-## 📸 5. Condivisione Social
-- **Stagione:** Clicca la **macchina fotografica (📷)** nella sidebar per generare l'immagine di tutto il tuo 2026.
-- **Single Challenge:** Clicca l'icona **Immagine (🖼️)** su una specifica gara per creare un post "Next Challenge" per Instagram.
-
----
-
-## 📅 6. Esportazione Dati
-- **Tasto Calendario:** Scarica il file per sincronizzare tutto sul tuo smartphone.
-- **Tasto Excel:** Ottieni il riepilogo costi e note in un foglio di calcolo.
+## 📸 5. Condivisione e Export
+- **Social:** Usa l'icona **Macchina Fotografica** (sidebar) per la stagione intera o l'icona **Immagine** (sulla gara) per creare post Instagram "Next Challenge".
+- **Calendario:** Scarica il file `.ics` per avere le gare sul calendario del tuo telefono.
+- **Excel:** Ottieni un report completo in `.csv` per gestire costi e logistica.
 
 ---
 *Forza MTT! Superiamo i nostri limiti. 🏁🦾*
