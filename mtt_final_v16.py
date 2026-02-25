@@ -1,108 +1,79 @@
 import time
-import sys
+import json
 import re
+import calendar
 from playwright.sync_api import sync_playwright
 
 OUTPUT_FILE = "gare_2026.txt"
 
 def run():
-    print("🚀 SCRAPER V26: FIXED PADOLA & INTERNATIONAL EVENTS")
+    print("🚀 SCRAPER V32: API COMPLETE SYNC")
     all_final_races = []
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        context = browser.new_context(viewport={'width': 1280, 'height': 1000})
-        page = context.new_page()
+        page = browser.new_page()
 
-        print("🔗 Caricamento MyFITri...")
+        print("🔗 Inizializzazione MyFITri...")
         page.goto("https://www.myfitri.it/calendario", wait_until="networkidle")
-        time.sleep(5)
+        time.sleep(2)
 
-        print("🧹 Sblocco filtro mese...")
-        try:
-            months_regex = re.compile(r"Gennaio|Febbraio|Marzo|Aprile|Maggio|Giugno|Luglio|Agosto|Settembre|Ottobre|Novembre|Dicembre", re.IGNORECASE)
-            page.locator("span").filter(has_text=months_regex).locator("i").click()
-            print("✅ Filtro rimosso.")
-        except: pass
-
-        time.sleep(3)
-
-        print("🖱️ Scrolling completo...")
-        for _ in range(45):
-            page.mouse.wheel(0, 3000)
-            time.sleep(1.0)
-
-        print("📋 Analisi e cattura...")
-        raw_cards = page.evaluate("""() => {
-            return Array.from(document.querySelectorAll('.v-card'))
-                .filter(c => c.innerText.includes('2026'))
-                .map(c => ({
-                    text: c.innerText,
-                    link: c.querySelector('a[href*="/evento/"]')?.href || ""
-                }));
-        }""")
-
-        short_date_pattern = re.compile(r'^(\d{1,2}-(?:gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic))', re.IGNORECASE)
-
-        for card in raw_cards:
-            lines = [l.strip() for l in card['text'].split('\n') if l.strip()]
-            if len(lines) < 2: continue
+        for month in range(1, 13):
+            _, last_day = calendar.monthrange(2026, month)
+            start_date = f"2026-{month:02d}-01"
+            end_date = f"2026-{month:02d}-{last_day:02d}"
             
-            event_name = lines[0]
+            api_url = f"https://cms.myfitri.it/api/eventi?populate=Gare&filters[$and][0][dataInizio][$gte]={start_date}&filters[$and][1][dataInizio][$lte]={end_date}&sort[0]=dataInizio&pagination[limit]=300"
             
-            # CORREZIONE: Cerchiamo la riga della data SALTANDO il titolo (lines[0])
-            # perché il titolo potrebbe contenere "2026" (es. Padola)
-            main_info_line = ""
-            for l in lines[1:]:
-                if "2026" in l:
-                    main_info_line = l
-                    break
+            print(f"📅 Mese {month:02d}...")
             
-            # Fallback se non trovata nelle righe successive
-            if not main_info_line: main_info_line = lines[0]
+            try:
+                response_text = page.evaluate(f"async () => {{ const r = await fetch('{api_url}'); return r.ok ? await r.text() : null; }}")
+                if not response_text: continue
 
-            # Cerchiamo la data standard (es. 27-02-2026)
-            date_match = re.search(r'(\d{2}-\d{2}-2026)', main_info_line)
-            standard_date = date_match.group(1) if date_match else "01-01-2026"
-            
-            # Estrazione Città
-            location = "Località n.d."
-            region = "Italia"
-            if "|" in main_info_line:
-                parts = main_info_line.split("|")
-                region = parts[-1].strip()
-                # Pulizia città: rimuove data, 'dal', 'al' e spazi
-                city_raw = re.sub(r'.*?\d{2}-\d{2}-2026', '', parts[0])
-                city_raw = city_raw.replace('dal', '').replace('al', '').strip()
-                if city_raw: location = city_raw
-            else:
-                # Se non c'è la pipe, proviamo a estrarre la regione dalle righe
-                for l in lines:
-                    if any(r in l for r in ["Veneto", "Lombardia", "Piemonte", "Toscana", "Lazio", "Sicilia"]):
-                        region = l
-                        break
+                data = json.loads(response_text)
+                events = data.get('data', [])
+                
+                for event in events:
+                    attr = event.get('attributes', {})
+                    event_title = attr.get('Nome', 'Ignoto').strip()
+                    raw_date = attr.get('dataInizio', '2026-01-01')
+                    std_date = "-".join(raw_date.split('-')[::-1]) if '-' in raw_date else "01-01-2026"
+                    location = attr.get('Localita', 'Località n.d.').strip()
+                    
+                    # Regione
+                    region = "Italia"
+                    try:
+                        r_data = attr.get('regione', {}).get('data', {})
+                        if r_data: region = r_data.get('attributes', {}).get('Nome', 'Italia')
+                    except: pass
 
-            # Sottogare
-            sub_event_found = False
-            for i, l in enumerate(lines):
-                if short_date_pattern.match(l):
-                    spec = lines[i+1] if (i+1 < len(lines) and not short_date_pattern.match(lines[i+1])) else short_date_pattern.sub("", l).strip()
-                    if spec and not any(s in spec.upper() for s in ["VAI ALLA", "RANK", "DETTAGLI"]):
-                        all_final_races.append(f"{event_name} | {standard_date} | {location} | {region} | {spec} | {card['link']}")
-                        sub_event_found = True
+                    gare_list = attr.get('Gare', [])
+                    event_id = event.get('id', '')
+                    link = f"https://www.myfitri.it/calendario/evento/{event_id}"
 
-            if not sub_event_found:
-                for l in reversed(lines):
-                    if not any(s in l.upper() for s in ["VAI ALLA", "RANK", "DETTAGLI", "2026", "2025"]):
-                        all_final_races.append(f"{event_name} | {standard_date} | {location} | {region} | {l} | {card['link']}")
-                        break
+                    if gare_list:
+                        for g in gare_list:
+                            spec = g.get('Nome', '') or g.get('Descrizione', '') or "Gara"
+                            rank = g.get('Rank', '') or ""
+                            full_spec = f"{spec} {rank}".strip()
+                            all_final_races.append(f"{event_title} | {std_date} | {location} | {region} | {full_spec} | {link}")
+                    else:
+                        all_final_races.append(f"{event_title} | {std_date} | {location} | {region} | Gara | {link}")
 
+            except Exception as e:
+                print(f"   ⚠️ Errore: {e}")
+
+        # SALVATAGGIO
         unique_output = sorted(list(set(all_final_races)))
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            for r in unique_output:
-                f.write(r + "\n")
-        
-        print(f"✨ SUCCESS: {len(unique_output)} gare salvate.")
+        if len(unique_output) > 10:
+            with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+                for r in unique_output:
+                    f.write(r + "\n")
+            print(f"\n✨ SUCCESS: {len(unique_output)} gare salvate in {OUTPUT_FILE}!")
+        else:
+            print(f"\n❌ Errore: Trovate solo {len(unique_output)} gare.")
+
         browser.close()
 
 if __name__ == "__main__":
