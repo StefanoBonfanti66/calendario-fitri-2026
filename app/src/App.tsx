@@ -66,7 +66,7 @@ const RaceCard = React.memo(({
                 </div>
             </div>
             
-            {race.event && <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 truncate">{race.event}</div>}
+            {race.event && <div className="text-sm font-black text-slate-600 uppercase tracking-wide mb-1.5 leading-snug">{race.event}</div>}
             <h3 className="font-black text-slate-800 text-lg mb-3 leading-[1.2] group-hover:text-blue-600 transition-colors">{race.title}</h3>
             
             <div className="space-y-2 mb-6">
