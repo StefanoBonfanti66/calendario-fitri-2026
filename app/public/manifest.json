@@ -3,15 +3,15 @@
   "name": "FITRI 2026 Season Planner",
   "icons": [
     {
-      "src": "https://www.myfitri.it/favicon.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon"
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://www.myfitri.it/images/logo-fitri.png",
-      "type": "image/png",
+      "src": "/icon.svg",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     }
   ],
   "start_url": ".",
