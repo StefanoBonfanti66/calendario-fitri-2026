@@ -58,11 +58,11 @@ const RaceCard = React.memo(({
                         <span className="text-[11px] font-black text-slate-700">{race.date}</span>
                     </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex items-center gap-2">
+                    {race.rank && <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`} title={`Rank gara: ${race.rank}`}><Star className="w-2.5 h-2.5 fill-current" />{race.rank}</div>}
                     <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl tracking-wider ${race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' : race.type === 'Duathlon' ? 'bg-orange-100 text-orange-700' : race.type.includes('Winter') ? 'bg-cyan-100 text-cyan-700' : 'bg-emerald-100 text-emerald-700'}`} title={`Tipo di sport: ${race.type}`}>
                         {race.type}
                     </span>
-                    {race.rank && <div className={`flex items-center gap-1 text-[9px] font-black uppercase px-2 py-1 rounded-lg border-2 ${getRankColor(race.rank)}`} title={`Rank gara: ${race.rank}`}><Star className="w-2.5 h-2.5 fill-current" />{race.rank}</div>}
                 </div>
             </div>
             
