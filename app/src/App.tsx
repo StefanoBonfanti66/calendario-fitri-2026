@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useMemo, useTransition, useCallback } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
-  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera, Image, ShoppingBag, Cloud, Sun, Edit3, MapPin as MapPinIcon
+  Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera, Image, ShoppingBag, Cloud, Sun, Edit3, MapPin as MapPinIcon,
+  LogOut, Mail, Lock, User, Shield
 } from "lucide-react";
 import { toPng } from 'html-to-image';
 import racesData from "./races_full.json";
 import { provinceCoordinates } from "./coords";
 import { getWeatherData } from "./weatherData";
+import { supabase } from "./supabaseClient";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -172,6 +174,126 @@ const RaceCard = React.memo(({
     );
 });
 
+const Auth: React.FC = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(false);
+
+    const handleAuth = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        const { data, error } = isSignUp 
+            ? await supabase.auth.signUp({ 
+                email, 
+                password,
+                options: {
+                    data: { full_name: fullName }
+                }
+              })
+            : await supabase.auth.signInWithPassword({ email, password });
+        
+        if (error) {
+            console.error("Errore Auth:", error.message);
+            alert(error.message);
+        } else {
+            if (isSignUp && !data.session) alert('Registrazione effettuata! Controlla la mail.');
+        }
+        setLoading(false);
+    };
+
+    const handleResetPassword = async () => {
+        if (!email) {
+            alert("Inserisci la tua email per ricevere il link di ripristino.");
+            return;
+        }
+        setLoading(true);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin,
+        });
+        if (error) alert(error.message);
+        else alert("Email di ripristino inviata! Controlla la tua posta.");
+        setLoading(false);
+    };
+
+    return (
+        <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 max-w-md w-full">
+                <div className="flex flex-col items-center mb-8">
+                    <div className="bg-red-500 p-4 rounded-3xl text-white shadow-lg mb-4">
+                        <Trophy className="w-8 h-8" />
+                    </div>
+                    <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">MTT Season Planner</h1>
+                    <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Area Atleti</p>
+                </div>
+                
+                <form onSubmit={handleAuth} className="space-y-4">
+                    {isSignUp && (
+                        <div className="relative">
+                            <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                            <input 
+                                type="text" 
+                                placeholder="Nome e Cognome" 
+                                className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                required
+                            />
+                        </div>
+                    )}
+                    <div className="relative">
+                        <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                        <input 
+                            type="email" 
+                            placeholder="Email" 
+                            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="relative">
+                        <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                        <input 
+                            type="password" 
+                            placeholder="Password" 
+                            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        disabled={loading}
+                        className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all disabled:opacity-50"
+                    >
+                        {loading ? 'Attendere...' : (isSignUp ? 'Registrati' : 'Accedi')}
+                    </button>
+                </form>
+                
+                <div className="mt-6 flex flex-col gap-4 text-center">
+                    {!isSignUp && (
+                        <button 
+                            onClick={handleResetPassword}
+                            className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
+                        >
+                            Password dimenticata?
+                        </button>
+                    )}
+                    <button 
+                        onClick={() => setIsSignUp(!isSignUp)}
+                        className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline"
+                    >
+                        {isSignUp ? 'Hai già un account? Accedi' : 'Non hai un account? Registrati'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const App: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const cardRef = React.useRef<HTMLDivElement>(null);
@@ -192,6 +314,58 @@ const App: React.FC = () => {
   const [raceCosts, setRaceCosts] = useState<Record<string, number>>({});
   const [raceNotes, setRaceNotes] = useState<Record<string, string>>({});
   const [pendingConfirmId, setPendingConfirmId] = useState<string | null>(null);
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAdminView, setIsAdminView] = useState(false);
+  const [adminData, setAdminData] = useState<any[]>([]);
+
+  const ADMIN_EMAIL = "bonfantistefano4@gmail.com";
+
+  // Auth Listener
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch data from Supabase
+  const fetchData = useCallback(async () => {
+    if (!session?.user) return;
+    const { data, error } = await supabase
+      .from('user_plans')
+      .select('*')
+      .eq('user_id', session.user.id);
+
+    if (data && !error) {
+      const selected: string[] = [];
+      const priorities: Record<string, string> = {};
+      const costs: Record<string, number> = {};
+      const notes: Record<string, string> = {};
+
+      data.forEach(item => {
+        selected.push(item.race_id);
+        priorities[item.race_id] = item.priority;
+        costs[item.race_id] = item.cost;
+        notes[item.race_id] = item.note;
+      });
+
+      setSelectedRaces(selected);
+      setRacePriorities(priorities);
+      setRaceCosts(costs);
+      setRaceNotes(notes);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (session) fetchData();
+  }, [session, fetchData]);
 
   const getDistance = useCallback((targetLocation: string, home: string) => {
     if (!home) return null;
@@ -301,39 +475,65 @@ const App: React.FC = () => {
     return ["Tutte", ...Array.from(r).sort()];
   }, [races]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("selected_races");
-    if (saved) try { setSelectedRaces(JSON.parse(saved)); } catch (e) {}
-    const savedPriorities = localStorage.getItem("race_priorities");
-    if (savedPriorities) try { setRacePriorities(JSON.parse(savedPriorities)); } catch (e) {}
-    const savedCosts = localStorage.getItem("race_costs");
-    if (savedCosts) try { setRaceCosts(JSON.parse(savedCosts)); } catch (e) {}
-    const savedNotes = localStorage.getItem("race_notes");
-    if (savedNotes) try { setRaceNotes(JSON.parse(savedNotes)); } catch (e) {}
-  }, []);
+  const setPriority = useCallback(async (id: string, p: string) => {
+    setRacePriorities(prev => ({ ...prev, [id]: p }));
+    if (session?.user) {
+      await supabase
+        .from('user_plans')
+        .update({ priority: p })
+        .eq('user_id', session.user.id)
+        .eq('race_id', id);
+    }
+  }, [session]);
 
-  useEffect(() => {
-    localStorage.setItem("selected_races", JSON.stringify(selectedRaces));
-    localStorage.setItem("race_priorities", JSON.stringify(racePriorities));
-    localStorage.setItem("race_costs", JSON.stringify(raceCosts));
-    localStorage.setItem("race_notes", JSON.stringify(raceNotes));
-  }, [selectedRaces, racePriorities, raceCosts, raceNotes]);
+  const updateCost = useCallback(async (id: string, cost: number) => {
+    setRaceCosts(prev => ({ ...prev, [id]: cost }));
+    if (session?.user) {
+      await supabase
+        .from('user_plans')
+        .update({ cost: cost })
+        .eq('user_id', session.user.id)
+        .eq('race_id', id);
+    }
+  }, [session]);
 
-  const setPriority = useCallback((id: string, p: string) => { setRacePriorities(prev => ({ ...prev, [id]: p })); }, []);
-  const updateCost = useCallback((id: string, cost: number) => { setRaceCosts(prev => ({ ...prev, [id]: cost })); }, []);
-  const updateNote = (id: string, note: string) => { setRaceNotes(prev => ({ ...prev, [id]: note })); };
+  const updateNote = async (id: string, note: string) => {
+    setRaceNotes(prev => ({ ...prev, [id]: note }));
+    if (session?.user) {
+      await supabase
+        .from('user_plans')
+        .update({ note: note })
+        .eq('user_id', session.user.id)
+        .eq('race_id', id);
+    }
+  };
 
-  const addRaceFinal = useCallback((id: string) => {
+  const addRaceFinal = useCallback(async (id: string) => {
     setSelectedRaces((prev) => [...prev, id]);
     setRacePriorities(prev => ({ ...prev, [id]: 'C' }));
     setPendingConfirmId(null);
-  }, []);
+    if (session?.user) {
+      console.log("Salvataggio gara su Supabase:", id);
+      const { error } = await supabase
+        .from('user_plans')
+        .insert([{ user_id: session.user.id, race_id: id, priority: 'C' }]);
+      if (error) console.error("Errore salvataggio gara:", error.message);
+    }
+  }, [session]);
 
-  const toggleRace = useCallback((id: string) => {
+  const toggleRace = useCallback(async (id: string) => {
     if (selectedRaces.includes(id)) {
       setSelectedRaces((prev) => prev.filter((r) => r !== id));
       setRacePriorities(prev => { const next = {...prev}; delete next[id]; return next; });
       setRaceNotes(prev => { const next = {...prev}; delete next[id]; return next; });
+      
+      if (session?.user) {
+        await supabase
+          .from('user_plans')
+          .delete()
+          .eq('user_id', session.user.id)
+          .eq('race_id', id);
+      }
       return;
     }
     const newRace = races.find(r => r.id === id);
@@ -346,7 +546,7 @@ const App: React.FC = () => {
       if (tooClose) { setPendingConfirmId(id); return; }
     }
     addRaceFinal(id);
-  }, [selectedRaces, races, myPlan, addRaceFinal]);
+  }, [selectedRaces, races, myPlan, addRaceFinal, session]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -437,21 +637,96 @@ const App: React.FC = () => {
     }, 200);
   }, []);
 
+  const fetchAdminData = async () => {
+    if (session?.user?.email !== ADMIN_EMAIL) {
+        console.warn("Accesso Admin negato: email non corrisponde", session?.user?.email);
+        return;
+    }
+    
+    console.log("Recupero dati Admin in corso...");
+    const { data: profiles, error: pError } = await supabase.from('profiles').select('*');
+    const { data: plans, error: plError } = await supabase.from('user_plans').select('user_id');
+
+    if (pError) console.error("Errore recupero profili:", pError.message);
+    if (plError) console.error("Errore recupero piani:", plError.message);
+
+    if (!pError && !plError) {
+      console.log("Profili trovati:", profiles?.length);
+      console.log("Piani totali trovati:", plans?.length);
+      const stats = profiles.map(p => ({
+        ...p,
+        raceCount: plans.filter(pl => pl.user_id === p.id).length
+      }));
+      setAdminData(stats);
+    }
+  };
+
+  useEffect(() => {
+    if (isAdminView) fetchAdminData();
+  }, [isAdminView]);
+
+  if (loading) return <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center font-black uppercase tracking-widest text-slate-400">Caricamento...</div>;
+  if (!session) return <Auth />;
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-100">
       <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg rotate-3 hover:scale-110 transition-transform" title="Sito Ufficiale MTT"><Trophy className="w-6 h-6" /></a>
-            <div><h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1><a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] hover:underline">MTT Milano Triathlon Team</a></div>
+            <div className="flex flex-col">
+                <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
+                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest mt-1">
+                    Atleta: {session?.user?.user_metadata?.full_name || session?.user?.email}
+                </span>
+            </div>
           </div>
           <div className="flex gap-2">
             <button onClick={exportToICS} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl text-sm font-bold disabled:opacity-50" title="Calendario (.ics)"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario</span></button>
             <button onClick={exportToCSV} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl text-sm font-bold disabled:opacity-50" title="Excel (.csv)"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel</span></button>
+            <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all" title="Logout"><LogOut className="w-4 h-4" /> <span className="hidden xs:inline">Esci</span></button>
+            {session?.user?.email === ADMIN_EMAIL && (
+                <button onClick={() => setIsAdminView(true)} className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 text-amber-600 rounded-2xl text-sm font-bold hover:bg-amber-100 transition-all"><Shield className="w-4 h-4" /> Admin</button>
+            )}
             <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-sm font-bold cursor-pointer shadow-xl" title="Importa file .json"><Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span><input type="file" className="hidden" accept=".json" onChange={handleFileUpload} /></label>
           </div>
         </div>
       </header>
+
+      {/* MODALE ADMIN */}
+      {isAdminView && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-2xl w-full shadow-2xl animate-in zoom-in-95">
+                  <div className="flex justify-between items-start mb-6"><div className="bg-amber-50 p-3 rounded-2xl"><Shield className="w-6 h-6 text-amber-600" /></div><button onClick={() => setIsAdminView(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-400" /></button></div>
+                  <h3 className="text-xl font-black text-slate-800 mb-6 uppercase tracking-tight">Pannello Controllo Atleti</h3>
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                      <table className="w-full text-left">
+                          <thead>
+                              <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                  <th className="pb-4">Atleta</th>
+                                  <th className="pb-4 text-center">Gare Pianificate</th>
+                                  <th className="pb-4 text-right">Ultimo Accesso</th>
+                              </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-50">
+                              {adminData.map((user) => (
+                                  <tr key={user.id} className="text-sm font-bold text-slate-600">
+                                      <td className="py-4">{user.full_name || 'N/A'}</td>
+                                      <td className="py-4 text-center text-blue-600">{user.raceCount}</td>
+                                      <td className="py-4 text-right text-[10px] font-black text-slate-400 uppercase">{new Date(user.updated_at).toLocaleDateString()}</td>
+                                  </tr>
+                              ))}
+                          </tbody>
+                      </table>
+                  </div>
+                  <button onClick={() => setIsAdminView(false)} className="w-full mt-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all">Chiudi</button>
+              </div>
+          </div>
+      )}
 
       <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-4 space-y-6">
