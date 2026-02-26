@@ -41,9 +41,9 @@ const getEquipment = (type: string) => {
 
 // Componente Card memoizzato
 const RaceCard = React.memo(({ 
-    race, isSelected, priority, cost, note, onToggle, onPriority, onCost, onSingleCard, onChecklist, onNote, getRankColor 
+    race, isSelected, priority, cost, note, participants, onToggle, onPriority, onCost, onSingleCard, onChecklist, onNote, getRankColor 
 }: { 
-    race: Race, isSelected: boolean, priority: string, cost: number, note: string, onToggle: (id: string) => void, onPriority: (id: string, p: string) => void, onCost: (id: string, c: number) => void, onSingleCard: (race: Race) => void, onChecklist: (race: Race) => void, onNote: (race: Race) => void, getRankColor: (r: string) => string
+    race: Race, isSelected: boolean, priority: string, cost: number, note: string, participants: string[], onToggle: (id: string) => void, onPriority: (id: string, p: string) => void, onCost: (id: string, c: number) => void, onSingleCard: (race: Race) => void, onChecklist: (race: Race) => void, onNote: (race: Race) => void, getRankColor: (r: string) => string
 }) => {
     const openInMaps = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -102,6 +102,21 @@ const RaceCard = React.memo(({
             {isSelected && note && (
                 <div className="mb-4 p-3 bg-blue-50/30 rounded-xl border border-blue-100/50">
                     <p className="text-[10px] font-bold text-blue-600 line-clamp-2 italic">📝 {note}</p>
+                </div>
+            )}
+
+            {participants.length > 0 && (
+                <div className="mb-4 flex flex-col gap-1.5">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                        <User className="w-3 h-3 text-red-500" /> Compagni MTT ({participants.length})
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                        {participants.map((name, i) => (
+                            <span key={i} className="text-[9px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
+                                {name}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             )}
             
@@ -319,6 +334,8 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isAdminView, setIsAdminView] = useState(false);
   const [adminData, setAdminData] = useState<any[]>([]);
+  const [allPlans, setAllPlans] = useState<any[]>([]);
+  const [allProfiles, setAllProfiles] = useState<any[]>([]);
 
   const ADMIN_EMAIL = "bonfantistefano4@gmail.com";
 
@@ -339,18 +356,20 @@ const App: React.FC = () => {
   // Fetch data from Supabase
   const fetchData = useCallback(async () => {
     if (!session?.user) return;
-    const { data, error } = await supabase
+    
+    // Carica piani personali
+    const { data: myData, error: myError } = await supabase
       .from('user_plans')
       .select('*')
       .eq('user_id', session.user.id);
 
-    if (data && !error) {
+    if (myData && !myError) {
       const selected: string[] = [];
       const priorities: Record<string, string> = {};
       const costs: Record<string, number> = {};
       const notes: Record<string, string> = {};
 
-      data.forEach(item => {
+      myData.forEach(item => {
         selected.push(item.race_id);
         priorities[item.race_id] = item.priority;
         costs[item.race_id] = item.cost;
@@ -362,6 +381,13 @@ const App: React.FC = () => {
       setRaceCosts(costs);
       setRaceNotes(notes);
     }
+
+    // Carica piani di TUTTO il team (solo user_id e race_id) e profili
+    const { data: teamPlans } = await supabase.from('user_plans').select('user_id, race_id');
+    const { data: teamProfiles } = await supabase.from('profiles').select('id, full_name');
+    
+    if (teamPlans) setAllPlans(teamPlans);
+    if (teamProfiles) setAllProfiles(teamProfiles);
   }, [session]);
 
   useEffect(() => {
@@ -824,9 +850,31 @@ const App: React.FC = () => {
 
             {viewMode === 'list' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {filteredRaces.map((race) => (
-                        <RaceCard key={race.id} race={race} isSelected={selectedRaces.includes(race.id)} priority={racePriorities[race.id] || 'C'} cost={raceCosts[race.id] || 0} note={raceNotes[race.id] || ""} onToggle={toggleRace} onPriority={setPriority} onCost={updateCost} onSingleCard={generateSingleRaceCard} onChecklist={setActiveChecklistRace} onNote={setActiveNoteRace} getRankColor={getRankColor} />
-                    ))}
+                    {filteredRaces.map((race) => {
+                        const participants = allPlans
+                            .filter(p => p.race_id === race.id)
+                            .map(p => allProfiles.find(profile => profile.id === p.user_id)?.full_name)
+                            .filter(Boolean) as string[];
+
+                        return (
+                            <RaceCard 
+                                key={race.id} 
+                                race={race} 
+                                isSelected={selectedRaces.includes(race.id)} 
+                                priority={racePriorities[race.id] || 'C'} 
+                                cost={raceCosts[race.id] || 0} 
+                                note={raceNotes[race.id] || ""} 
+                                participants={participants}
+                                onToggle={toggleRace} 
+                                onPriority={setPriority} 
+                                onCost={updateCost} 
+                                onSingleCard={generateSingleRaceCard} 
+                                onChecklist={setActiveChecklistRace} 
+                                onNote={setActiveNoteRace} 
+                                getRankColor={getRankColor} 
+                            />
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="h-[600px] rounded-[3rem] overflow-hidden border-4 border-white shadow-xl">
