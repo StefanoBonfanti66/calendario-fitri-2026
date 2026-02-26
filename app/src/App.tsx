@@ -688,11 +688,11 @@ const App: React.FC = () => {
           <div className="flex gap-2">
             <button onClick={exportToICS} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-blue-600 rounded-2xl text-sm font-bold disabled:opacity-50" title="Calendario (.ics)"><Calendar className="w-4 h-4" /> <span className="hidden xs:inline">Calendario</span></button>
             <button onClick={exportToCSV} disabled={myPlan.length === 0} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl text-sm font-bold disabled:opacity-50" title="Excel (.csv)"><Download className="w-4 h-4" /> <span className="hidden xs:inline">Excel</span></button>
-            <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all" title="Logout"><LogOut className="w-4 h-4" /> <span className="hidden xs:inline">Esci</span></button>
             {session?.user?.email === ADMIN_EMAIL && (
                 <button onClick={() => setIsAdminView(true)} className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 text-amber-600 rounded-2xl text-sm font-bold hover:bg-amber-100 transition-all"><Shield className="w-4 h-4" /> Admin</button>
             )}
             <label className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-sm font-bold cursor-pointer shadow-xl" title="Importa file .json"><Upload className="w-4 h-4" /> <span className="hidden xs:inline">Importa</span><input type="file" className="hidden" accept=".json" onChange={handleFileUpload} /></label>
+            <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all" title="Logout"><LogOut className="w-4 h-4" /> <span className="hidden xs:inline">Esci</span></button>
           </div>
         </div>
       </header>
