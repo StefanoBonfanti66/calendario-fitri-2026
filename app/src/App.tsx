@@ -321,6 +321,7 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("Tutti");
   const [filterMonth, setFilterMonth] = useState("Tutti");
+  const [filterDistance, setFilterDistance] = useState("Tutti");
   const [filterRegion, setFilterRegion] = useState("Tutte");
   const [filterSpecial, setFilterSpecial] = useState<string[]>([]);
   const [filterRadius, setFilterRadius] = useState<number>(1000);
@@ -635,12 +636,13 @@ const App: React.FC = () => {
         else if (filterType === "Cross") matchesType = race.type === "Cross";
         
         const matchesMonth = filterMonth === "Tutti" || rm === filterMonth;
+        const matchesDistance = filterDistance === "Tutti" || (race.distance?.toLowerCase() || "").includes(filterDistance.toLowerCase());
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
         const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => (race.category?.toLowerCase() || "").includes(s.toLowerCase()) || (race.title?.toLowerCase() || "").includes(s.toLowerCase()));
         const matchesRadius = filterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= filterRadius;
-        return matchesSearch && matchesType && matchesMonth && matchesRegion && matchesSpecial && matchesRadius;
+        return matchesSearch && matchesType && matchesMonth && matchesDistance && matchesRegion && matchesSpecial && matchesRadius;
     }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
-  }, [races, searchTerm, filterType, filterMonth, filterRegion, filterSpecial, filterRadius]);
+  }, [races, searchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, filterRadius]);
 
   const getRankColor = useCallback((rank: string) => {
     if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
@@ -762,33 +764,52 @@ const App: React.FC = () => {
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 sticky top-28">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-500" /> Filtri</h2>
-                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterMonth("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline">Reset</button>
+                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterMonth("Tutti"); setFilterDistance("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline">Reset</button>
             </div>
             <div className="space-y-5">
               <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
               {homeCity && (<div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between"><span>Distanza massima</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" /></div>)}
               <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (<button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white shadow-md" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>{t}</button>))}</div></div>
-              <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Mese</label>
-                <select 
-                    value={filterMonth} 
-                    onChange={(e) => setFilterMonth(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"
-                >
-                    <option value="Tutti">Tutti i mesi</option>
-                    <option value="01">Gennaio</option>
-                    <option value="02">Febbraio</option>
-                    <option value="03">Marzo</option>
-                    <option value="04">Aprile</option>
-                    <option value="05">Maggio</option>
-                    <option value="06">Giugno</option>
-                    <option value="07">Luglio</option>
-                    <option value="08">Agosto</option>
-                    <option value="09">Settembre</option>
-                    <option value="10">Ottobre</option>
-                    <option value="11">Novembre</option>
-                    <option value="12">Dicembre</option>
-                </select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Mese</label>
+                  <select 
+                      value={filterMonth} 
+                      onChange={(e) => setFilterMonth(e.target.value)}
+                      className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"
+                  >
+                      <option value="Tutti">Tutti</option>
+                      <option value="01">Gennaio</option>
+                      <option value="02">Febbraio</option>
+                      <option value="03">Marzo</option>
+                      <option value="04">Aprile</option>
+                      <option value="05">Maggio</option>
+                      <option value="06">Giugno</option>
+                      <option value="07">Luglio</option>
+                      <option value="08">Agosto</option>
+                      <option value="09">Settembre</option>
+                      <option value="10">Ottobre</option>
+                      <option value="11">Novembre</option>
+                      <option value="12">Dicembre</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Distanza</label>
+                  <select 
+                      value={filterDistance} 
+                      onChange={(e) => setFilterDistance(e.target.value)}
+                      className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"
+                  >
+                      <option value="Tutti">Tutte</option>
+                      <option value="Super Sprint">Super Sprint</option>
+                      <option value="Sprint">Sprint</option>
+                      <option value="Olimpico">Olimpico</option>
+                      <option value="Medio">Medio (70.3)</option>
+                      <option value="Lungo">Lungo (140.6)</option>
+                      <option value="Cross">Cross</option>
+                      <option value="Staffetta">Staffetta</option>
+                  </select>
+                </div>
               </div>
               <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white shadow-md" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>{s}</button>))}</div></div>
               <div className="grid grid-cols-1 gap-4"><div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">La tua provincia</label><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"><option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
