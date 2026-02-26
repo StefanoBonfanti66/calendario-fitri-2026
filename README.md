@@ -1,33 +1,32 @@
 # 🏊‍♂️ MTT Milano Triathlon Team - Season Planner 2026
 
-Una Web App professionale progettata per gli atleti del **MTT**, dedicata alla pianificazione strategica e analitica della stagione agonistica 2026.
+Una piattaforma Web professionale progettata per gli atleti del **MTT**, dedicata alla pianificazione strategica della stagione agonistica 2026.
 
-## 🚀 Visione del Progetto
-L'app trasforma il calendario ufficiale FITRI in un ecosistema interattivo. Grazie a un motore di acquisizione dati di ultima generazione, permette di gestire ogni aspetto della stagione con precisione chirurgica.
+## 🚀 Evoluzione Progetto (V2.0)
+L'app è ora una piattaforma **Full-Stack** con sincronizzazione cloud, permettendo a ogni atleta di gestire il proprio calendario gare personale da qualsiasi dispositivo.
 
-## ✨ Funzionalità Elite
+## ✨ Funzionalità Core
 
-### 🧭 Logistica & Navigazione Avanzata
-- **🗺️ Mappa Interattiva**: Pin colorati per sport e icone speciali per gli obiettivi A.
-- **📏 Raggio d'Azione**: Slider per filtrare le gare entro una specifica distanza chilometrica dalla propria provincia.
-- **📍 Direct Go!**: Integrazione con Google Maps per avvio rapido del navigatore verso la località di gara.
-- **🌡️ Smart Prep (Meteo)**: Analisi dei dati storici medi (temperatura e pioggia) per ogni località e data.
+### 👤 Area Personale & Cloud Sync
+- **Autenticazione Sicura**: Ogni atleta ha un account protetto (Email/Password).
+- **Profilo Atleta**: Gestione del nome e cognome per un'esperienza personalizzata.
+- **Sincronizzazione Real-time**: Le gare selezionate, le note e le priorità sono salvate nel cloud (Supabase) e mai perse.
 
-### 🎯 Gestione & Diario Atleta
-- **📈 Dashboard Analitica**: Riepilogo automatico (Focus Target, Mix Discipline, KM totali).
-- **📝 Diario di Gara**: Note personali persistenti per ogni evento (strategie, alimentazione).
-- **🎒 Smart Checklist**: Lista attrezzatura dinamica basata sullo sport (Triathlon, Duathlon, Cross, Winter).
-- **🛡️ Safety Check**: Algoritmo di protezione del recupero tra gare ravvicinate.
+### 🧭 Logistica & Navigazione
+- **Mappa Interattiva**: Visualizzazione geografica del calendario FITRI 2026.
+- **Smart Radius**: Filtro intelligente basato sulla distanza chilometrica dalla propria provincia.
+- **Meteo Storico**: Analisi delle medie climatiche (temp/pioggia) per ogni evento.
 
-### 📸 Social & Export
-- **🖼️ Social Card Generator**: Creazione di infografiche professionali per Instagram (Stagione o Singola Sfida).
-- **📅 Sincronizzazione**: Esportazione in `.ics` (Calendario) e `.csv` (Excel) con inclusione di note e priorità.
+### 🎯 Gestione Avanzata
+- **Priorità A/B/C**: Definizione degli obiettivi stagionali.
+- **Diario di Gara**: Note personali persistenti per strategie e nutrizione.
+- **Social Card**: Generatore di infografiche professionali per Instagram.
 
-## 🤖 Automazione & Stack (V33 High-Tech)
-- **Crawler**: Python + Playwright con **accesso diretto alle API MyFITri**. Gestione automatica di eventi multi-gara (es. Campionati Italiani, Circuiti Giovanili) con esplosione delle sottogare.
-- **Data Engine**: Parsing intelligente con estrazione automatica del Rank (Gold/Silver/Bronze) e separazione Comune/Provincia.
+## 🛠 Stack Tecnologico
 - **Frontend**: React 19, TypeScript, Tailwind CSS, Leaflet.js.
-- **Hosting**: Vercel con pipeline di deploy continuo collegata a GitHub.
+- **Backend/DB**: Supabase (PostgreSQL) con Row Level Security (RLS).
+- **Hosting**: Vercel (CI/CD via GitHub).
+- **Data Engine**: Python + Playwright per lo scraping automatico MyFITri.
 
 ---
 *www.milanotriathlonteam.com • Stagione 2026*
