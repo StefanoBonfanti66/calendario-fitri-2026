@@ -1,9 +1,2 @@
 playwright
-pytest-playwright
-beautifulsoup4
-requests
-lxml
-fastapi
-uvicorn
-markdown
-xhtml2pdf
+supabase

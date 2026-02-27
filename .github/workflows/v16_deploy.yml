@@ -22,26 +22,24 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install
+    - name: Install Dependencies
       run: |
-        pip install playwright
-        npx playwright install --with-deps chromium
+        pip install -r requirements.txt
+        playwright install --with-deps chromium
 
-    - name: Scrape (Web -> Text)
-      run: python mtt_final_v16.py
-
-    - name: Parse (Text -> JSON Merge)
-      run: python parse_gare_file.py
-
-    - name: Push Changes
+    - name: Scrape & Parse Data
       run: |
-        git config --global user.name "GitHub Action"
-        git config --global user.email "action@github.com"
-        git add gare_2026.txt app/src/races_full.json
-        if ! git diff --cached --quiet; then
-          git commit -m "Automated Data Update: Sync with FITRI [skip ci]"
-          git pull origin main --rebase --autostash
-          git push origin HEAD:main
-        else
-          echo "Nessun cambiamento rilevato."
+        python mtt_final_v16.py
+        python parse_gare_file.py
+
+    - name: Upload Data to Supabase
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      run: python upload_data.py
+
+    - name: Trigger Vercel Redeploy (Optional)
+      run: |
+        if [[ "${{ secrets.VERCEL_DEPLOY_HOOK }}" != "" ]]; then
+          curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
         fi
