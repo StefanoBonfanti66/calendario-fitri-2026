@@ -1,10 +1,9 @@
-// Contenuto corretto in base alla nuova struttura
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Layout from '../components/Layout';
-import DashboardPage from './DashboardPage';
-import TeamCalendarPage from './TeamCalendarPage';
-import Auth from './Auth';
+import Layout from './components/Layout';
+import DashboardPage from './pages/DashboardPage';
+import TeamCalendarPage from './pages/TeamCalendarPage';
+import Auth from './pages/Auth';
 
 const App: React.FC = () => {
   return (

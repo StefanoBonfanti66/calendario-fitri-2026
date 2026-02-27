@@ -28,11 +28,11 @@ const Header = ({ session }: { session: any }) => {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <NavLink to="/" end className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-blue-50 hover:text-blue-600" style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
+                    <NavLink to="/" end className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-blue-50 hover:text-blue-600" style={({ isActive }: { isActive: boolean }) => isActive ? activeLinkStyle : undefined}>
                         <LayoutDashboard className="w-4 h-4" />
                         <span>Dashboard</span>
                     </NavLink>
-                    <NavLink to="/calendario-team" className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-blue-50 hover:text-blue-600" style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
+                    <NavLink to="/calendario-team" className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-blue-50 hover:text-blue-600" style={({ isActive }: { isActive: boolean }) => isActive ? activeLinkStyle : undefined}>
                         <Users className="w-4 h-4" />
                         <span>Team</span>
                     </NavLink>

@@ -34,18 +34,30 @@ def main():
     # 1. Svuota la tabella 'races' per garantire dati sempre aggiornati
     print("Pulizia della tabella 'races'...")
     # Usiamo un filtro che corrisponde a tutte le righe per la cancellazione
-    delete_response, delete_error = supabase.from_("races").delete().neq("id", "una_stringa_impossibile").execute()
-    
-    if delete_error and delete_error.get('code') != 'PGRST204': # Ignora l'errore "No rows found"
-        print(f"Errore durante la pulizia della tabella: {delete_error}")
+    try:
+        data, delete_error = supabase.from_("races").delete().neq("id", "una_stringa_impossibile").execute()
+    except Exception as e:
+        print(f"Errore imprevisto durante la cancellazione: {e}")
         return
 
+    # La libreria può sollevare un'eccezione o ritornare un errore nell'oggetto
+    if delete_error and delete_error[1]:
+        # A volte l'errore è nella seconda parte della tupla
+        error_info = delete_error[1]
+        if hasattr(error_info, 'code') and error_info.code != 'PGRST204': # Ignora "No rows found"
+            print(f"Errore durante la pulizia della tabella: {error_info}")
+            return
+    
     # 2. Inserisce i nuovi dati
     print(f"Inserimento di {len(races_data)} nuove gare...")
-    insert_response, insert_error = supabase.from_("races").insert(races_data).execute()
+    try:
+        insert_data, insert_error = supabase.from_("races").insert(races_data).execute()
+    except Exception as e:
+        print(f"Errore imprevisto durante l'inserimento: {e}")
+        return
 
-    if insert_error:
-        print(f"Errore durante l'inserimento dei dati: {insert_error}")
+    if insert_error and insert_error[1]:
+        print(f"Errore durante l'inserimento dei dati: {insert_error[1]}")
     else:
         print("Upload su Supabase completato con successo!")
 

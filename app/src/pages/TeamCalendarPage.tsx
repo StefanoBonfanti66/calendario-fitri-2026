@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { User, Calendar } from 'lucide-react';
+import { User, Calendar, Users } from 'lucide-react';
 
 interface TeamRace {
   race_id: string;
