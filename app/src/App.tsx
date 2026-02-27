@@ -334,6 +334,7 @@ const App: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isAdminView, setIsAdminView] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [adminData, setAdminData] = useState<any[]>([]);
   const [allPlans, setAllPlans] = useState<any[]>([]);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
@@ -347,8 +348,11 @@ const App: React.FC = () => {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsResettingPassword(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -697,6 +701,51 @@ const App: React.FC = () => {
   }, [isAdminView]);
 
   if (loading) return <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center font-black uppercase tracking-widest text-slate-400">Caricamento...</div>;
+
+  if (isResettingPassword) {
+    return (
+        <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 max-w-md w-full">
+                <div className="flex flex-col items-center mb-8">
+                    <div className="bg-blue-500 p-4 rounded-3xl text-white shadow-lg mb-4">
+                        <Lock className="w-8 h-8" />
+                    </div>
+                    <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Nuova Password</h1>
+                    <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Imposta le tue nuove credenziali</p>
+                </div>
+                
+                <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const password = (e.target as any).password.value;
+                    const { error } = await supabase.auth.updateUser({ password });
+                    if (error) alert(error.message);
+                    else {
+                        alert("Password aggiornata con successo!");
+                        setIsResettingPassword(false);
+                    }
+                }} className="space-y-4">
+                    <div className="relative">
+                        <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                        <input 
+                            name="password"
+                            type="password" 
+                            placeholder="Nuova Password" 
+                            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium"
+                            required
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all"
+                    >
+                        Salva Nuova Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+  }
+
   if (!session) return <Auth />;
 
   const handleLogout = async () => {
