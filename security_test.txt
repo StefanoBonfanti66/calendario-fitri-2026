@@ -1,0 +1,2 @@
+Test di sicurezza eseguito il 28 Febbraio 2026.
+Se questo file è arrivato su GitHub tramite push diretto, significa che l'amministratore può ancora caricare codice senza passare per una Pull Request.
