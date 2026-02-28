@@ -668,24 +668,51 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-8 space-y-6 min-h-[1000px]">
-            {/* Contenitore Prossimo Obiettivo con altezza fissa se presente */}
-            <div className={nextObjective ? "min-h-[160px]" : ""}>
-                {nextObjective && timeLeft && (
-                    <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+        <div className="lg:col-span-8 space-y-6">
+            {/* Contenitore Prossimo Obiettivo: sempre presente per stabilità layout */}
+            <div className="min-h-[160px] empty:hidden">
+                {nextObjective && timeLeft ? (
+                    <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative animate-in fade-in duration-500">
                         <div className="absolute right-0 top-0 p-4 opacity-10 rotate-12">
                             <img src="/Logo.png" alt="" className="w-48 h-auto grayscale brightness-200" />
                         </div>
                         <div className="relative z-10"><span className="text-[10px] font-black uppercase tracking-widest opacity-60 bg-white/20 px-2 py-1 rounded">Prossimo Obiettivo</span><h2 className="text-2xl font-black uppercase mt-2">{nextObjective.title}</h2></div>
                         <div className="flex gap-4 text-center relative z-10"><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black tabular-nums">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div><div className="text-2xl mt-3 opacity-30">:</div><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black tabular-nums">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div></div>
                     </div>
-                )}
+                ) : null}
             </div>
 
-            {/* Contenitore Analisi Stagione con altezza fissa se presente */}
-            <div className={myPlan.length > 0 ? "min-h-[350px]" : ""}>
-                {myPlan.length > 0 && (
-                    <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group">
+            {/* Contenitore Analisi Stagione: sempre presente se l'utente ha gare, con altezza minima predefinita */}
+            <div className="min-h-[350px] empty:hidden">
+                {myPlan.length > 0 ? (
+                    <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group animate-in fade-in duration-500">
+                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                            <img src="/Logo.png" alt="" className="w-64 h-auto grayscale brightness-200" />
+                        </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-3 mb-8"><div className="bg-blue-500 p-2 rounded-xl"><Activity className="w-5 h-5 text-white" /></div><h2 className="text-xl font-black uppercase tracking-tight">Analisi Stagione</h2></div>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
+                                    <span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Focus Target</span>
+                                    <div className="flex items-end gap-3"><div className="text-3xl font-black text-yellow-400 tabular-nums">{seasonStats.priorities.A}</div><div className="text-[10px] font-bold text-slate-300 mb-1.5 uppercase">Obiettivi A</div></div>
+                                    <div className="mt-4 flex gap-1 h-1.5"><div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / myPlan.length) * 100}%` }}></div><div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / myPlan.length) * 100}%` }}></div><div className="bg-slate-600 rounded-full flex-1"></div></div>
+                                </div>
+                                <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-200">{type}</span><span className="text-xs font-black tabular-nums">{count}</span></div>))}</div></div>
+                                <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black tabular-nums">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-300 uppercase">Km Stimati</div></div></div></div>
+                            </div>
+                            <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-red-600/20 p-2 rounded-lg">
+                                        <img src="/Logo.png" alt="" className="w-6 h-6 object-contain" />
+                                    </div>
+                                    <p className="text-xs font-bold text-slate-200">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p>
+                                </div>
+                                <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">Diventa un MTT</a>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+            </div>
                     <div className="absolute top-0 right-0 p-8 opacity-5">
                         <img src="/Logo.png" alt="" className="w-64 h-auto grayscale brightness-200" />
                     </div>
@@ -745,9 +772,13 @@ const DashboardPage: React.FC = () => {
                     ))}
                 </div>
             ) : (
-                <div className="h-[600px] w-full rounded-[3rem] overflow-hidden border-4 border-white shadow-xl relative isolate">
-                    <MapContainer center={[41.8719, 12.5674]} zoom={6} className="h-full w-full outline-none">
-                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <div className="h-[600px] w-full rounded-[3rem] overflow-hidden border-4 border-white shadow-xl relative isolate bg-slate-100">
+                    <MapContainer center={[41.8719, 12.5674]} zoom={6} className="h-full w-full outline-none" fadeAnimation={false} zoomAnimation={false}>
+                        <TileLayer 
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                            noWrap={true}
+                            keepBuffer={8}
+                        />
                         {filteredRaces.map(race => race.mapCoords && (
                             <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}>
                                 <Popup>
