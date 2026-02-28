@@ -10,7 +10,7 @@ const activeLinkStyle = {
     color: '#2563eb' // text-blue-600
 };
 
-const Header = memo(({ session }: { session: any }) => {
+const Header = memo(({ session, onOpenAdmin }: { session: any, onOpenAdmin: () => void }) => {
     const handleLogout = async () => {
         await supabase.auth.signOut();
     };
@@ -42,7 +42,7 @@ const Header = memo(({ session }: { session: any }) => {
                     <div className="w-px h-6 bg-slate-200 mx-2"></div>
                     
                     {session?.user?.email === ADMIN_EMAIL && (
-                        <button onClick={() => alert("Il pannello Admin è ora nella Dashboard.")} className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-sm font-bold hover:bg-amber-100 transition-all" aria-label="Informazioni pannello admin"><Shield className="w-4 h-4" /> Admin</button>
+                        <button onClick={onOpenAdmin} className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-sm font-bold hover:bg-amber-100 transition-all" aria-label="Apri pannello admin"><Shield className="w-4 h-4" /> Admin</button>
                     )}
                     
                     <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all" title="Logout" aria-label="Esci dall'applicazione"><LogOut className="w-4 h-4" /></button>
