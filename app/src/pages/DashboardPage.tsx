@@ -169,6 +169,7 @@ const RaceCard = React.memo(({
                                 value={cost || ''}
                                 onChange={(e) => onCost(race.id, parseFloat(e.target.value) || 0)}
                                 onClick={(e) => e.stopPropagation()}
+                                aria-label={`Costo iscrizione per ${race.title}`}
                             />
                         </div>
                     </div>
@@ -556,26 +557,83 @@ const DashboardPage: React.FC = () => {
                 <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterMonth("Tutti"); setFilterDistance("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-700 hover:underline" aria-label="Resetta tutti i filtri">Reset</button>
             </div>
             <div className="space-y-5">
-              <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
-              {homeCity && (<div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2 flex justify-between"><span>Distanza massima</span><span className="text-blue-700">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" /></div>)}
-              <div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (<button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white shadow-md" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>{t}</button>))}</div></div>
+              <div className="relative group">
+                <Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
+                <input 
+                  id="search-input"
+                  type="text" 
+                  placeholder="Cerca gara..." 
+                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" 
+                  value={searchTerm} 
+                  onChange={(e) => setSearchTerm(e.target.value)} 
+                  aria-label="Cerca gara per titolo o località"
+                />
+              </div>
+              {homeCity && (
+                <div>
+                  <label htmlFor="radius-range" className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2 flex justify-between">
+                    <span>Distanza massima</span>
+                    <span className="text-blue-700">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span>
+                  </label>
+                  <input 
+                    id="radius-range"
+                    type="range" 
+                    min="50" 
+                    max="1000" 
+                    step="50" 
+                    value={filterRadius} 
+                    onChange={(e) => setFilterRadius(parseInt(e.target.value))} 
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" 
+                  />
+                </div>
+              )}
+              <div>
+                <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Sport</label>
+                <div className="flex flex-wrap gap-2">
+                  {["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (
+                    <button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white shadow-md" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>{t}</button>
+                  ))}
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Mese</label>
-                  <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100">
+                  <label htmlFor="month-select" className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Mese</label>
+                  <select 
+                    id="month-select"
+                    value={filterMonth} 
+                    onChange={(e) => setFilterMonth(e.target.value)} 
+                    className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"
+                  >
                       <option value="Tutti">Tutti</option>
                       <option value="01">Gennaio</option><option value="02">Febbraio</option><option value="03">Marzo</option><option value="04">Aprile</option><option value="05">Maggio</option><option value="06">Giugno</option><option value="07">Luglio</option><option value="08">Agosto</option><option value="09">Settembre</option><option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Distanza</label>
-                  <select value={filterDistance} onChange={(e) => setFilterDistance(e.target.value)} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100">
+                  <label htmlFor="distance-select" className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Distanza</label>
+                  <select 
+                    id="distance-select"
+                    value={filterDistance} 
+                    onChange={(e) => setFilterDistance(e.target.value)} 
+                    className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"
+                  >
                       <option value="Tutti">Tutte</option><option value="Super Sprint">Super Sprint</option><option value="Sprint">Sprint</option><option value="Olimpico">Olimpico</option><option value="Medio">Medio (70.3)</option><option value="Lungo">Lungo (140.6)</option><option value="Cross">Cross</option><option value="Staffetta">Staffetta</option>
                   </select>
                 </div>
               </div>
               <div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-700 text-white shadow-md" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>{s}</button>))}</div></div>
-              <div className="grid grid-cols-1 gap-4"><div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">La tua provincia</label><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"><option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <label htmlFor="province-select" className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">La tua provincia</label>
+                  <select 
+                    id="province-select"
+                    value={homeCity} 
+                    onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} 
+                    className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"
+                  >
+                    <option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+              </div>
             </div>
             <div className="mt-10 pt-10 border-t border-slate-100">
                 <div className="flex items-center justify-between mb-6"><h2 className="text-lg font-black text-slate-800">Le mie gare <span className="text-blue-700">({myPlan.length})</span></h2><div className="flex gap-2">
@@ -670,9 +728,17 @@ const DashboardPage: React.FC = () => {
         {activeNoteRace && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
                 <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
-                    <div className="flex justify-between items-start mb-6"><div className="bg-blue-50 p-3 rounded-2xl"><Edit3 className="w-6 h-6 text-blue-600" /></div><button onClick={() => setActiveNoteRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-400" /></button></div>
-                    <h3 className="text-xl font-black text-slate-800 mb-1 uppercase tracking-tight">Diario di Gara</h3><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{activeNoteRace.title}</p>
-                    <textarea autoFocus className="w-full h-40 p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700 placeholder:text-slate-300" placeholder="Esempio: Obiettivo stare sotto le 2h15, gel ogni 45 min..." value={raceNotes[activeNoteRace.id] || ""} onChange={(e) => updateNote(activeNoteRace.id, e.target.value)} />
+                    <div className="flex justify-between items-start mb-6"><div className="bg-blue-50 p-3 rounded-2xl"><Edit3 className="w-6 h-6 text-blue-600" /></div><button onClick={() => setActiveNoteRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" aria-label="Chiudi diario di gara"><X className="w-5 h-5 text-slate-400" /></button></div>
+                    <h3 className="text-xl font-black text-slate-800 mb-1 uppercase tracking-tight">Diario di Gara</h3>
+                    <label htmlFor="race-notes-textarea" className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 block">{activeNoteRace.title}</label>
+                    <textarea 
+                        id="race-notes-textarea"
+                        autoFocus 
+                        className="w-full h-40 p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700 placeholder:text-slate-300" 
+                        placeholder="Esempio: Obiettivo stare sotto le 2h15, gel ogni 45 min..." 
+                        value={raceNotes[activeNoteRace.id] || ""} 
+                        onChange={(e) => updateNote(activeNoteRace.id, e.target.value)} 
+                    />
                     <button onClick={() => setActiveNoteRace(null)} className="w-full mt-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all">Salva Note</button>
                 </div>
             </div>
@@ -681,7 +747,7 @@ const DashboardPage: React.FC = () => {
         {activeChecklistRace && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
                 <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
-                    <div className="flex justify-between items-start mb-6"><div className="bg-emerald-50 p-3 rounded-2xl"><ShoppingBag className="w-6 h-6 text-emerald-600" /></div><button onClick={() => setActiveChecklistRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-400" /></button></div>
+                    <div className="flex justify-between items-start mb-6"><div className="bg-emerald-50 p-3 rounded-2xl"><ShoppingBag className="w-6 h-6 text-emerald-600" /></div><button onClick={() => setActiveChecklistRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" aria-label="Chiudi checklist"><X className="w-5 h-5 text-slate-400" /></button></div>
                     <h3 className="text-xl font-black text-slate-800 mb-6 uppercase tracking-tight">Checklist {activeChecklistRace.type}</h3>
                     <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">{getEquipment(activeChecklistRace.type).map((item, i) => (<div key={i} className="p-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3 border border-slate-100 hover:bg-white transition-all"><CheckCircle className="w-4 h-4 text-emerald-500" />{item}</div>))}</div>
                     <button onClick={() => setActiveChecklistRace(null)} className="w-full mt-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all">Chiudi</button>

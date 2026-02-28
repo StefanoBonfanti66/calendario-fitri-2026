@@ -81,8 +81,10 @@ const Auth: React.FC = () => {
                 <form onSubmit={handleAuth} className="space-y-4">
                     {isSignUp && (
                         <div className="relative">
+                            <label htmlFor="auth-fullname" className="sr-only">Nome e Cognome</label>
                             <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                             <input 
+                                id="auth-fullname"
                                 type="text" 
                                 placeholder="Nome e Cognome" 
                                 className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium"
@@ -93,8 +95,10 @@ const Auth: React.FC = () => {
                         </div>
                     )}
                     <div className="relative">
+                        <label htmlFor="auth-email" className="sr-only">Email</label>
                         <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                         <input 
+                            id="auth-email"
                             type="email" 
                             placeholder="Email" 
                             className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium"
@@ -104,8 +108,10 @@ const Auth: React.FC = () => {
                         />
                     </div>
                     <div className="relative">
+                        <label htmlFor="auth-password" className="sr-only">Password</label>
                         <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                         <input 
+                            id="auth-password"
                             type="password" 
                             placeholder="Password" 
                             className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium"
