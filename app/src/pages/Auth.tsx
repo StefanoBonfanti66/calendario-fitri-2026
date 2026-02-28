@@ -75,13 +75,13 @@ const Auth: React.FC = () => {
                         <Trophy className="w-8 h-8" />
                     </div>
                     <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">MTT Season Planner</h1>
-                    <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Area Atleti</p>
+                    <p className="text-slate-600 font-bold text-xs uppercase tracking-widest mt-2">Area Atleti</p>
                 </div>
                 
                 <form onSubmit={handleAuth} className="space-y-4">
                     {isSignUp && (
                         <div className="relative">
-                            <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                            <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                             <input 
                                 type="text" 
                                 placeholder="Nome e Cognome" 
@@ -93,7 +93,7 @@ const Auth: React.FC = () => {
                         </div>
                     )}
                     <div className="relative">
-                        <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                        <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                         <input 
                             type="email" 
                             placeholder="Email" 
@@ -104,7 +104,7 @@ const Auth: React.FC = () => {
                         />
                     </div>
                     <div className="relative">
-                        <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" />
+                        <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                         <input 
                             type="password" 
                             placeholder="Password" 
@@ -127,14 +127,14 @@ const Auth: React.FC = () => {
                     {!isSignUp && (
                         <button 
                             onClick={handleResetPassword}
-                            className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
+                            className="text-[10px] font-bold text-slate-600 uppercase tracking-widest hover:text-blue-700 transition-colors"
                         >
                             Password dimenticata?
                         </button>
                     )}
                     <button 
                         onClick={() => setIsSignUp(!isSignUp)}
-                        className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline"
+                        className="text-[10px] font-black text-blue-700 uppercase tracking-widest hover:underline"
                     >
                         {isSignUp ? 'Hai già un account? Accedi' : 'Non hai un account? Registrati'}
                     </button>

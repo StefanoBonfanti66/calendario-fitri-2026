@@ -39,7 +39,7 @@ const TeamCalendarPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center p-10 font-bold text-slate-400">Caricamento calendario team...</div>;
+    return <div className="text-center p-10 font-bold text-slate-500">Caricamento calendario team...</div>;
   }
 
   return (
@@ -50,7 +50,7 @@ const TeamCalendarPage: React.FC = () => {
         </div>
         <div>
           <h1 className="text-3xl font-black text-slate-800 tracking-tight uppercase">Calendario Team</h1>
-          <p className="text-slate-500 font-bold text-sm">Le gare pianificate da tutti gli atleti MTT.</p>
+          <p className="text-slate-600 font-bold text-sm">Le gare pianificate da tutti gli atleti MTT.</p>
         </div>
       </div>
 
@@ -67,14 +67,14 @@ const TeamCalendarPage: React.FC = () => {
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="font-black text-slate-800 text-lg leading-tight">{race.race_title}</h3>
                     <div className="bg-blue-50 px-3 py-1 rounded-full border border-blue-100 shrink-0">
-                      <span className="text-[11px] font-black text-blue-600">{race.race_date}</span>
+                      <span className="text-[11px] font-black text-blue-700">{race.race_date}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-slate-400" />
+                    <User className="w-4 h-4 text-slate-500" />
                     <div className="flex flex-wrap gap-2">
                       {race.participants.map((name, i) => (
-                        <span key={i} className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded-md border border-slate-200">
+                        <span key={i} className="text-xs font-bold bg-slate-100 text-slate-700 px-2 py-1 rounded-md border border-slate-200">
                           {name}
                         </span>
                       ))}

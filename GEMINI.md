@@ -24,6 +24,25 @@ Project for managing the 2026 FITRI race calendar with multi-user support via Su
 - `full_name`: text
 - **Security**: RLS enabled. Users can only Read/Update their own profile. Admin (`bonfantistefano4@gmail.com`) can read all.
 
+### Table: `public.races`
+- `id`: text (PK)
+- `date`: text
+- `title`: text
+- `event`: text
+- `location`: text
+- `region`: text
+- `type`: text
+- `distance`: text
+- `rank`: text
+- `category`: text
+- `link`: text
+- **Security**: RLS enabled. Read-only for authenticated users.
+
+## ⚙️ SQL Functions (RPC)
+
+### `get_team_calendar()`
+Returns a grouped JSON of races by month, including participants names for each race. Used in the Team page.
+
 ## 🛡 Business Rules
 - **Admin**: `bonfantistefano4@gmail.com` has access to the Admin Panel.
 - **Recovery**: Password reset is handled via `supabase.auth.resetPasswordForEmail`.

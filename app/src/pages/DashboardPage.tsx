@@ -72,26 +72,26 @@ const RaceCard = React.memo(({
             
             <div className="space-y-2 mb-6">
                 <div className="flex items-start gap-2.5" title="Località e Regione">
-                    <MapPin className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
+                    <MapPin className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <p className="text-xs font-bold text-slate-500 leading-snug">{race.location}</p>
-                            <button onClick={openInMaps} className="p-1 hover:bg-slate-100 rounded text-blue-500 transition-colors" title="Apri navigatore Google Maps">
+                            <p className="text-xs font-bold text-slate-600 leading-snug">{race.location}</p>
+                            <button onClick={openInMaps} className="p-1 hover:bg-slate-100 rounded text-blue-600 transition-colors" title="Apri navigatore Google Maps">
                                 <Navigation className="w-3 h-3 rotate-45" />
                             </button>
                         </div>
-                        <span className="text-blue-400/70 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
+                        <span className="text-blue-600 text-[10px] font-bold uppercase tracking-tighter">{race.region}</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    {race.distance && <div className="flex items-center gap-2" title="Distanza della gara"><Bike className="w-4 h-4 text-slate-300 shrink-0" /><span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{race.distance}</span></div>}
-                    {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (<div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50" title="Distanza stimata dalla tua provincia"><Navigation className="w-3 h-3 text-blue-400" /><span className="text-[10px] font-black text-blue-600 uppercase">~{race.distanceFromHome} KM</span></div>)}
+                    {race.distance && <div className="flex items-center gap-2" title="Distanza della gara"><Bike className="w-4 h-4 text-slate-400 shrink-0" /><span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{race.distance}</span></div>}
+                    {race.distanceFromHome !== undefined && race.distanceFromHome !== null && (<div className="flex items-center gap-2 bg-blue-50/50 px-2 py-1 rounded-lg border border-blue-100/50" title="Distanza stimata dalla tua provincia"><Navigation className="w-3 h-3 text-blue-600" /><span className="text-[10px] font-black text-blue-700 uppercase">~{race.distanceFromHome} KM</span></div>)}
                     {(() => {
                         const weather = getWeatherData(race.region, race.date);
                         return (
                             <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100" title={`Meteo storico medio: ${weather.temp}°C, Pioggia ${weather.rain}%`}>
-                                {weather.rain > 20 ? <Cloud className="w-3.5 h-3.5 text-slate-400" /> : <Sun className="w-3.5 h-3.5 text-orange-400" />}
-                                <span className="text-[10px] font-black text-slate-500 uppercase">{weather.temp}°C</span>
+                                {weather.rain > 20 ? <Cloud className="w-3.5 h-3.5 text-slate-500" /> : <Sun className="w-3.5 h-3.5 text-orange-600" />}
+                                <span className="text-[10px] font-black text-slate-600 uppercase">{weather.temp}°C</span>
                             </div>
                         );
                     })()}
@@ -476,8 +476,8 @@ const DashboardPage: React.FC = () => {
 
   const getRankColor = useCallback((rank: string) => {
     if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
-    if (rank === 'Silver') return 'text-slate-400 bg-slate-50 border-slate-100';
-    return 'text-orange-400 bg-orange-50 border-orange-100';
+    if (rank === 'Silver') return 'text-slate-500 bg-slate-50 border-slate-200';
+    return 'text-orange-600 bg-orange-50 border-orange-200';
   }, []);
 
   const generateRaceCard = async () => {
@@ -516,12 +516,12 @@ const DashboardPage: React.FC = () => {
         {isAdminView && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
               <div className="bg-white rounded-[2.5rem] p-8 max-w-2xl w-full shadow-2xl animate-in zoom-in-95">
-                  <div className="flex justify-between items-start mb-6"><div className="bg-amber-50 p-3 rounded-2xl"><Shield className="w-6 h-6 text-amber-600" /></div><button onClick={() => setIsAdminView(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-400" /></button></div>
+                  <div className="flex justify-between items-start mb-6"><div className="bg-amber-50 p-3 rounded-2xl"><Shield className="w-6 h-6 text-amber-800" /></div><button onClick={() => setIsAdminView(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-500" /></button></div>
                   <h3 className="text-xl font-black text-slate-800 mb-6 uppercase tracking-tight">Pannello Controllo Atleti</h3>
                   <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                       <table className="w-full text-left">
                           <thead>
-                              <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                              <tr className="text-[10px] font-black text-slate-600 uppercase tracking-widest border-b border-slate-100">
                                   <th className="pb-4">Atleta</th>
                                   <th className="pb-4 text-center">Gare Pianificate</th>
                                   <th className="pb-4 text-right">Ultimo Accesso</th>
@@ -532,7 +532,7 @@ const DashboardPage: React.FC = () => {
                                   <tr key={user.id} className="text-sm font-bold text-slate-600">
                                       <td className="py-4">{user.full_name || 'N/A'}</td>
                                       <td className="py-4 text-center text-blue-600">{user.raceCount}</td>
-                                      <td className="py-4 text-right text-[10px] font-black text-slate-400 uppercase">{new Date(user.updated_at).toLocaleDateString()}</td>
+                                      <td className="py-4 text-right text-[10px] font-black text-slate-500 uppercase">{new Date(user.updated_at).toLocaleDateString()}</td>
                                   </tr>
                               ))}
                           </tbody>
@@ -546,47 +546,47 @@ const DashboardPage: React.FC = () => {
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 sticky top-28">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-500" /> Filtri</h2>
-                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterMonth("Tutti"); setFilterDistance("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-600 hover:underline">Reset</button>
+                <h2 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-600" /> Filtri</h2>
+                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterMonth("Tutti"); setFilterDistance("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-700 hover:underline">Reset</button>
             </div>
             <div className="space-y-5">
-              <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-300" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
-              {homeCity && (<div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between"><span>Distanza massima</span><span className="text-blue-600">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" /></div>)}
-              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (<button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white shadow-md" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>{t}</button>))}</div></div>
+              <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
+              {homeCity && (<div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2 flex justify-between"><span>Distanza massima</span><span className="text-blue-700">{filterRadius >= 1000 ? 'Illimitato' : `${filterRadius} km`}</span></label><input type="range" min="50" max="1000" step="50" value={filterRadius} onChange={(e) => setFilterRadius(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" /></div>)}
+              <div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Sport</label><div className="flex flex-wrap gap-2">{["Tutti", "Triathlon", "Duathlon", "Winter", "Cross"].map((t) => (<button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterType === t) ? "bg-slate-900 text-white shadow-md" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>{t}</button>))}</div></div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Mese</label>
+                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Mese</label>
                   <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100">
                       <option value="Tutti">Tutti</option>
                       <option value="01">Gennaio</option><option value="02">Febbraio</option><option value="03">Marzo</option><option value="04">Aprile</option><option value="05">Maggio</option><option value="06">Giugno</option><option value="07">Luglio</option><option value="08">Agosto</option><option value="09">Settembre</option><option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Distanza</label>
+                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Distanza</label>
                   <select value={filterDistance} onChange={(e) => setFilterDistance(e.target.value)} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100">
                       <option value="Tutti">Tutte</option><option value="Super Sprint">Super Sprint</option><option value="Sprint">Sprint</option><option value="Olimpico">Olimpico</option><option value="Medio">Medio (70.3)</option><option value="Lungo">Lungo (140.6)</option><option value="Cross">Cross</option><option value="Staffetta">Staffetta</option>
                   </select>
                 </div>
               </div>
-              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-600 text-white shadow-md" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>{s}</button>))}</div></div>
-              <div className="grid grid-cols-1 gap-4"><div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">La tua provincia</label><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"><option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
+              <div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">Settori Speciali</label><div className="flex flex-wrap gap-2">{["Paratriathlon", "Kids", "Youth"].map((s) => (<button key={s} onClick={() => { setFilterSpecial(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${(filterSpecial.includes(s)) ? "bg-blue-700 text-white shadow-md" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>{s}</button>))}</div></div>
+              <div className="grid grid-cols-1 gap-4"><div><label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-2">La tua provincia</label><select value={homeCity} onChange={(e) => { setHomeCity(e.target.value); localStorage.setItem("home_city", e.target.value); }} className="w-full p-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold outline-none cursor-pointer hover:bg-slate-100"><option value="">Seleziona...</option>{Object.keys(provinceCoordinates).sort().map(p => <option key={p} value={p}>{p}</option>)}</select></div></div>
             </div>
             <div className="mt-10 pt-10 border-t border-slate-100">
-                <div className="flex items-center justify-between mb-6"><h2 className="text-lg font-black text-slate-800">Le mie gare <span className="text-blue-600">({myPlan.length})</span></h2><div className="flex gap-2">
-                    <button onClick={exportToICS} className="text-blue-600 p-1"><Calendar className="w-4 h-4" /></button>
-                    <button onClick={exportToCSV} className="text-emerald-600 p-1"><Download className="w-4 h-4" /></button>
-                    <span title="Race Card stagionale" className="cursor-pointer"><Camera className="w-4 h-4 text-slate-400 hover:text-blue-600" onClick={generateRaceCard} /></span>
+                <div className="flex items-center justify-between mb-6"><h2 className="text-lg font-black text-slate-800">Le mie gare <span className="text-blue-700">({myPlan.length})</span></h2><div className="flex gap-2">
+                    <button onClick={exportToICS} className="text-blue-700 p-1"><Calendar className="w-4 h-4" /></button>
+                    <button onClick={exportToCSV} className="text-emerald-700 p-1"><Download className="w-4 h-4" /></button>
+                    <span title="Race Card stagionale" className="cursor-pointer"><Camera className="w-4 h-4 text-slate-500 hover:text-blue-700" onClick={generateRaceCard} /></span>
                 </div></div>
                 <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {myPlan.map((race) => (
                     <div key={race.id} className={`p-4 rounded-2xl border transition-all ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 bg-white shadow-sm'}`}>
                         <div className="flex justify-between items-start">
-                            <div className="space-y-1"><div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-500">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div><h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4></div>
-                            <button onClick={() => toggleRace(race.id)} className="text-slate-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                            <div className="space-y-1"><div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-700">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div><h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4></div>
+                            <button onClick={() => toggleRace(race.id)} className="text-slate-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
                         </div>
                     </div>))}
                 </div>
-                {myPlan.length > 0 && (<div className="mt-6 pt-6 border-t border-slate-100 space-y-2 text-xs font-bold"><div className="flex justify-between text-slate-500"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div><div className="flex justify-between text-emerald-600 text-sm font-black"><span>TOTALE STIMATO</span><span>€ {budgetTotals.total.toFixed(2)}</span></div></div>)}
+                {myPlan.length > 0 && (<div className="mt-6 pt-6 border-t border-slate-100 space-y-2 text-xs font-bold"><div className="flex justify-between text-slate-600"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div><div className="flex justify-between text-emerald-700 text-sm font-black"><span>TOTALE STIMATO</span><span>€ {budgetTotals.total.toFixed(2)}</span></div></div>)}
             </div>
           </div>
         </div>
@@ -607,15 +607,15 @@ const DashboardPage: React.FC = () => {
                         <div className="flex items-center gap-3 mb-8"><div className="bg-blue-500 p-2 rounded-xl"><Activity className="w-5 h-5 text-white" /></div><h2 className="text-xl font-black uppercase tracking-tight">Analisi Stagione</h2></div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
-                                <span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Focus Target</span>
-                                <div className="flex items-end gap-3"><div className="text-3xl font-black text-yellow-400">{seasonStats.priorities.A}</div><div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Obiettivi A</div></div>
+                                <span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Focus Target</span>
+                                <div className="flex items-end gap-3"><div className="text-3xl font-black text-yellow-400">{seasonStats.priorities.A}</div><div className="text-[10px] font-bold text-slate-300 mb-1.5 uppercase">Obiettivi A</div></div>
                                 <div className="mt-4 flex gap-1 h-1.5"><div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / myPlan.length) * 100}%` }}></div><div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / myPlan.length) * 100}%` }}></div><div className="bg-slate-600 rounded-full flex-1"></div></div>
                             </div>
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-300">{type}</span><span className="text-xs font-black">{count}</span></div>))}</div></div>
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-400 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-400 uppercase">Km Stimati</div></div></div></div>
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-200">{type}</span><span className="text-xs font-black">{count}</span></div>))}</div></div>
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-300 uppercase">Km Stimati</div></div></div></div>
                         </div>
                         <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div className="flex items-center gap-4"><div className="bg-red-600/20 p-2 rounded-lg"><Trophy className="w-5 h-5 text-red-500" /></div><p className="text-xs font-bold text-slate-300">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p></div>
+                            <div className="flex items-center gap-4"><div className="bg-red-600/20 p-2 rounded-lg"><Trophy className="w-5 h-5 text-red-500" /></div><p className="text-xs font-bold text-slate-200">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p></div>
                             <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">Diventa un MTT</a>
                         </div>
                     </div>
@@ -623,10 +623,10 @@ const DashboardPage: React.FC = () => {
             )}
 
             <div className="flex items-center justify-between px-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{filteredRaces.length} gare trovate</span>
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{filteredRaces.length} gare trovate</span>
                 <div className="flex bg-slate-100 p-1 rounded-xl">
-                    <button onClick={() => handleViewChange('list')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}>Lista</button>
-                    <button onClick={() => handleViewChange('map')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'map' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}>Mappa</button>
+                    <button onClick={() => handleViewChange('list')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'list' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Lista</button>
+                    <button onClick={() => handleViewChange('map')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'map' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Mappa</button>
                 </div>
             </div>
 
