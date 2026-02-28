@@ -745,7 +745,33 @@ const DashboardPage: React.FC = () => {
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         {filteredRaces.map(race => race.mapCoords && (
                             <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}>
-                                <Popup><div className="p-2 min-w-[150px]"><h3 className="font-bold text-sm">{race.title}</h3><button onClick={() => toggleRace(race.id)} className="w-full mt-2 py-1 bg-blue-600 text-white rounded text-[10px] font-black uppercase">{selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}</button></div></Popup>
+                                <Popup>
+                                    <div className="p-3 min-w-[200px] flex flex-col gap-2">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{race.date}</span>
+                                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-lg ${race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>{race.type}</span>
+                                        </div>
+                                        <h3 className="font-black text-slate-800 text-sm leading-tight mt-1">{race.title}</h3>
+                                        <div className="flex flex-col gap-1 mt-1">
+                                            <div className="flex items-center gap-1.5 text-slate-500">
+                                                <MapPin className="w-3 h-3" />
+                                                <span className="text-[10px] font-bold">{race.location}</span>
+                                            </div>
+                                            {race.distance && (
+                                                <div className="flex items-center gap-1.5 text-slate-400">
+                                                    <Bike className="w-3 h-3" />
+                                                    <span className="text-[9px] font-black uppercase tracking-widest">{race.distance}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <button 
+                                            onClick={() => toggleRace(race.id)} 
+                                            className={`w-full mt-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${selectedRaces.includes(race.id) ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-blue-600 text-white shadow-lg'}`}
+                                        >
+                                            {selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}
+                                        </button>
+                                    </div>
+                                </Popup>
                             </Marker>
                         ))}
                     </MapContainer>
