@@ -5,6 +5,7 @@ import { User, Calendar, Users } from 'lucide-react';
 interface TeamRace {
   race_id: string;
   race_title: string;
+  race_date: string;
   participants: string[];
 }
 
@@ -62,8 +63,13 @@ const TeamCalendarPage: React.FC = () => {
             </h2>
             <div className="space-y-6">
               {month.races.map((race) => (
-                <div key={race.race_id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                  <h3 className="font-bold text-slate-700 mb-3">{race.race_title}</h3>
+                <div key={race.race_id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-100 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="font-black text-slate-800 text-lg leading-tight">{race.race_title}</h3>
+                    <div className="bg-blue-50 px-3 py-1 rounded-full border border-blue-100 shrink-0">
+                      <span className="text-[11px] font-black text-blue-600">{race.race_date}</span>
+                    </div>
+                  </div>
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-slate-400" />
                     <div className="flex flex-wrap gap-2">
