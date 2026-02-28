@@ -76,7 +76,7 @@ const RaceCard = React.memo(({
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
                             <p className="text-xs font-bold text-slate-600 leading-snug">{race.location}</p>
-                            <button onClick={openInMaps} className="p-1 hover:bg-slate-100 rounded text-blue-600 transition-colors" title="Apri navigatore Google Maps">
+                            <button onClick={openInMaps} className="p-1 hover:bg-slate-100 rounded text-blue-600 transition-colors" title="Apri navigatore Google Maps" aria-label="Apri posizione in Google Maps">
                                 <Navigation className="w-3 h-3 rotate-45" />
                             </button>
                         </div>
@@ -129,9 +129,15 @@ const RaceCard = React.memo(({
                     
                     {isSelected && (
                         <div className="flex items-center gap-2">
-                            <button onClick={(e) => { e.stopPropagation(); onNote(race); }} className={`p-2 rounded-lg transition-all ${note ? 'text-blue-600 bg-blue-50' : 'text-slate-400 hover:text-blue-600 hover:bg-slate-50'}`} title="Diario di Gara (Note personali)"><Edit3 className="w-4 h-4" /></button>
-                            <button onClick={(e) => { e.stopPropagation(); onSingleCard(race); }} className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-all" title="Instagram Post"><Image className="w-4 h-4" /></button>
-                            <button onClick={(e) => { e.stopPropagation(); onChecklist(race); }} className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-slate-50 transition-all" title="Checklist Attrezzatura"><ShoppingBag className="w-4 h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); onNote(race); }} className={`p-2 rounded-lg transition-all ${note ? 'text-blue-600 bg-blue-50' : 'text-slate-400 hover:text-blue-600 hover:bg-slate-50'}`} title="Diario di Gara (Note personali)" aria-label="Modifica diario di gara">
+                                <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); onSingleCard(race); }} className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-all" title="Instagram Post" aria-label="Genera card Instagram">
+                                <Image className="w-4 h-4" />
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); onChecklist(race); }} className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-slate-50 transition-all" title="Checklist Attrezzatura" aria-label="Mostra checklist attrezzatura">
+                                <ShoppingBag className="w-4 h-4" />
+                            </button>
                         </div>
                     )}
                 </div>
@@ -516,7 +522,7 @@ const DashboardPage: React.FC = () => {
         {isAdminView && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
               <div className="bg-white rounded-[2.5rem] p-8 max-w-2xl w-full shadow-2xl animate-in zoom-in-95">
-                  <div className="flex justify-between items-start mb-6"><div className="bg-amber-50 p-3 rounded-2xl"><Shield className="w-6 h-6 text-amber-800" /></div><button onClick={() => setIsAdminView(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X className="w-5 h-5 text-slate-500" /></button></div>
+                  <div className="flex justify-between items-start mb-6"><div className="bg-amber-50 p-3 rounded-2xl"><Shield className="w-6 h-6 text-amber-800" /></div><button onClick={() => setIsAdminView(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" aria-label="Chiudi pannello admin"><X className="w-5 h-5 text-slate-500" /></button></div>
                   <h3 className="text-xl font-black text-slate-800 mb-6 uppercase tracking-tight">Pannello Controllo Atleti</h3>
                   <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                       <table className="w-full text-left">
@@ -547,7 +553,7 @@ const DashboardPage: React.FC = () => {
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 sticky top-28">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><Filter className="w-4 h-4 text-blue-600" /> Filtri</h2>
-                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterMonth("Tutti"); setFilterDistance("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-700 hover:underline">Reset</button>
+                <button onClick={() => { setSearchTerm(""); setFilterType("Tutti"); setFilterMonth("Tutti"); setFilterDistance("Tutti"); setFilterRegion("Tutte"); setFilterSpecial([]); setFilterRadius(1000); }} className="text-[10px] font-bold text-blue-700 hover:underline" aria-label="Resetta tutti i filtri">Reset</button>
             </div>
             <div className="space-y-5">
               <div className="relative group"><Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" /><input type="text" placeholder="Cerca gara..." className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none text-sm font-medium" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
@@ -573,16 +579,16 @@ const DashboardPage: React.FC = () => {
             </div>
             <div className="mt-10 pt-10 border-t border-slate-100">
                 <div className="flex items-center justify-between mb-6"><h2 className="text-lg font-black text-slate-800">Le mie gare <span className="text-blue-700">({myPlan.length})</span></h2><div className="flex gap-2">
-                    <button onClick={exportToICS} className="text-blue-700 p-1"><Calendar className="w-4 h-4" /></button>
-                    <button onClick={exportToCSV} className="text-emerald-700 p-1"><Download className="w-4 h-4" /></button>
-                    <span title="Race Card stagionale" className="cursor-pointer"><Camera className="w-4 h-4 text-slate-500 hover:text-blue-700" onClick={generateRaceCard} /></span>
+                    <button onClick={exportToICS} className="text-blue-700 p-1" aria-label="Esporta in Calendario (ICS)"><Calendar className="w-4 h-4" /></button>
+                    <button onClick={exportToCSV} className="text-emerald-700 p-1" aria-label="Esporta in Excel (CSV)"><Download className="w-4 h-4" /></button>
+                    <span title="Race Card stagionale" className="cursor-pointer"><Camera className="w-4 h-4 text-slate-500 hover:text-blue-700" onClick={generateRaceCard} aria-label="Genera Race Card stagionale" /></span>
                 </div></div>
                 <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {myPlan.map((race) => (
                     <div key={race.id} className={`p-4 rounded-2xl border transition-all ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 bg-white shadow-sm'}`}>
                         <div className="flex justify-between items-start">
                             <div className="space-y-1"><div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-700">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div><h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4></div>
-                            <button onClick={() => toggleRace(race.id)} className="text-slate-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+                            <button onClick={() => toggleRace(race.id)} className="text-slate-500 hover:text-red-600" aria-label={`Rimuovi ${race.title} dal mio piano`}><Trash2 className="w-4 h-4" /></button>
                         </div>
                     </div>))}
                 </div>
