@@ -33,6 +33,12 @@ def parse_gare_file(file_path):
             # Rimuove date (DD-MM-YYYY) e prefissi
             city = re.sub(r'\d{2}-\d{2}-2026', '', city)
             city = city.replace('dal', '').replace('al', '').strip()
+            
+            # AUTO-CORREZIONE ERRORI SCRAPING
+            if city == "Sò (Brescia)": city = "Salò (Brescia)"
+            if "Cabria" in city: city = "Reggio Calabria (Reggio Calabria)"
+            if "Pazzolo" in city and "Brescia" in city: city = "Palazzolo sull'Oglio (Brescia)"
+            
             if not city or len(city) < 2: city = "Località n.d."
 
             # Logica sport
