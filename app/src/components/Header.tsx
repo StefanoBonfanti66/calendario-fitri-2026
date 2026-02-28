@@ -20,7 +20,7 @@ const Header = ({ session }: { session: any }) => {
             <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform" title="Sito Ufficiale MTT">
-                        <img src="/Logo.png" alt="MTT Logo" className="h-12 w-auto object-contain" />
+                        <img src="/Logo.png" alt="MTT Logo" className="h-12 w-[140px] object-contain" />
                     </a>
                     <div className="flex flex-col">
                         <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>

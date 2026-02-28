@@ -105,13 +105,13 @@ const RaceCard = React.memo(({
             )}
 
             {participants.length > 0 && (
-                <div className="mb-4 flex flex-col gap-1.5">
-                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                <div className="mb-4 flex flex-col gap-1.5 min-h-[40px]">
+                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
                         <User className="w-3 h-3 text-red-500" /> Compagni MTT ({participants.length})
                     </span>
                     <div className="flex flex-wrap gap-1">
                         {participants.map((name, i) => (
-                            <span key={i} className="text-[9px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
+                            <span key={i} className="text-[9px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md border border-slate-200">
                                 {name}
                             </span>
                         ))}
@@ -655,19 +655,19 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-6 min-h-[800px]">
             {nextObjective && timeLeft && (
-                <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative min-h-[160px]">
                     <div className="absolute right-0 top-0 p-4 opacity-10 rotate-12">
                         <img src="/Logo.png" alt="" className="w-48 h-auto grayscale brightness-200" />
                     </div>
                     <div className="relative z-10"><span className="text-[10px] font-black uppercase tracking-widest opacity-60 bg-white/20 px-2 py-1 rounded">Prossimo Obiettivo</span><h2 className="text-2xl font-black uppercase mt-2">{nextObjective.title}</h2></div>
-                    <div className="flex gap-4 text-center relative z-10"><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div><div className="text-2xl mt-3 opacity-30">:</div><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div></div>
+                    <div className="flex gap-4 text-center relative z-10"><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black tabular-nums">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div><div className="text-2xl mt-3 opacity-30">:</div><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black tabular-nums">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div></div>
                 </div>
             )}
 
             {myPlan.length > 0 && (
-                <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group">
+                <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group min-h-[300px]">
                     <div className="absolute top-0 right-0 p-8 opacity-5">
                         <img src="/Logo.png" alt="" className="w-64 h-auto grayscale brightness-200" />
                     </div>
