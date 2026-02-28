@@ -224,6 +224,19 @@ const DashboardPage: React.FC = () => {
   const [allPlans, setAllPlans] = useState<any[]>([]);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
 
+  const participantsMap = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    const profileMap: Record<string, string> = {};
+    allProfiles.forEach(p => { profileMap[p.id] = p.full_name; });
+    
+    allPlans.forEach(p => {
+      if (!map[p.race_id]) map[p.race_id] = [];
+      const name = profileMap[p.user_id];
+      if (name) map[p.race_id].push(name);
+    });
+    return map;
+  }, [allPlans, allProfiles]);
+
   const ADMIN_EMAIL = "bonfantistefano4@gmail.com";
 
   // Auth Listener
@@ -705,10 +718,24 @@ const DashboardPage: React.FC = () => {
 
             {viewMode === 'list' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {filteredRaces.map((race) => {
-                        const participants = allPlans.filter(p => p.race_id === race.id).map(p => allProfiles.find(profile => profile.id === p.user_id)?.full_name).filter(Boolean) as string[];
-                        return (<RaceCard key={race.id} race={race} isSelected={selectedRaces.includes(race.id)} priority={racePriorities[race.id] || 'C'} cost={raceCosts[race.id] || 0} note={raceNotes[race.id] || ""} participants={participants} onToggle={toggleRace} onPriority={setPriority} onCost={updateCost} onSingleCard={generateSingleRaceCard} onChecklist={setActiveChecklistRace} onNote={setActiveNoteRace} getRankColor={getRankColor} />);
-                    })}
+                    {filteredRaces.map((race) => (
+                        <RaceCard 
+                            key={race.id} 
+                            race={race} 
+                            isSelected={selectedRaces.includes(race.id)} 
+                            priority={racePriorities[race.id] || 'C'} 
+                            cost={raceCosts[race.id] || 0} 
+                            note={raceNotes[race.id] || ""} 
+                            participants={participantsMap[race.id] || []}
+                            onToggle={toggleRace} 
+                            onPriority={setPriority} 
+                            onCost={updateCost} 
+                            onSingleCard={generateSingleRaceCard} 
+                            onChecklist={setActiveChecklistRace} 
+                            onNote={setActiveNoteRace} 
+                            getRankColor={getRankColor} 
+                        />
+                    ))}
                 </div>
             ) : (
                 <div className="h-[600px] rounded-[3rem] overflow-hidden border-4 border-white shadow-xl">
