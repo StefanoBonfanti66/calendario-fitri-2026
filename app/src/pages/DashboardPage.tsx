@@ -376,13 +376,22 @@ const DashboardPage: React.FC = () => {
           if (t === 'Cross') color = '#10b981';
           if (s) color = '#ef4444';
           if (p === 'A') color = '#eab308';
-          cache[`${t}-${p}-${s}`] = L.divIcon({ className: 'custom-div-icon', html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 8px; font-weight: 900;">${p === 'A' ? 'A' : ''}</div>`, iconSize: [14, 14], iconAnchor: [7, 7] });
+          cache[`${t}-${p}-${s}`] = L.divIcon({ 
+            className: 'custom-div-icon', 
+            html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 8px; font-weight: 900;">${p === 'A' ? 'A' : ''}</div>`, 
+            iconSize: [14, 14], 
+            iconAnchor: [7, 7]
+          });
         });
       });
     });
-    return (type: string, isSelected: boolean, priority?: string) => {
+    return (type: string, isSelected: boolean, priority?: string, title?: string) => {
         const key = `${type.includes('Winter') ? 'Winter' : type}-${priority === 'A' ? 'A' : 'undefined'}-${isSelected}`;
-        return cache[key] || cache['Triathlon-undefined-false'];
+        const icon = cache[key] || cache['Triathlon-undefined-false'];
+        if (title) {
+            (icon.options as any).title = title;
+        }
+        return icon;
     };
   }, []);
 
@@ -780,7 +789,7 @@ const DashboardPage: React.FC = () => {
                             keepBuffer={8}
                         />
                         {filteredRaces.map(race => race.mapCoords && (
-                            <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}>
+                            <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id], race.title)} alt={`Gara: ${race.title}`}>
                                 <Popup>
                                     <div className="p-3 min-w-[200px] flex flex-col gap-2">
                                         <div className="flex justify-between items-start gap-4">
