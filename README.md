@@ -25,5 +25,11 @@ L'architettura è stata evoluta in una **Multi-Page Application (MPA)** per ospi
 - **Automazione**: Python + Playwright + Supabase Python SDK.
 - **CI/CD**: GitHub Actions + Vercel.
 
+### ⚡ Performance & Accessibilità (UX+)
+- **Ottimizzazione INP**: Liste gare fluide grazie alla pre-indicizzazione dei partecipanti.
+- **Zero CLS**: Interfaccia stabile con prenotazione degli spazi per elementi dinamici.
+- **Accessibilità WCAG 2 AA**: Contrasto colori ottimizzato e supporto completo ARIA per lettori di schermo.
+- **Branding Ufficiale**: Integrazione Logo MTT in tutta la piattaforma.
+
 ---
 *Sviluppato da **Stefano Bonfanti** per www.milanotriathlonteam.com • Stagione 2026*

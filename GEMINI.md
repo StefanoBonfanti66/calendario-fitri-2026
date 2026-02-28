@@ -2,11 +2,13 @@
 
 ## 🚀 Overview
 Project for managing the 2026 FITRI race calendar with multi-user support via Supabase.
+**Author**: Stefano Bonfanti
 
 ## 🛠 Tech Stack
-- **Frontend**: React 19 + TypeScript + Vite
+- **Frontend**: React 19 + TypeScript + Vite + React Router 7
 - **Backend/Auth**: Supabase
-- **Data Engine**: Python (Playwright for scraping)
+- **Data Engine**: Python (Playwright for scraping) + `upload_data.py` for DB sync.
+- **Styling**: Tailwind CSS v3 (installed locally).
 
 ## 🗄 Supabase Schema (PostgreSQL)
 
@@ -17,7 +19,7 @@ Project for managing the 2026 FITRI race calendar with multi-user support via Su
 - `priority`: text (A, B, C)
 - `cost`: numeric
 - `note`: text
-- **Security**: RLS enabled. Users can only CRUD their own rows.
+- **Security**: RLS enabled. Users can only CRUD their own rows. Everyone can see participants names.
 
 ### Table: `public.profiles`
 - `id`: uuid (PK, FK auth.users)
@@ -28,27 +30,28 @@ Project for managing the 2026 FITRI race calendar with multi-user support via Su
 - `id`: text (PK)
 - `date`: text
 - `title`: text
-- `event`: text
 - `location`: text
 - `region`: text
 - `type`: text
 - `distance`: text
-- `rank`: text
-- `category`: text
-- `link`: text
 - **Security**: RLS enabled. Read-only for authenticated users.
 
 ## ⚙️ SQL Functions (RPC)
 
 ### `get_team_calendar()`
-Returns a grouped JSON of races by month, including participants names for each race. Used in the Team page.
+Returns a grouped JSON of races by month, including participants names and race dates. Used in the Team page.
 
-## 🛡 Business Rules
-- **Admin**: `bonfantistefano4@gmail.com` has access to the Admin Panel.
-- **Recovery**: Password reset is handled via `supabase.auth.resetPasswordForEmail`.
-- **Sync**: Always sync UI state with Supabase tables. Avoid `localStorage` for user-specific data.
+## ⚡ Performance & UX Rules
+- **INP Fix**: `participantsMap` is memoized to avoid O(N²) calculations in race lists.
+- **CLS Fix**: Dynamic blocks (Analysis, Next Objective) have constant `min-h` to prevent layout shifts. Map animations are disabled for stability.
+- **Search**: Optimized with `useDeferredValue` for instant input response.
+
+## 🛡 Security & Maintenance
+- **GitHub Secrets**: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `VERCEL_DEPLOY_HOOK`.
+- **Branch Protection**: `main` branch is protected. Admin bypass allowed for Stefano Bonfanti.
+- **Automation**: GitHub Action runs every Monday at 00:00 to sync races.
 
 ## 🤖 AI Instructions
 - When modifying the database, always provide the SQL script for the user to run in Supabase SQL Editor.
-- Always check `app/src/supabaseClient.ts` for connection logic.
-- Ensure `VITE_` prefix is used for environment variables in the Vite app.
+- Ensure `VITE_` prefix is used for environment variables.
+- Maintain Stefano Bonfanti's credits in file headers.

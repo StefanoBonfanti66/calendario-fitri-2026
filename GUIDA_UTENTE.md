@@ -17,7 +17,8 @@ Questa sezione è dedicata alla forza del gruppo:
 
 ## 3. Dashboard Personale
 - **Filtri**: Oltre a Sport e Provincia, ora puoi filtrare per **Mese** e **Distanza** (Sprint, Olimpico, Medio, ecc.).
-- **Distanza Massima**: Regola il raggio di ricerca per trovare le gare più vicine a casa.
+- **Ricerca Ultra-Veloce**: La barra di ricerca è istantanea, permettendoti di trovare la tua gara preferita senza rallentamenti.
+- **Mappa Stabile**: La visualizzazione su mappa è stata ottimizzata per essere fluida e leggibile anche da mobile.
 - **Note & Diario**: Ogni gara ha un'icona 📝 per segnare i tuoi obiettivi crono o strategie.
 
 ## 4. Aggiornamenti Automatici
