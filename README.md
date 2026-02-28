@@ -26,4 +26,4 @@ L'architettura è stata evoluta in una **Multi-Page Application (MPA)** per ospi
 - **CI/CD**: GitHub Actions + Vercel.
 
 ---
-*www.milanotriathlonteam.com • Stagione 2026*
+*Sviluppato da **Stefano Bonfanti** per www.milanotriathlonteam.com • Stagione 2026*

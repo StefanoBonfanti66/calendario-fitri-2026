@@ -1,3 +1,7 @@
+/**
+ * MTT Season Planner 2026 - Team Calendar
+ * Author: Stefano Bonfanti
+ */
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { User, Calendar, Users } from 'lucide-react';

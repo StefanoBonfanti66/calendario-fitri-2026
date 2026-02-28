@@ -1,3 +1,7 @@
+/**
+ * MTT Season Planner 2026 - Main Router
+ * Author: Stefano Bonfanti
+ */
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';

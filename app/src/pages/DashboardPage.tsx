@@ -1,3 +1,8 @@
+/**
+ * MTT Season Planner 2026
+ * Author: Stefano Bonfanti
+ * Project: FITRI Race Calendar Management for MTT Milano Triathlon Team
+ */
 import React, { useState, useEffect, useMemo, useTransition, useCallback, useDeferredValue } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
