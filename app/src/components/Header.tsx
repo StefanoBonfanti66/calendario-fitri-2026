@@ -19,7 +19,9 @@ const Header = ({ session }: { session: any }) => {
         <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30">
             <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-2xl text-white shadow-lg rotate-3 hover:scale-110 transition-transform" title="Sito Ufficiale MTT"><Trophy className="w-6 h-6" /></a>
+                    <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform" title="Sito Ufficiale MTT">
+                        <img src="/Logo.png" alt="MTT Logo" className="h-12 w-auto object-contain" />
+                    </a>
                     <div className="flex flex-col">
                         <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
                         <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest mt-1">

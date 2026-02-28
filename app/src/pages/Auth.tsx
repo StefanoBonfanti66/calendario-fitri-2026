@@ -71,8 +71,8 @@ const Auth: React.FC = () => {
         <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
             <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 max-w-md w-full">
                 <div className="flex flex-col items-center mb-8">
-                    <div className="bg-red-500 p-4 rounded-3xl text-white shadow-lg mb-4">
-                        <Trophy className="w-8 h-8" />
+                    <div className="mb-4">
+                        <img src="/Logo.png" alt="MTT Logo" className="h-20 w-auto object-contain" />
                     </div>
                     <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">MTT Season Planner</h1>
                     <p className="text-slate-600 font-bold text-xs uppercase tracking-widest mt-2">Area Atleti</p>

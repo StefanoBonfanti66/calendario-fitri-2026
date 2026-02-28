@@ -594,7 +594,9 @@ const DashboardPage: React.FC = () => {
         <div className="lg:col-span-8 space-y-6">
             {nextObjective && timeLeft && (
                 <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
-                    <div className="absolute right-0 top-0 p-4 opacity-10 rotate-12"><Trophy className="w-32 h-32" /></div>
+                    <div className="absolute right-0 top-0 p-4 opacity-10 rotate-12">
+                        <img src="/Logo.png" alt="" className="w-48 h-auto grayscale brightness-200" />
+                    </div>
                     <div className="relative z-10"><span className="text-[10px] font-black uppercase tracking-widest opacity-60 bg-white/20 px-2 py-1 rounded">Prossimo Obiettivo</span><h2 className="text-2xl font-black uppercase mt-2">{nextObjective.title}</h2></div>
                     <div className="flex gap-4 text-center relative z-10"><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div><div className="text-2xl mt-3 opacity-30">:</div><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div></div>
                 </div>
@@ -602,7 +604,9 @@ const DashboardPage: React.FC = () => {
 
             {myPlan.length > 0 && (
                 <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group">
-                    <div className="absolute top-0 right-0 p-8 opacity-5"><Trophy className="w-40 h-40" /></div>
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                        <img src="/Logo.png" alt="" className="w-64 h-auto grayscale brightness-200" />
+                    </div>
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-8"><div className="bg-blue-500 p-2 rounded-xl"><Activity className="w-5 h-5 text-white" /></div><h2 className="text-xl font-black uppercase tracking-tight">Analisi Stagione</h2></div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -615,7 +619,12 @@ const DashboardPage: React.FC = () => {
                             <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-300 uppercase">Km Stimati</div></div></div></div>
                         </div>
                         <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div className="flex items-center gap-4"><div className="bg-red-600/20 p-2 rounded-lg"><Trophy className="w-5 h-5 text-red-500" /></div><p className="text-xs font-bold text-slate-200">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p></div>
+                            <div className="flex items-center gap-4">
+                                <div className="bg-red-600/20 p-2 rounded-lg">
+                                    <img src="/Logo.png" alt="" className="w-6 h-6 object-contain" />
+                                </div>
+                                <p className="text-xs font-bold text-slate-200">Vuoi gareggiare con i colori del <span className="text-red-500">MTT</span> nel 2026?</p>
+                            </div>
                             <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">Diventa un MTT</a>
                         </div>
                     </div>
