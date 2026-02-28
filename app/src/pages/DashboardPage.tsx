@@ -635,7 +635,7 @@ const DashboardPage: React.FC = () => {
                 {myPlan.length > 0 && (<div className="mt-6 pt-6 border-t border-slate-100 space-y-2 text-xs font-bold"><div className="flex justify-between text-slate-600"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div><div className="flex justify-between text-emerald-700 text-sm font-black"><span>TOTALE STIMATO</span><span>€ {budgetTotals.total.toFixed(2)}</span></div></div>)}
             </div>
 
-            {/* BOX SUPPORTO / DONAZIONI */}
+            {/* BOX SUPPORTO */}
             <div className="bg-gradient-to-br from-rose-50 to-white p-6 rounded-[2rem] border border-rose-100 shadow-sm">
                 <div className="flex items-center gap-3 mb-3">
                     <div className="bg-rose-500 p-2 rounded-xl text-white shadow-sm">

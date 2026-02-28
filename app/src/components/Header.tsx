@@ -51,7 +51,7 @@ const Header = memo(({ session, onOpenAdmin }: { session: any, onOpenAdmin: () =
                         rel="noopener noreferrer" 
                         className="flex items-center gap-2 px-4 py-2 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-sm font-bold hover:bg-rose-100 transition-all" 
                         title="Supporta il progetto"
-                        aria-label="Fai una donazione"
+                        aria-label="Supporta il progetto"
                     >
                         <Heart className="w-4 h-4 fill-current" />
                         <span className="hidden sm:inline">Supporta</span>
