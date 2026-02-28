@@ -826,15 +826,15 @@ const DashboardPage: React.FC = () => {
 
         {/* MODALE NOTE ATLETA */}
         {activeNoteRace && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in" role="dialog" aria-modal="true" aria-labelledby="note-modal-title">
                 <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
-                    <div className="flex justify-between items-start mb-6"><div className="bg-blue-50 p-3 rounded-2xl"><Edit3 className="w-6 h-6 text-blue-600" /></div><button onClick={() => setActiveNoteRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" aria-label="Chiudi diario di gara"><X className="w-5 h-5 text-slate-400" /></button></div>
-                    <h3 className="text-xl font-black text-slate-800 mb-1 uppercase tracking-tight">Diario di Gara</h3>
-                    <label htmlFor="race-notes-textarea" className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 block">{activeNoteRace.title}</label>
+                    <div className="flex justify-between items-start mb-6"><div className="bg-blue-50 p-3 rounded-2xl"><Edit3 className="w-6 h-6 text-blue-600" /></div><button onClick={() => setActiveNoteRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" aria-label="Chiudi diario di gara"><X className="w-5 h-5 text-slate-500" /></button></div>
+                    <h3 id="note-modal-title" className="text-xl font-black text-slate-800 mb-1 uppercase tracking-tight">Diario di Gara</h3>
+                    <label htmlFor="race-notes-textarea" className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6 block">{activeNoteRace.title}</label>
                     <textarea 
                         id="race-notes-textarea"
                         autoFocus 
-                        className="w-full h-40 p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700 placeholder:text-slate-300" 
+                        className="w-full h-40 p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-bold text-slate-700 placeholder:text-slate-500" 
                         placeholder="Esempio: Obiettivo stare sotto le 2h15, gel ogni 45 min..." 
                         value={raceNotes[activeNoteRace.id] || ""} 
                         onChange={(e) => updateNote(activeNoteRace.id, e.target.value)} 
@@ -845,10 +845,10 @@ const DashboardPage: React.FC = () => {
         )}
 
         {activeChecklistRace && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in" role="dialog" aria-modal="true" aria-labelledby="checklist-modal-title">
                 <div className="bg-white rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95">
-                    <div className="flex justify-between items-start mb-6"><div className="bg-emerald-50 p-3 rounded-2xl"><ShoppingBag className="w-6 h-6 text-emerald-600" /></div><button onClick={() => setActiveChecklistRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" aria-label="Chiudi checklist"><X className="w-5 h-5 text-slate-400" /></button></div>
-                    <h3 className="text-xl font-black text-slate-800 mb-6 uppercase tracking-tight">Checklist {activeChecklistRace.type}</h3>
+                    <div className="flex justify-between items-start mb-6"><div className="bg-emerald-50 p-3 rounded-2xl"><ShoppingBag className="w-6 h-6 text-emerald-600" /></div><button onClick={() => setActiveChecklistRace(null)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" aria-label="Chiudi checklist"><X className="w-5 h-5 text-slate-500" /></button></div>
+                    <h3 id="checklist-modal-title" className="text-xl font-black text-slate-800 mb-6 uppercase tracking-tight">Checklist {activeChecklistRace.type}</h3>
                     <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">{getEquipment(activeChecklistRace.type).map((item, i) => (<div key={i} className="p-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3 border border-slate-100 hover:bg-white transition-all"><CheckCircle className="w-4 h-4 text-emerald-500" />{item}</div>))}</div>
                     <button onClick={() => setActiveChecklistRace(null)} className="w-full mt-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all">Chiudi</button>
                 </div>

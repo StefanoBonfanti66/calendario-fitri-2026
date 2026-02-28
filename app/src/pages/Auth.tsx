@@ -60,7 +60,7 @@ const Auth: React.FC = () => {
     };
 
     if (loading) {
-        return <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center font-black uppercase tracking-widest text-slate-400">Caricamento...</div>;
+        return <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center font-black uppercase tracking-widest text-slate-600">Caricamento...</div>;
     }
 
     if (session) {
