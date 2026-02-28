@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useTransition, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useTransition, useCallback, useDeferredValue } from "react";
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
   Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera, Image, ShoppingBag, Cloud, Sun, Edit3, MapPin as MapPinIcon,
@@ -198,6 +198,7 @@ const DashboardPage: React.FC = () => {
   const [racesState, setRacesState] = useState<Race[]>([]);
   const [selectedRaces, setSelectedRaces] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const deferredSearchTerm = useDeferredValue(searchTerm);
   const [filterType, setFilterType] = useState("Tutti");
   const [filterMonth, setFilterMonth] = useState("Tutti");
   const [filterDistance, setFilterDistance] = useState("Tutti");
@@ -458,7 +459,7 @@ const DashboardPage: React.FC = () => {
         const [rd, rm, ry] = race.date.split("-");
         const raceDate = new Date(parseInt(ry), parseInt(rm)-1, parseInt(rd));
         if (raceDate < now) return false;
-        const matchesSearch = (race.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || (race.location?.toLowerCase() || "").includes(searchTerm.toLowerCase());
+        const matchesSearch = (race.title?.toLowerCase() || "").includes(deferredSearchTerm.toLowerCase()) || (race.location?.toLowerCase() || "").includes(deferredSearchTerm.toLowerCase());
         let matchesType = filterType === "Tutti";
         if (filterType === "Triathlon") matchesType = race.type === "Triathlon";
         else if (filterType === "Duathlon") matchesType = race.type === "Duathlon";
@@ -471,7 +472,7 @@ const DashboardPage: React.FC = () => {
         const matchesRadius = filterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= filterRadius;
         return matchesSearch && matchesType && matchesMonth && matchesDistance && matchesRegion && matchesSpecial && matchesRadius;
     }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
-  }, [races, searchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, filterRadius]);
+  }, [races, deferredSearchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, filterRadius]);
 
   const getRankColor = useCallback((rank: string) => {
     if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
