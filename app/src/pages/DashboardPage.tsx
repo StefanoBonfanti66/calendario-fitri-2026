@@ -658,7 +658,7 @@ const DashboardPage: React.FC = () => {
                     {myPlan.map((race) => (
                     <div key={race.id} className={`p-4 rounded-2xl border transition-all ${racePriorities[race.id] === 'A' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-100 bg-white shadow-sm'}`}>
                         <div className="flex justify-between items-start">
-                            <div className="space-y-1"><div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-700">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div><h4 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h4></div>
+                            <div className="space-y-1"><div className="flex items-center gap-2"><span className="text-[10px] font-black text-blue-700">{race.date}</span>{racePriorities[race.id] && <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-white">{racePriorities[race.id]}</span>}</div><h3 className="text-xs font-bold text-slate-700 leading-tight">{race.title}</h3></div>
                             <button onClick={() => toggleRace(race.id)} className="text-slate-500 hover:text-red-600" aria-label={`Rimuovi ${race.title} dal mio piano`}><Trash2 className="w-4 h-4" /></button>
                         </div>
                     </div>))}
@@ -743,7 +743,7 @@ const DashboardPage: React.FC = () => {
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         {filteredRaces.map(race => race.mapCoords && (
                             <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id])}>
-                                <Popup><div className="p-2 min-w-[150px]"><h4 className="font-bold text-sm">{race.title}</h4><button onClick={() => toggleRace(race.id)} className="w-full mt-2 py-1 bg-blue-600 text-white rounded text-[10px] font-black uppercase">{selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}</button></div></Popup>
+                                <Popup><div className="p-2 min-w-[150px]"><h3 className="font-bold text-sm">{race.title}</h3><button onClick={() => toggleRace(race.id)} className="w-full mt-2 py-1 bg-blue-600 text-white rounded text-[10px] font-black uppercase">{selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}</button></div></Popup>
                             </Marker>
                         ))}
                     </MapContainer>
