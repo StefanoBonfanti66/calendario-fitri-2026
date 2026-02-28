@@ -689,11 +689,11 @@ const DashboardPage: React.FC = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
                                 <span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Focus Target</span>
-                                <div className="flex items-end gap-3"><div className="text-3xl font-black text-yellow-400">{seasonStats.priorities.A}</div><div className="text-[10px] font-bold text-slate-300 mb-1.5 uppercase">Obiettivi A</div></div>
+                                <div className="flex items-end gap-3"><div className="text-3xl font-black text-yellow-400 tabular-nums">{seasonStats.priorities.A}</div><div className="text-[10px] font-bold text-slate-300 mb-1.5 uppercase">Obiettivi A</div></div>
                                 <div className="mt-4 flex gap-1 h-1.5"><div className="bg-yellow-400 rounded-full" style={{ width: `${(seasonStats.priorities.A / myPlan.length) * 100}%` }}></div><div className="bg-blue-400 rounded-full" style={{ width: `${(seasonStats.priorities.B / myPlan.length) * 100}%` }}></div><div className="bg-slate-600 rounded-full flex-1"></div></div>
                             </div>
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-200">{type}</span><span className="text-xs font-black">{count}</span></div>))}</div></div>
-                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-300 uppercase">Km Stimati</div></div></div></div>
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Mix Discipline</span><div className="space-y-2">{Object.entries(seasonStats.types).map(([type, count]) => (<div key={type} className="flex items-center justify-between"><span className="text-[10px] font-bold text-slate-200">{type}</span><span className="text-xs font-black tabular-nums">{count}</span></div>))}</div></div>
+                            <div className="bg-white/5 p-5 rounded-3xl border border-white/10"><span className="text-[10px] font-black text-slate-300 uppercase block mb-4">Logistica</span><div className="flex items-center gap-3"><Navigation className="w-8 h-8 text-blue-400" /><div><div className="text-2xl font-black tabular-nums">{seasonStats.totalKm}</div><div className="text-[10px] font-bold text-slate-300 uppercase">Km Stimati</div></div></div></div>
                         </div>
                         <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-4">
@@ -709,7 +709,9 @@ const DashboardPage: React.FC = () => {
             )}
 
             <div className="flex items-center justify-between px-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{filteredRaces.length} gare trovate</span>
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">
+                    <span className="tabular-nums">{filteredRaces.length}</span> gare trovate
+                </span>
                 <div className="flex bg-slate-100 p-1 rounded-xl">
                     <button onClick={() => handleViewChange('list')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'list' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Lista</button>
                     <button onClick={() => handleViewChange('map')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${viewMode === 'map' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Mappa</button>

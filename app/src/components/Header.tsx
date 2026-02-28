@@ -22,9 +22,9 @@ const Header = ({ session }: { session: any }) => {
                     <a href="https://www.milanotriathlonteam.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform" title="Sito Ufficiale MTT">
                         <img src="/Logo.png" alt="MTT Logo" className="h-12 w-[140px] object-contain" />
                     </a>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col min-w-0">
                         <h1 className="text-xl font-black text-slate-800 tracking-tight leading-none uppercase">Fitri 2026</h1>
-                        <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest mt-1">
+                        <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest mt-1 truncate max-w-[150px] md:max-w-[200px]" title={session?.user?.user_metadata?.full_name || session?.user?.email}>
                             Atleta: {session?.user?.user_metadata?.full_name || session?.user?.email}
                         </span>
                     </div>
