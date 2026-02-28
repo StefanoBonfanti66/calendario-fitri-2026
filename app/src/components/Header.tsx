@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { Trophy, LogOut, Shield, Users, LayoutDashboard } from 'lucide-react';
+import { Trophy, LogOut, Shield, Users, LayoutDashboard, Heart } from 'lucide-react';
 
 const ADMIN_EMAIL = "bonfantistefano4@gmail.com";
 
@@ -44,6 +44,18 @@ const Header = memo(({ session, onOpenAdmin }: { session: any, onOpenAdmin: () =
                     {session?.user?.email === ADMIN_EMAIL && (
                         <button onClick={onOpenAdmin} className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-sm font-bold hover:bg-amber-100 transition-all" aria-label="Apri pannello admin"><Shield className="w-4 h-4" /> Admin</button>
                     )}
+                    
+                    <a 
+                        href="https://ko-fi.com/stefanobonfanti" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="flex items-center gap-2 px-4 py-2 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-sm font-bold hover:bg-rose-100 transition-all" 
+                        title="Supporta il progetto"
+                        aria-label="Fai una donazione"
+                    >
+                        <Heart className="w-4 h-4 fill-current" />
+                        <span className="hidden sm:inline">Supporta</span>
+                    </a>
                     
                     <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl text-sm font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all" title="Logout" aria-label="Esci dall'applicazione"><LogOut className="w-4 h-4" /></button>
                 </div>

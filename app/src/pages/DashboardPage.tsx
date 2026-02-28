@@ -7,7 +7,7 @@ import React, { useState, useEffect, useMemo, useTransition, useCallback, useDef
 import { 
   Search, Plus, Calendar, MapPin, Trash2, CheckCircle, Trophy, Filter, 
   Info, Download, Upload, Bike, Map as MapIcon, ChevronRight, Star, ExternalLink, Activity, Navigation, List, AlertTriangle, X, Camera, Image, ShoppingBag, Cloud, Sun, Edit3, MapPin as MapPinIcon,
-  LogOut, Mail, Lock, User, Shield
+  LogOut, Mail, Lock, User, Shield, Heart
 } from "lucide-react";
 import { toPng } from 'html-to-image';
 import racesData from "../races_full.json";
@@ -633,6 +633,27 @@ const DashboardPage: React.FC = () => {
                     </div>))}
                 </div>
                 {myPlan.length > 0 && (<div className="mt-6 pt-6 border-t border-slate-100 space-y-2 text-xs font-bold"><div className="flex justify-between text-slate-600"><span>Iscrizioni</span><span>€ {budgetTotals.registration.toFixed(2)}</span></div><div className="flex justify-between text-emerald-700 text-sm font-black"><span>TOTALE STIMATO</span><span>€ {budgetTotals.total.toFixed(2)}</span></div></div>)}
+            </div>
+
+            {/* BOX SUPPORTO / DONAZIONI */}
+            <div className="bg-gradient-to-br from-rose-50 to-white p-6 rounded-[2rem] border border-rose-100 shadow-sm">
+                <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-rose-500 p-2 rounded-xl text-white shadow-sm">
+                        <Heart className="w-4 h-4 fill-current" />
+                    </div>
+                    <h3 className="text-sm font-black uppercase text-slate-800 tracking-tight">Ti piace l'App?</h3>
+                </div>
+                <p className="text-xs font-bold text-slate-500 leading-relaxed mb-4">
+                    Supporta lo sviluppo dell'app e la manutenzione del server MTT!
+                </p>
+                <a 
+                    href="https://ko-fi.com/stefanobonfanti" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-white border-2 border-rose-500 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                >
+                    Offrimi un caffè ☕
+                </a>
             </div>
           </div>
         </div>
