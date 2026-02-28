@@ -195,6 +195,12 @@ const RaceCard = React.memo(({
     );
 });
 
+const getRankColor = (rank: string) => {
+  if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
+  if (rank === 'Silver') return 'text-slate-500 bg-slate-50 border-slate-200';
+  return 'text-orange-600 bg-orange-50 border-orange-200';
+};
+
 const DashboardPage: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const cardRef = React.useRef<HTMLDivElement>(null);
@@ -493,12 +499,6 @@ const DashboardPage: React.FC = () => {
         return matchesSearch && matchesType && matchesMonth && matchesDistance && matchesRegion && matchesSpecial && matchesRadius;
     }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
   }, [races, deferredSearchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, filterRadius]);
-
-  const getRankColor = useCallback((rank: string) => {
-    if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
-    if (rank === 'Silver') return 'text-slate-500 bg-slate-50 border-slate-200';
-    return 'text-orange-600 bg-orange-50 border-orange-200';
-  }, []);
 
   const generateRaceCard = async () => {
     if (cardRef.current) {
