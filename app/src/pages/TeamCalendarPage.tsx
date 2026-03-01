@@ -4,12 +4,13 @@
  */
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { User, Calendar, Users, Plus, Check } from 'lucide-react';
+import { User, Calendar, Users, Plus, Check, ExternalLink } from 'lucide-react';
 
 interface TeamRace {
   race_id: string;
   race_title: string;
   race_date: string;
+  race_link?: string;
   participants: string[];
 }
 
@@ -103,18 +104,31 @@ const TeamCalendarPage: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    {userRaces.includes(race.race_id) ? (
-                      <span className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100 uppercase tracking-widest">
-                        <Check className="w-3 h-3" /> Iscritto
-                      </span>
-                    ) : (
-                      <button 
-                        onClick={() => handleJoinRace(race.race_id)}
-                        className="flex items-center gap-1.5 text-[10px] font-black text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl shadow-md hover:shadow-blue-200 transition-all uppercase tracking-widest"
-                      >
-                        <Plus className="w-3 h-3" /> Partecipa
-                      </button>
-                    )}
+                    <div className="flex gap-2">
+                      {race.race_link && (
+                        <a 
+                          href={race.race_link} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center gap-1.5 text-[10px] font-black text-slate-600 bg-slate-100 px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-200 transition-all uppercase tracking-widest"
+                          title="Vedi dettagli ufficiali su MyFITri"
+                        >
+                          <ExternalLink className="w-3 h-3" /> <span className="hidden xs:inline">Scheda</span>
+                        </a>
+                      )}
+                      {userRaces.includes(race.race_id) ? (
+                        <span className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100 uppercase tracking-widest">
+                          <Check className="w-3 h-3" /> Iscritto
+                        </span>
+                      ) : (
+                        <button 
+                          onClick={() => handleJoinRace(race.race_id)}
+                          className="flex items-center gap-1.5 text-[10px] font-black text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl shadow-md hover:shadow-blue-200 transition-all uppercase tracking-widest"
+                        >
+                          <Plus className="w-3 h-3" /> Partecipa
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 pt-3 border-t border-slate-50">
                     <User className="w-4 h-4 text-slate-500" />

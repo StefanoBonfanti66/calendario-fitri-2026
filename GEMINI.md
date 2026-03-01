@@ -51,6 +51,12 @@ Returns a grouped JSON of races by month, including participants names and race 
 - **Branch Protection**: `main` branch is protected. Admin bypass allowed for Stefano Bonfanti.
 - **Automation**: GitHub Action runs every Monday at 00:00 to sync races.
 
+## 🔮 Future Roadmap (V4.0) - Race Details
+- **API Integration**: Switch from HTML scraping to direct MyFITri API (`cms.myfitri.it/api/eventi`).
+- **Enhanced Data**: Extract and store event regulations, start times, and course details.
+- **Dynamic Routing**: Implement `/race/:id` pages for deep-dive into single events.
+- **Social Interaction**: Allow comments or carpooling coordination in race detail pages.
+
 ## 🤖 AI Instructions
 - When modifying the database, always provide the SQL script for the user to run in Supabase SQL Editor.
 - Ensure `VITE_` prefix is used for environment variables.
