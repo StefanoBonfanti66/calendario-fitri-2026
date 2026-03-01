@@ -53,7 +53,7 @@ const Header = memo(({ session, onOpenAdmin }: { session: any, onOpenAdmin: () =
                         href="https://ko-fi.com/stefanobonfanti" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="flex items-center gap-2 px-4 py-2 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-sm font-bold hover:bg-rose-100 transition-all" 
+                        className="flex items-center gap-2 px-4 py-2 bg-rose-50 border border-rose-100 text-rose-800 rounded-2xl text-sm font-bold hover:bg-rose-100 transition-all" 
                         title="Supporta il progetto"
                         aria-label="Supporta il progetto"
                     >

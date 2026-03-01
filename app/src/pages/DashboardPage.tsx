@@ -45,9 +45,9 @@ const getEquipment = (type: string) => {
 };
 
 const getRankColor = (rank: string) => {
-  if (rank === 'Gold') return 'text-yellow-500 bg-yellow-50 border-yellow-100';
-  if (rank === 'Silver') return 'text-slate-500 bg-slate-50 border-slate-200';
-  return 'text-orange-600 bg-orange-50 border-orange-200';
+  if (rank === 'Gold') return 'text-amber-700 bg-amber-50 border-amber-200';
+  if (rank === 'Silver') return 'text-slate-600 bg-slate-50 border-slate-200';
+  return 'text-orange-800 bg-orange-50 border-orange-200';
 };
 
 const RaceCard = React.memo(({ 
@@ -133,7 +133,7 @@ const RaceCard = React.memo(({
             <div className="flex flex-col gap-4 mt-auto pt-5 border-t border-slate-50">
                 <div className="flex items-center justify-between">
                     {race.category ? (
-                        <span className="text-[10px] font-black text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit" title="Categoria della gara">
+                        <span className="text-[10px] font-black text-slate-700 bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider w-fit" title="Categoria della gara">
                             {race.category}
                         </span>
                     ) : <div></div>}
@@ -204,7 +204,7 @@ const RaceCard = React.memo(({
                         onClick={() => onToggle(race.id)}
                         className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
                             isSelected
-                            ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-100'
+                            ? 'bg-red-50 text-red-800 hover:bg-red-100 border border-red-100'
                             : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
                         }`}
                     >
