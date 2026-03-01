@@ -216,6 +216,8 @@ const RaceCard = React.memo(({
     );
 });
 
+const EMPTY_ARRAY: any[] = [];
+
 const DashboardPage: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const cardRef = React.useRef<HTMLDivElement>(null);
@@ -327,7 +329,12 @@ const DashboardPage: React.FC = () => {
         const num = parseInt(race.id) || 0;
         mapCoords = [coords[0] + (((num % 10) - 5) * 0.005), coords[1] + ((((num * 7) % 10) - 5) * 0.005)];
       }
-      return { ...race, mapCoords, distanceFromHome: getDistance(race.location, homeCity) };
+      
+      // Pre-parsing data per performance filtro
+      const [d, m, y] = race.date.split("-");
+      const timestamp = new Date(parseInt(y), parseInt(m) - 1, parseInt(d)).getTime();
+
+      return { ...race, mapCoords, distanceFromHome: getDistance(race.location, homeCity), timestamp };
     });
   }, [racesState, homeCity, getDistance]);
 
@@ -504,24 +511,51 @@ const DashboardPage: React.FC = () => {
 
   const filteredRaces = useMemo(() => {
     const now = new Date(); now.setHours(0, 0, 0, 0);
+    const nowTs = now.getTime();
+
     return races.filter((race) => {
-        const [rd, rm, ry] = race.date.split("-");
-        const raceDate = new Date(parseInt(ry), parseInt(rm)-1, parseInt(rd));
-        if (raceDate < now) return false;
+        if ((race as any).timestamp < nowTs) return false;
+        
         const matchesSearch = (race.title?.toLowerCase() || "").includes(deferredSearchTerm.toLowerCase()) || (race.location?.toLowerCase() || "").includes(deferredSearchTerm.toLowerCase());
         let matchesType = filterType === "Tutti";
         if (filterType === "Triathlon") matchesType = race.type === "Triathlon";
         else if (filterType === "Duathlon") matchesType = race.type === "Duathlon";
         else if (filterType === "Winter") matchesType = race.type.includes("Winter");
         else if (filterType === "Cross") matchesType = race.type === "Cross";
+        
+        const [_, rm] = race.date.split("-"); // Il mese serve ancora per il filtro mese
         const matchesMonth = filterMonth === "Tutti" || rm === filterMonth;
         const matchesDistance = filterDistance === "Tutti" || (race.distance?.toLowerCase() || "").includes(filterDistance.toLowerCase());
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
         const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => (race.category?.toLowerCase() || "").includes(s.toLowerCase()) || (race.title?.toLowerCase() || "").includes(s.toLowerCase()));
         const matchesRadius = deferredFilterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= deferredFilterRadius;
         return matchesSearch && matchesType && matchesMonth && matchesDistance && matchesRegion && matchesSpecial && matchesRadius;
-    }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
+    }).sort((a,b) => (a as any).timestamp - (b as any).timestamp);
   }, [races, deferredSearchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, deferredFilterRadius]);
+
+  const renderedRaceList = useMemo(() => {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredRaces.map((race) => (
+                <RaceCard 
+                    key={race.id} 
+                    race={race} 
+                    isSelected={selectedRaces.includes(race.id)} 
+                    priority={racePriorities[race.id] || 'C'} 
+                    cost={raceCosts[race.id] || 0} 
+                    note={raceNotes[race.id] || ""} 
+                    participants={participantsMap[race.id] || EMPTY_ARRAY}
+                    onToggle={toggleRace} 
+                    onPriority={setPriority} 
+                    onCost={updateCost} 
+                    onSingleCard={generateSingleRaceCard} 
+                    onChecklist={setActiveChecklistRace} 
+                    onNote={setActiveNoteRace} 
+                />
+            ))}
+        </div>
+    );
+  }, [filteredRaces, selectedRaces, racePriorities, raceCosts, raceNotes, participantsMap, toggleRace, setPriority, updateCost, generateSingleRaceCard, setActiveChecklistRace, setActiveNoteRace]);
 
   const generateRaceCard = async () => {
     if (cardRef.current) {
@@ -726,26 +760,7 @@ const DashboardPage: React.FC = () => {
             </div>
 
             {viewMode === 'list' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {filteredRaces.map((race) => (
-                        <RaceCard 
-                            key={race.id} 
-                            race={race} 
-                            isSelected={selectedRaces.includes(race.id)} 
-                            priority={racePriorities[race.id] || 'C'} 
-                            cost={raceCosts[race.id] || 0} 
-                            note={raceNotes[race.id] || ""} 
-                            participants={participantsMap[race.id] || []}
-                            onToggle={toggleRace} 
-                            onPriority={setPriority} 
-                            onCost={updateCost} 
-                            onSingleCard={generateSingleRaceCard} 
-                            onChecklist={setActiveChecklistRace} 
-                            onNote={setActiveNoteRace} 
-                            getRankColor={getRankColor}
-                        />
-                    ))}
-                </div>
+                renderedRaceList
             ) : (
                 <div className="h-[600px] w-full rounded-[3rem] overflow-hidden border-4 border-white shadow-xl relative isolate bg-slate-100">
                     <MapContainer center={[41.8719, 12.5674]} zoom={6} className="h-full w-full outline-none" fadeAnimation={false} zoomAnimation={false}>
