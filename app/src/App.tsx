@@ -7,6 +7,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import DashboardPage from './pages/DashboardPage';
 import TeamCalendarPage from './pages/TeamCalendarPage';
+import GuidePage from './pages/GuidePage';
 import Auth from './pages/Auth';
 
 const App: React.FC = () => {
@@ -16,6 +17,7 @@ const App: React.FC = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<DashboardPage />} />
         <Route path="calendario-team" element={<TeamCalendarPage />} />
+        <Route path="guida" element={<GuidePage />} />
       </Route>
     </Routes>
   );
