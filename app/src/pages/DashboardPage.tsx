@@ -233,6 +233,7 @@ const DashboardPage: React.FC = () => {
   const [filterRegion, setFilterRegion] = useState("Tutte");
   const [filterSpecial, setFilterSpecial] = useState<string[]>([]);
   const [filterRadius, setFilterRadius] = useState<number>(1000);
+  const deferredFilterRadius = useDeferredValue(filterRadius);
   const [homeCity, setHomeCity] = useState(localStorage.getItem("home_city") || "");
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [racePriorities, setRacePriorities] = useState<Record<string, string>>({});
@@ -517,10 +518,10 @@ const DashboardPage: React.FC = () => {
         const matchesDistance = filterDistance === "Tutti" || (race.distance?.toLowerCase() || "").includes(filterDistance.toLowerCase());
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
         const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => (race.category?.toLowerCase() || "").includes(s.toLowerCase()) || (race.title?.toLowerCase() || "").includes(s.toLowerCase()));
-        const matchesRadius = filterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= filterRadius;
+        const matchesRadius = deferredFilterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= deferredFilterRadius;
         return matchesSearch && matchesType && matchesMonth && matchesDistance && matchesRegion && matchesSpecial && matchesRadius;
     }).sort((a,b) => a.date.split("-").reverse().join("-").localeCompare(b.date.split("-").reverse().join("-")));
-  }, [races, deferredSearchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, filterRadius]);
+  }, [races, deferredSearchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, deferredFilterRadius]);
 
   const generateRaceCard = async () => {
     if (cardRef.current) {
