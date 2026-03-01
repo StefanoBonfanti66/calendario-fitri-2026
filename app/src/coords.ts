@@ -131,6 +131,5 @@ export const provinceCoordinates: Record<string, [number, number]> = {
   "Lovere": [45.8139, 10.0711],
   "Mondragone": [41.1111, 13.8911],
   "Sapri": [40.0750, 15.6300],
-  "Palermo": [38.1157, 13.3615],
   "San Vito Lo Capo": [38.1744, 12.7333]
 };
