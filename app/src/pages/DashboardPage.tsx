@@ -528,7 +528,10 @@ const DashboardPage: React.FC = () => {
         const matchesDistance = filterDistance === "Tutti" || (race.distance?.toLowerCase() || "").includes(filterDistance.toLowerCase());
         const matchesRegion = filterRegion === "Tutte" || race.region === filterRegion;
         const matchesSpecial = filterSpecial.length === 0 || filterSpecial.some(s => (race.category?.toLowerCase() || "").includes(s.toLowerCase()) || (race.title?.toLowerCase() || "").includes(s.toLowerCase()));
-        const matchesRadius = deferredFilterRadius >= 1000 || !race.distanceFromHome || race.distanceFromHome <= deferredFilterRadius;
+        
+        // Filtro raggio rigoroso: se è impostato un raggio < 1000, la gara DEVE avere una distanza calcolata e rientrare nel raggio
+        const matchesRadius = deferredFilterRadius >= 1000 || (race.distanceFromHome !== null && race.distanceFromHome !== undefined && race.distanceFromHome <= deferredFilterRadius);
+        
         return matchesSearch && matchesType && matchesMonth && matchesDistance && matchesRegion && matchesSpecial && matchesRadius;
     }).sort((a,b) => (a as any).timestamp - (b as any).timestamp);
   }, [races, deferredSearchTerm, filterType, filterMonth, filterDistance, filterRegion, filterSpecial, deferredFilterRadius]);

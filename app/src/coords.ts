@@ -128,5 +128,9 @@ export const provinceCoordinates: Record<string, [number, number]> = {
   "Mazara del Vallo": [37.6522, 12.5883],
   "Molveno": [46.1425, 10.9644],
   "Vernasca": [44.8061, 9.8300],
-  "Lovere": [45.8139, 10.0711]
+  "Lovere": [45.8139, 10.0711],
+  "Mondragone": [41.1111, 13.8911],
+  "Sapri": [40.0750, 15.6300],
+  "Palermo": [38.1157, 13.3615],
+  "San Vito Lo Capo": [38.1744, 12.7333]
 };
