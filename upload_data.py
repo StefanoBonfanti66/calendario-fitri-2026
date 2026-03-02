@@ -21,11 +21,20 @@ def main():
         return
 
     # Inizializza le variabili d'ambiente di Supabase
-    url: str = os.environ.get("SUPABASE_URL")
-    key: str = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    url = os.environ.get("SUPABASE_URL", "").strip()
+    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
 
-    if not url or not key:
-        print("Errore: Le variabili d'ambiente di Supabase non sono configurate. L'upload è stato saltato.")
+    missing_vars = []
+    if not url: missing_vars.append("SUPABASE_URL")
+    if not key: missing_vars.append("SUPABASE_SERVICE_ROLE_KEY")
+
+    if missing_vars:
+        print(f"Errore: Variabili d'ambiente mancanti: {', '.join(missing_vars)}")
+        print("Assicurati di aver configurato i GitHub Secrets nel repository.")
+        return
+
+    if not url.startswith("https://"):
+        print(f"Errore: SUPABASE_URL non sembra un URL valido (deve iniziare con https://). Valore attuale: {url[:10]}...")
         return
 
     print("Connessione a Supabase in corso...")
