@@ -707,23 +707,23 @@ const DashboardPage: React.FC = () => {
         </div>
 
         <div className="lg:col-span-8 space-y-6">
-            {/* Contenitore Prossimo Obiettivo: sempre presente per stabilità layout */}
-            <div className="min-h-[160px] empty:hidden">
+            {/* Sezione Prossimo Obiettivo: Sempre nel DOM */}
+            <div className="min-h-[160px] relative transition-all duration-500">
                 {nextObjective && timeLeft ? (
-                    <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative animate-in fade-in duration-500">
+                    <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-[3rem] p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative animate-in fade-in">
                         <div className="absolute right-0 top-0 p-4 opacity-10 rotate-12">
                             <img src="/Logo.png" alt="" className="w-48 h-auto grayscale brightness-200" />
                         </div>
                         <div className="relative z-10"><span className="text-[10px] font-black uppercase tracking-widest opacity-60 bg-white/20 px-2 py-1 rounded">Prossimo Obiettivo</span><h2 className="text-2xl font-black uppercase mt-2">{nextObjective.title}</h2></div>
                         <div className="flex gap-4 text-center relative z-10"><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black tabular-nums">{timeLeft.days}</div><div className="text-[8px] font-bold uppercase opacity-60">Giorni</div></div><div className="text-2xl mt-3 opacity-30">:</div><div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl min-w-[70px]"><div className="text-3xl font-black tabular-nums">{timeLeft.hours}</div><div className="text-[8px] font-bold uppercase opacity-60">Ore</div></div></div>
                     </div>
-                ) : null}
+                ) : <div className="h-full w-full flex items-center justify-center border-2 border-dashed border-slate-100 rounded-[3rem] text-[10px] font-black uppercase tracking-widest text-slate-200">Nessun obiettivo A impostato</div>}
             </div>
 
-            {/* Contenitore Analisi Stagione: sempre presente se l'utente ha gare, con altezza minima predefinita */}
-            <div className="min-h-[350px] empty:hidden">
+            {/* Sezione Analisi Stagione: Sempre nel DOM */}
+            <div className="min-h-[350px] relative transition-all duration-500">
                 {myPlan.length > 0 ? (
-                    <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group animate-in fade-in duration-500">
+                    <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden relative group animate-in fade-in">
                         <div className="absolute top-0 right-0 p-8 opacity-5">
                             <img src="/Logo.png" alt="" className="w-64 h-auto grayscale brightness-200" />
                         </div>
@@ -749,7 +749,7 @@ const DashboardPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                ) : null}
+                ) : <div className="h-full w-full flex items-center justify-center border-2 border-dashed border-slate-100 rounded-[2.5rem] text-[10px] font-black uppercase tracking-widest text-slate-200">Inizia ad aggiungere gare per vedere l'analisi</div>}
             </div>
 
             <div className="flex items-center justify-between px-2">
@@ -762,62 +762,66 @@ const DashboardPage: React.FC = () => {
                 </div>
             </div>
 
-            {viewMode === 'list' ? (
-                renderedRaceList
-            ) : (
-                <div className="h-[600px] w-full rounded-[3rem] overflow-hidden border-4 border-white shadow-xl relative isolate bg-slate-100">
-                    <MapContainer center={[41.8719, 12.5674]} zoom={6} className="h-full w-full outline-none" fadeAnimation={false} zoomAnimation={false}>
-                        <TileLayer 
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
-                            noWrap={true}
-                            keepBuffer={8}
-                        />
-                        {filteredRaces.map(race => race.mapCoords && (
-                            <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id], race.title)} alt={`Gara: ${race.title}`}>
-                                <Popup>
-                                    <div className="p-3 min-w-[200px] flex flex-col gap-2">
-                                        <div className="flex justify-between items-start gap-4">
-                                            <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{race.date}</span>
-                                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-lg ${race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>{race.type}</span>
-                                        </div>
-                                        <h3 className="font-black text-slate-800 text-sm leading-tight mt-1">{race.title}</h3>
-                                        <div className="flex flex-col gap-1 mt-1">
-                                            <div className="flex items-center gap-1.5 text-slate-500">
-                                                <MapPin className="w-3 h-3" />
-                                                <span className="text-[10px] font-bold">{race.location}</span>
+            <div className="relative min-h-[600px]">
+                {viewMode === 'list' ? (
+                    <div className="animate-in fade-in duration-500">
+                        {renderedRaceList}
+                    </div>
+                ) : (
+                    <div className="h-[600px] w-full rounded-[3rem] overflow-hidden border-4 border-white shadow-xl relative isolate bg-slate-100 animate-in fade-in duration-500">
+                        <MapContainer center={[41.8719, 12.5674]} zoom={6} className="h-full w-full outline-none" fadeAnimation={false} zoomAnimation={false}>
+                            <TileLayer 
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                                noWrap={true}
+                                keepBuffer={8}
+                            />
+                            {filteredRaces.map(race => race.mapCoords && (
+                                <Marker key={race.id} position={race.mapCoords} icon={getCachedIcon(race.type, selectedRaces.includes(race.id), racePriorities[race.id], race.title)} alt={`Gara: ${race.title}`}>
+                                    <Popup>
+                                        <div className="p-3 min-w-[200px] flex flex-col gap-2">
+                                            <div className="flex justify-between items-start gap-4">
+                                                <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{race.date}</span>
+                                                <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-lg ${race.type === 'Triathlon' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>{race.type}</span>
                                             </div>
-                                            {race.distance && (
-                                                <div className="flex items-center gap-1.5 text-slate-400">
-                                                    <Bike className="w-3 h-3" />
-                                                    <span className="text-[9px] font-black uppercase tracking-widest">{race.distance}</span>
+                                            <h3 className="font-black text-slate-800 text-sm leading-tight mt-1">{race.title}</h3>
+                                            <div className="flex flex-col gap-1 mt-1">
+                                                <div className="flex items-center gap-1.5 text-slate-500">
+                                                    <MapPin className="w-3 h-3" />
+                                                    <span className="text-[10px] font-bold">{race.location}</span>
                                                 </div>
-                                            )}
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-2 mt-3">
-                                            <button 
-                                                onClick={() => toggleRace(race.id)} 
-                                                className={`py-2 rounded-xl text-[10px] font-black uppercase transition-all ${selectedRaces.includes(race.id) ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-blue-600 text-white shadow-lg'}`}
-                                            >
-                                                {selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}
-                                            </button>
-                                            {race.link && (
-                                                <a 
-                                                    href={race.link} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer" 
-                                                    className="flex items-center justify-center py-2 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-200 transition-all border border-slate-200"
+                                                {race.distance && (
+                                                    <div className="flex items-center gap-1.5 text-slate-400">
+                                                        <Bike className="w-3 h-3" />
+                                                        <span className="text-[9px] font-black uppercase tracking-widest">{race.distance}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 mt-3">
+                                                <button 
+                                                    onClick={() => toggleRace(race.id)} 
+                                                    className={`py-2 rounded-xl text-[10px] font-black uppercase transition-all ${selectedRaces.includes(race.id) ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-blue-600 text-white shadow-lg'}`}
                                                 >
-                                                    Scheda <ExternalLink className="w-3 h-3 ml-1" />
-                                                </a>
-                                            )}
+                                                    {selectedRaces.includes(race.id) ? 'Rimuovi' : 'Aggiungi'}
+                                                </button>
+                                                {race.link && (
+                                                    <a 
+                                                        href={race.link} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer" 
+                                                        className="flex items-center justify-center py-2 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase hover:bg-slate-200 transition-all border border-slate-200"
+                                                    >
+                                                        Scheda <ExternalLink className="w-3 h-3 ml-1" />
+                                                    </a>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                </Popup>
-                            </Marker>
-                        ))}
-                    </MapContainer>
-                </div>
-            )}
+                                    </Popup>
+                                </Marker>
+                            ))}
+                        </MapContainer>
+                    </div>
+                )}
+            </div>
         </div>
 
         {/* MODALE NOTE ATLETA */}
