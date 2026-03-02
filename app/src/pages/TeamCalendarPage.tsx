@@ -26,13 +26,13 @@ const TeamCalendarPage: React.FC = () => {
   const [session, setSession] = useState<any>(null);
 
   const fetchTeamCalendar = async () => {
-    const { data, error } = await supabase.rpc('get_team_calendar');
+    const { data, error } = await supabase.rpc('get_team_calendar', { p_team_id: 'mtt' });
     if (error) console.error("Errore nel caricare il calendario del team:", error);
     else setTeamCalendar(data);
   };
 
   const fetchUserRaces = async (userId: string) => {
-    const { data } = await supabase.from('user_plans').select('race_id').eq('user_id', userId);
+    const { data } = await supabase.from('user_plans').select('race_id').eq('user_id', userId).eq('team_id', 'mtt');
     if (data) setUserRaces(data.map(r => r.race_id));
   };
 
@@ -53,7 +53,7 @@ const TeamCalendarPage: React.FC = () => {
 
     const { error } = await supabase
       .from('user_plans')
-      .insert([{ user_id: session.user.id, race_id: raceId, priority: 'C' }]);
+      .insert([{ user_id: session.user.id, race_id: raceId, priority: 'C', team_id: 'mtt' }]);
 
     if (error) {
       alert("Errore durante l'iscrizione.");

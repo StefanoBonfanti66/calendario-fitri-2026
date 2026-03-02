@@ -280,8 +280,8 @@ const DashboardPage: React.FC = () => {
       setRaceCosts(costs);
       setRaceNotes(notes);
     }
-    const { data: teamPlans } = await supabase.from('user_plans').select('user_id, race_id');
-    const { data: teamProfiles } = await supabase.from('profiles').select('id, full_name');
+    const { data: teamPlans } = await supabase.from('user_plans').select('user_id, race_id').eq('team_id', 'mtt');
+    const { data: teamProfiles } = await supabase.from('profiles').select('id, full_name').eq('team_id', 'mtt');
     if (teamPlans) setAllPlans(teamPlans);
     if (teamProfiles) setAllProfiles(teamProfiles);
   }, [session]);
@@ -449,7 +449,7 @@ const DashboardPage: React.FC = () => {
     setRacePriorities(prev => ({ ...prev, [id]: 'C' }));
     setPendingConfirmId(null);
     if (session?.user) {
-      await supabase.from('user_plans').insert([{ user_id: session.user.id, race_id: id, priority: 'C' }]);
+      await supabase.from('user_plans').insert([{ user_id: session.user.id, race_id: id, priority: 'C', team_id: 'mtt' }]);
     }
   }, [session]);
 
