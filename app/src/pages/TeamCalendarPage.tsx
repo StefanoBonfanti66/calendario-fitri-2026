@@ -25,11 +25,18 @@ const TeamCalendarPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<any>(null);
 
+
   const fetchTeamCalendar = async () => {
-    const { data, error } = await supabase.rpc('get_team_calendar', { p_team_id: 'mtt' });
-    if (error) console.error("Errore nel caricare il calendario del team:", error);
-    else setTeamCalendar(data);
-  };
+       // Passiamo 'mtt' esplicitamente per isolare il team Milano
+       const { data, error } = await supabase.rpc('get_team_calendar', { p_team_id: 'mtt' });
+  
+       if (error) {
+         console.error("Errore nel caricare il calendario del team:", error);
+         setTeamCalendar([]); // Imposta lista vuota in caso di errore
+       } else {
+         setTeamCalendar(data || []); // Imposta lista vuota se data è null
+        }
+      };
 
   const fetchUserRaces = async (userId: string) => {
     const { data } = await supabase.from('user_plans').select('race_id').eq('user_id', userId).eq('team_id', 'mtt');

@@ -79,8 +79,21 @@ def parse_gare_file(file_path):
 def save_clean(final_list, output_json):
     # Ordinamento per data
     final_list = sorted(final_list, key=lambda x: x['date'].split('-')[::-1])
-    # Assegnazione nuovi ID univoci
-    for i, r in enumerate(final_list): r['id'] = str(i + 1)
+    
+    # Assegnazione ID stabili basati sull'URL MyFITri
+    used_ids = {}
+    for r in final_list:
+        link = r.get('link', '')
+        # Estrae l'ID numerico dal link (es: https://www.myfitri.it/evento/3923 -> 3923)
+        match = re.search(r'/evento/(\d+)', link)
+        base_id = match.group(1) if match else "0000"
+        
+        if base_id not in used_ids:
+            used_ids[base_id] = 0
+            r['id'] = base_id
+        else:
+            used_ids[base_id] += 1
+            r['id'] = f"{base_id}-{used_ids[base_id]}"
 
     with open(output_json, 'w', encoding='utf-8') as f:
         json.dump(final_list, f, ensure_ascii=False, indent=2)
